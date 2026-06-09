@@ -1,0 +1,89 @@
+- !<AssetImportMetadata/69ddef50-dafa-47b6-9c41-55f38b96304b>
+  ImportedAssetIds:
+    TypeScriptAsset: !<reference> 0849e566-c70b-4677-9f7c-9418a5ae01dd
+  ImporterName: TypeScriptAssetImporter
+  PrimaryAsset: !<reference> 0849e566-c70b-4677-9f7c-9418a5ae01dd
+  PackageType: NotAPackage
+  LegacyPackagePolicy: ~
+  ExtraData:
+    {}
+  AssetDataMap:
+    TypeScriptAsset: !<own> 942cdaa1-4c49-40f5-bb6f-c5f22dc96ad8
+  DependentFiles:
+    []
+  ImporterSettings: !<AssetImporterSettings>
+    {}
+  CompressionSettings: !<own> 00000000-0000-0000-0000-000000000000
+- !<TypeScriptAssetData/942cdaa1-4c49-40f5-bb6f-c5f22dc96ad8>
+  SvgIcon: ""
+  SetupScript:
+    code: ""
+  Description: ""
+  VersionMajor: 0
+  VersionMinor: 0
+  VersionPatch: 0
+  ComponentUid: 3ea66cda-3364-4ecf-b6b6-12add38160a6
+  ExportUid: 00000000-0000-0000-0000-000000000000
+  PackagePolicy: CanBeUnpacked
+  ScriptInputsHidden:
+    captureIntervalSeconds: false
+    cropPadding: false
+    cropTextures: false
+    debugLogging: false
+    enableCropProcessing: false
+    enabledCapture: false
+    encodeJpg: false
+    maxCropsPerBatch: false
+    mlSpatializer: false
+    payloadCallbackFunctions: false
+    payloadCallbacks: false
+    remoteEndpoint: false
+    remoteServiceModule: false
+    sendToRemoteWhenConfigured: false
+    sourceTexture: false
+  ScriptTypesHidden:
+    {}
+  ReadMe: !<reference> 00000000-0000-0000-0000-000000000000
+  DeclarationFile: !<reference> 00000000-0000-0000-0000-000000000000
+  Tags:
+    []
+  Attachments:
+    []
+  DefaultScriptInputs:
+    - mlSpatializer: !<MappingBased.AssignableType> 00000000-0000-0000-0000-000000000000
+      sourceTexture: !<reference.Texture> 00000000-0000-0000-0000-000000000000
+      cropTextures: !<reference.Texture[]>
+        []
+      maxCropsPerBatch: !<float> 3.000000
+      cropPadding: 0.150000
+      captureIntervalSeconds: !<float> 2.000000
+      encodeJpg: true
+      enabledCapture: true
+      enableCropProcessing: true
+      payloadCallbacks: !<MappingBased.AssignableType_1[]>
+        []
+      payloadCallbackFunctions: !<string[]>
+        []
+      remoteServiceModule: !<reference.RemoteServiceModule> 00000000-0000-0000-0000-000000000000
+      remoteEndpoint: ""
+      sendToRemoteWhenConfigured: false
+      debugLogging: false
+  ScriptTypes:
+    -
+      {}
+  InputLines:
+    - '// @input AssignableType mlSpatializer {"hint":"MLSpatializer component that emits best.onnx detections"}'
+    - '// @input Asset.Texture sourceTexture {"hint":"Camera/input texture aligned with the ML model input"}'
+    - '// @input Asset.Texture[] cropTextures = {} {"hint":"Screen Crop Texture assets used to crop detections. Assign 3 for up to 3 simultaneous butterflies."}'
+    - '// @input float maxCropsPerBatch = 3 {"hint":"Maximum butterfly crops to produce per capture batch", "widget":"slider", "min":1, "max":3, "step":1}'
+    - '// @input float cropPadding = 0.15 {"hint":"Extra padding around each detection crop, as a fraction of box size", "widget":"slider", "min":0, "max":1, "step":0.05}'
+    - '// @input float captureIntervalSeconds = 2 {"hint":"Minimum seconds between crop batches", "widget":"slider", "min":0.1, "max":10, "step":0.1}'
+    - '// @input bool encodeJpg = true {"hint":"Encode crops as JPG instead of PNG for smaller API payloads"}'
+    - '// @input bool enabledCapture = true {"hint":"Enable crop encoding and callback dispatch. Disable to keep the component dormant."}'
+    - '// @input bool enableCropProcessing = true {"hint":"Master toggle for crop processing. Disable this when you only want detections without crop generation."}'
+    - '// @input AssignableType_1[] payloadCallbacks = {} {"hint":"Optional scripts to notify when crops are ready"}'
+    - '// @input string[] payloadCallbackFunctions = {} {"hint":"Function names on callback scripts. Each function receives ButterflyCropPayload[]"}'
+    - '// @input Asset.RemoteServiceModule remoteServiceModule {"hint":"Optional authorized Remote Service asset for sending crops to an API"}'
+    - '// @input string remoteEndpoint {"hint":"Authorized Remote Service endpoint name. Leave empty until the butterfly ID API is configured."}'
+    - '// @input bool sendToRemoteWhenConfigured {"hint":"Send crop payloads through RemoteServiceModule when remoteServiceModule and remoteEndpoint are set"}'
+    - '// @input bool debugLogging {"hint":"Log crop activity"}'

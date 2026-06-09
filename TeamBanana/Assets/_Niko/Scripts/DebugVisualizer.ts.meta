@@ -1,0 +1,50 @@
+- !<AssetImportMetadata/b4719497-ba12-460a-b8b2-398272e52ef8>
+  ImportedAssetIds:
+    TypeScriptAsset: !<reference> cb20a39b-2821-42c6-b031-acf83aa90f04
+  ImporterName: TypeScriptAssetImporter
+  PrimaryAsset: !<reference> cb20a39b-2821-42c6-b031-acf83aa90f04
+  PackageType: NotAPackage
+  LegacyPackagePolicy: ~
+  ExtraData:
+    {}
+  AssetDataMap:
+    TypeScriptAsset: !<own> 9b7a5451-1521-4592-8728-517856250fdb
+  DependentFiles:
+    []
+  ImporterSettings: !<AssetImporterSettings>
+    {}
+  CompressionSettings: !<own> 00000000-0000-0000-0000-000000000000
+- !<TypeScriptAssetData/9b7a5451-1521-4592-8728-517856250fdb>
+  SvgIcon: ""
+  SetupScript:
+    code: ""
+  Description: ""
+  VersionMajor: 0
+  VersionMinor: 0
+  VersionPatch: 0
+  ComponentUid: 68100442-b4a6-4bc2-b283-d219ffe8d2cc
+  ExportUid: 00000000-0000-0000-0000-000000000000
+  PackagePolicy: CanBeUnpacked
+  ScriptInputsHidden:
+    pointPrefab: false
+    pointPrefabVertex: false
+    testCamVisualObj: false
+  ScriptTypesHidden:
+    {}
+  ReadMe: !<reference> 00000000-0000-0000-0000-000000000000
+  DeclarationFile: !<reference> 00000000-0000-0000-0000-000000000000
+  Tags:
+    []
+  Attachments:
+    []
+  DefaultScriptInputs:
+    - pointPrefab: !<reference.ObjectPrefab> 00000000-0000-0000-0000-000000000000
+      pointPrefabVertex: !<reference.ObjectPrefab> 00000000-0000-0000-0000-000000000000
+      testCamVisualObj: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
+  ScriptTypes:
+    -
+      {}
+  InputLines:
+    - // @input Asset.ObjectPrefab pointPrefab
+    - // @input Asset.ObjectPrefab pointPrefabVertex
+    - // @input SceneObject testCamVisualObj
