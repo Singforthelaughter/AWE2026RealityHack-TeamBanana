@@ -63,7 +63,8 @@ export type RoleTag = "beneficial" | "pollinator" | "agriculture or garden pest"
 
 /**
  * Extra info about a suggested species. Every field is optional because it's only present if
- * requested (and `null` if Kindwise has no data for that taxon).
+ * requested except for language and entity_id, which are always present in response -- default for language='en' (and field is `null` if Kindwise has no data for that taxon).
+ * The Edge Function on Supabase requests all of the optional details.
  */
 export type SuggestionDetails = {
   common_names?: string[] | null
