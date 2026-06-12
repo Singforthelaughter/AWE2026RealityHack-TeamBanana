@@ -1,0 +1,21 @@
+- !<ObjectPrefab/02b70750-26c3-460f-9ab8-036122eaacd2>
+  PackagePath: ""
+  objects:
+    - !<own> 0d654609-3b17-45c2-89e3-2e3498e18e08
+  LazyLoading: false
+  RetainAssets: true
+- !<SceneObject/0d654609-3b17-45c2-89e3-2e3498e18e08>
+  PrefabRemaps:
+    []
+  Name: ButterflySlot
+  Enabled: true
+  Layers: 1
+  LocalTransform: !<TransformEntity>
+    Position: {x: 0.000000, y: 0.000000, z: 0.000000}
+    Rotation: {x: 0.000000, y: 0.000000, z: 0.000000}
+    Scale: {x: 1.000000, y: 1.000000, z: 1.000000}
+    HasSegmentScaleCompensation: false
+  Children:
+    []
+  Components:
+    []

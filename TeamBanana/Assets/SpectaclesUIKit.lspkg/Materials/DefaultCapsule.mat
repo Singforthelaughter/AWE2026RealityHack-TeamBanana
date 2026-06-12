@@ -7,6 +7,9 @@
     - Port_Depth_N004:
         typeIdx: 1
         value: 1.000000
+    - Port_Exponent_N033:
+        typeIdx: 1
+        value: 0.250000
     - Port_FinalColor1_N004:
         typeIdx: 5
         value: {x: 1.000000, y: 1.000000, z: 1.000000, w: 1.000000}
@@ -46,6 +49,9 @@
     - Port_Input0_N030:
         typeIdx: 1
         value: 0.500000
+    - Port_Input0_N046:
+        typeIdx: 1
+        value: -0.300000
     - Port_Input0_N051:
         typeIdx: 5
         value: {x: 1.000000, y: 1.000000, z: 1.000000, w: 1.000000}
@@ -64,6 +70,9 @@
     - Port_Input1_N006:
         typeIdx: 5
         value: {x: 0.000000, y: 0.000000, z: 0.000000, w: 0.000000}
+    - Port_Input1_N007:
+        typeIdx: 1
+        value: 0.125000
     - Port_Input1_N008:
         typeIdx: 1
         value: 1.000000
@@ -97,6 +106,12 @@
     - Port_Input1_N041:
         typeIdx: 5
         value: {x: 0.000000, y: 0.000000, z: 0.000000, w: 0.000000}
+    - Port_Input1_N042:
+        typeIdx: 5
+        value: {x: 0.000000, y: 0.000000, z: 0.000000, w: 0.000000}
+    - Port_Input1_N046:
+        typeIdx: 1
+        value: 0.660000
     - Port_Input1_N051:
         typeIdx: 5
         value: {x: 1.000000, y: 1.000000, z: 1.000000, w: 1.000000}
@@ -106,18 +121,30 @@
     - Port_Input1_N057:
         typeIdx: 1
         value: 1.500000
+    - Port_Input1_N058:
+        typeIdx: 1
+        value: 0.440000
     - Port_Input1_N068:
         typeIdx: 1
         value: 1.000000
+    - Port_Input2_N042:
+        typeIdx: 5
+        value: {x: 1.000000, y: 1.000000, z: 1.000000, w: 1.000000}
     - Port_Input2_N056:
         typeIdx: 1
         value: 1.000000
     - Port_Input2_N064:
         typeIdx: 4
         value: {x: 0.000000, y: 0.000000, z: 0.000000}
+    - Port_Intensity_N033:
+        typeIdx: 1
+        value: 1.000000
     - Port_LODValue_N036:
         typeIdx: 1
         value: 0.000000
+    - Port_Normal_N033:
+        typeIdx: 4
+        value: {x: 0.000000, y: 0.000000, z: 1.000000}
     - Port_Output_N009:
         typeIdx: 5
         value: {x: 0.000000, y: 0.000000, z: 0.000000, w: 0.000000}
@@ -143,6 +170,9 @@
         typeIdx: 4
         value: {x: 0.000000, y: 0.000000, z: 0.000000}
     - Port_Value1_N020:
+        typeIdx: 1
+        value: 0.000000
+    - Port_Value2_N000:
         typeIdx: 1
         value: 0.000000
     - Port_Value2_N002:
@@ -178,6 +208,9 @@
     - Port_Value_N019:
         typeIdx: 4
         value: {x: 0.000000, y: 0.000000, z: 0.000000}
+    - Port_Value_N050:
+        typeIdx: 1
+        value: 0.330000
     - Port_Value_N066:
         typeIdx: 5
         value: {x: 0.000000, y: 0.000000, z: 0.000000, w: 0.000000}
@@ -199,6 +232,12 @@
     - Port_size_N002:
         typeIdx: 4
         value: {x: 0.000000, y: 0.000000, z: 0.000000}
+    - PreviewEnabled:
+        typeIdx: 0
+        value: 0
+    - baseColor:
+        typeIdx: 5
+        value: {x: 1.000000, y: 1.000000, z: 1.000000, w: 0.904631}
     - cubemap:
         typeIdx: 9
         value:
@@ -211,6 +250,9 @@
             borderColor: {x: 0.000000, y: 0.000000, z: 0.000000, w: 0.000000}
             mipmaps: false
           type: TextureCubemap
+    - size:
+        typeIdx: 4
+        value: {x: 1.000000, y: 1.000000, z: 1.000000}
   DepthWrite: true
   DepthTest: true
   DepthFunction: LessEqual
