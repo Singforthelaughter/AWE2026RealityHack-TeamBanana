@@ -1,0 +1,76 @@
+- !<AssetImportMetadata/aa8be4c2-80be-4e49-b085-5a3469e2dc5e>
+  ImportedAssetIds:
+    TypeScriptAsset: !<reference> 949960b9-d926-420f-bcf3-ae2939df9b67
+  ImporterName: TypeScriptAssetImporter
+  PrimaryAsset: !<reference> 949960b9-d926-420f-bcf3-ae2939df9b67
+  PackageType: NotAPackage
+  LegacyPackagePolicy: ~
+  ExtraData:
+    {}
+  AssetDataMap:
+    TypeScriptAsset: !<own> 2a03a205-60c4-4061-b930-8985fadf3a8c
+  DependentFiles:
+    []
+  ImporterSettings: !<AssetImporterSettings>
+    {}
+  CompressionSettings: !<own> 00000000-0000-0000-0000-000000000000
+- !<TypeScriptAssetData/2a03a205-60c4-4061-b930-8985fadf3a8c>
+  SvgIcon: ""
+  SetupScript:
+    code: ""
+  Description: ""
+  VersionMajor: 0
+  VersionMinor: 0
+  VersionPatch: 0
+  ComponentUid: a375932a-5c88-4ef2-87ad-1f94fcc07733
+  ExportUid: 00000000-0000-0000-0000-000000000000
+  PackagePolicy: CanBeUnpacked
+  ScriptInputsHidden:
+    _hasShadow: false
+    _inactive: false
+    _playAudio: false
+    _renderOrder: false
+    _shadowPositionOffset: false
+    _size: false
+    activeMonths: false
+    endMonth: false
+    startMonth: false
+  ScriptTypesHidden:
+    {}
+  ReadMe: !<reference> 00000000-0000-0000-0000-000000000000
+  DeclarationFile: !<reference> 00000000-0000-0000-0000-000000000000
+  Tags:
+    []
+  Attachments:
+    []
+  DefaultScriptInputs:
+    - _renderOrder: 0
+      _size: !<Vec3> {x: 6.000000, y: 3.000000, z: 3.000000}
+      _inactive: false
+      _playAudio: false
+      _hasShadow: false
+      _shadowPositionOffset: !<Vec3> {x: 0.050000, y: -0.050000, z: -0.010000}
+      activeMonths: !<string[]>
+        - mar
+        - apr
+        - may
+        - jun
+        - jul
+        - aug
+        - sep
+        - oct
+      startMonth: ""
+      endMonth: ""
+  ScriptTypes:
+    -
+      {}
+  InputLines:
+    - // @input int _renderOrder
+    - '// @input vec3 _size = {6,3,3} {"hint":"Size of the element in centimeters"}'
+    - '// @input bool _inactive {"hint":"Inactive Mode: set the element to ignore inputs"}'
+    - '// @input bool _playAudio {"label":"Play Audio", "hint":"Play audio on interaction"}'
+    - // @input bool _hasShadow
+    - '// @input vec3 _shadowPositionOffset = "{0.05,-0.05,-0.01}" {"showIf":"_hasShadow"}'
+    - '// @input string[] activeMonths = {"mar","apr","may","jun","jul","aug","sep","oct"}'
+    - // @input string startMonth
+    - // @input string endMonth

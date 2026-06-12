@@ -1,0 +1,62 @@
+- !<AssetImportMetadata/1cd905e7-8475-4327-b5a0-e97a77b6b035>
+  ImportedAssetIds:
+    TypeScriptAsset: !<reference> 67bc52fb-fb6a-4f6e-a7d0-07cfc9541247
+  ImporterName: TypeScriptAssetImporter
+  PrimaryAsset: !<reference> 67bc52fb-fb6a-4f6e-a7d0-07cfc9541247
+  PackageType: NotAPackage
+  LegacyPackagePolicy: ~
+  ExtraData:
+    {}
+  AssetDataMap:
+    TypeScriptAsset: !<own> 54ac926f-2987-4703-9958-062db056d2d1
+  DependentFiles:
+    []
+  ImporterSettings: !<AssetImporterSettings>
+    {}
+  CompressionSettings: !<own> 00000000-0000-0000-0000-000000000000
+- !<TypeScriptAssetData/54ac926f-2987-4703-9958-062db056d2d1>
+  SvgIcon: ""
+  SetupScript:
+    code: ""
+  Description: ""
+  VersionMajor: 0
+  VersionMinor: 0
+  VersionPatch: 0
+  ComponentUid: d0d1abaf-5de7-43e4-8b3f-1560b8f6fef7
+  ExportUid: 00000000-0000-0000-0000-000000000000
+  PackagePolicy: CanBeUnpacked
+  ScriptInputsHidden:
+    _hasShadow: true
+    _inactive: false
+    _playAudio: false
+    _renderOrder: false
+    _shadowPositionOffset: true
+    _size: false
+    status: false
+  ScriptTypesHidden:
+    {}
+  ReadMe: !<reference> 00000000-0000-0000-0000-000000000000
+  DeclarationFile: !<reference> 00000000-0000-0000-0000-000000000000
+  Tags:
+    []
+  Attachments:
+    []
+  DefaultScriptInputs:
+    - _renderOrder: 0
+      _size: !<Vec3> {x: 12.000000, y: 1.600000, z: 1.000000}
+      _inactive: false
+      _playAudio: false
+      _hasShadow: false
+      _shadowPositionOffset: !<Vec3> {x: 0.000000, y: 0.000000, z: 0.000000}
+      status: Secure
+  ScriptTypes:
+    -
+      {}
+  InputLines:
+    - // @input int _renderOrder
+    - '// @input vec3 _size = {6,3,3} {"hint":"Size of the element in centimeters"}'
+    - '// @input bool _inactive {"hint":"Inactive Mode: set the element to ignore inputs"}'
+    - '// @input bool _playAudio {"label":"Play Audio", "hint":"Play audio on interaction"}'
+    - // @input bool _hasShadow
+    - '// @input vec3 _shadowPositionOffset = "{0.05,-0.05,-0.01}" {"showIf":"_hasShadow"}'
+    - '// @input string status = "Secure" {"widget":"combobox", "values":[{"label":"No Info", "value":"No Info"}, {"label":"Secure", "value":"Secure"}, {"label":"Watch", "value":"Watch"}, {"label":"Vulnerable", "value":"Vulnerable"}, {"label":"Endangered", "value":"Endangered"}, {"label":"Critical", "value":"Critical"}]}'
