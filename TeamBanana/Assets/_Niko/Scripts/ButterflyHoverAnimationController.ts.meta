@@ -26,7 +26,8 @@
   ExportUid: 00000000-0000-0000-0000-000000000000
   PackagePolicy: CanBeUnpacked
   ScriptInputsHidden:
-    {}
+    clipName: false
+    colliderSize: false
   ScriptTypesHidden:
     {}
   ReadMe: !<reference> 00000000-0000-0000-0000-000000000000
@@ -36,10 +37,11 @@
   Attachments:
     []
   DefaultScriptInputs:
-    -
-      {}
+    - clipName: ""
+      colliderSize: !<Vec3> {x: 0.000000, y: 0.000000, z: 0.000000}
   ScriptTypes:
     -
       {}
   InputLines:
-    []
+    - // @input string clipName
+    - // @input vec3 colliderSize
