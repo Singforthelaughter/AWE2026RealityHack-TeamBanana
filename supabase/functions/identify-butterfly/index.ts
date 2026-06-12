@@ -46,7 +46,7 @@ Deno.serve(async (req: Request) => {
       },
       body: JSON.stringify({
         images: [image],
-        similar_images: true,
+        similar_images: true, // leave if you want to add similar images to the species taken, remove if you want faster response with just name/details.
         suggestion_filter: {classification: "lepidoptera"},
       }),
     })
