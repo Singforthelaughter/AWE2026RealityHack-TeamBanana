@@ -1,0 +1,47 @@
+- !<AssetImportMetadata/7c1eb17d-cfed-4ad0-88e9-624d0701d2a2>
+  ImportedAssetIds:
+    TypeScriptAsset: !<reference> 3f50c524-3213-429f-9b12-ab6d0fa89caa
+  ImporterName: TypeScriptAssetImporter
+  PrimaryAsset: !<reference> 3f50c524-3213-429f-9b12-ab6d0fa89caa
+  PackageType: NotAPackage
+  LegacyPackagePolicy: ~
+  ExtraData:
+    {}
+  AssetDataMap:
+    TypeScriptAsset: !<own> f534686b-7c83-4bd4-b0f5-5a4099026071
+  DependentFiles:
+    []
+  ImporterSettings: !<AssetImporterSettings>
+    {}
+  CompressionSettings: !<own> 00000000-0000-0000-0000-000000000000
+- !<TypeScriptAssetData/f534686b-7c83-4bd4-b0f5-5a4099026071>
+  SvgIcon: ""
+  SetupScript:
+    code: ""
+  Description: ""
+  VersionMajor: 0
+  VersionMinor: 0
+  VersionPatch: 0
+  ComponentUid: 57cff983-ddf3-4ef3-9ccf-56f261b01f6f
+  ExportUid: 00000000-0000-0000-0000-000000000000
+  PackagePolicy: CanBeUnpacked
+  ScriptInputsHidden:
+    customLocationLoader: false
+    map: false
+  ScriptTypesHidden:
+    {}
+  ReadMe: !<reference> 00000000-0000-0000-0000-000000000000
+  DeclarationFile: !<reference> 00000000-0000-0000-0000-000000000000
+  Tags:
+    []
+  Attachments:
+    []
+  DefaultScriptInputs:
+    - map: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
+      customLocationLoader: !<MappingBased.AssignableType> 00000000-0000-0000-0000-000000000000
+  ScriptTypes:
+    -
+      {}
+  InputLines:
+    - // @input SceneObject map
+    - // @input AssignableType customLocationLoader

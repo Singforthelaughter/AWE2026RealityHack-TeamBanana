@@ -51,9 +51,9 @@
     -
       {}
   InputLines:
-    - '// @input Asset.SupabaseProject supabaseProject {"hint":"Supabase project asset (URL + public token)"}'
+    - "// @input Asset.SupabaseProject supabaseProject {\"hint\":\"Supabase project asset (URL + public token). Created via the Supabase Plugin's 'Import Credentials'.\"}"
     - '// @input string functionName = "identify-butterfly" {"hint":"Name of the Supabase Edge Function that processes the image and calls Kindwise"}'
-    - '// @input Component.Text resultText {"hint":"Optional Text to show the identification result"}'
-    - '// @input bool useVoiceCommand = true {"hint":"Listen for a spoken trigger word to start identification"}'
+    - "// @input Component.Text resultText {\"hint\":\"Optional Text to show the result (e.g. 'Capturing...' then the species)\"}"
+    - '// @input bool useVoiceCommand = true {"hint":"Listen for a spoken trigger word to start identification (device only)"}'
     - '// @input string triggerWord = "identify" {"hint":"Spoken word that triggers capture"}'
     - '// @input bool debugLogging = true {"hint":"Log activity to the Logger panel"}'

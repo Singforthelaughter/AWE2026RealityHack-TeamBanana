@@ -34,7 +34,7 @@
     []
   Name: Frame
   Enabled: true
-  ScriptAsset: !<reference> 3b46d829-f6db-432a-914c-3551904d3994
+  ScriptAsset: !<reference> 5953e783-f6ca-4838-9d27-3a8912b50e67
   ScriptInputsDefault:
     _appearance: true
     _padding: true
@@ -123,7 +123,7 @@
     []
   Name: CapsuleButton
   Enabled: true
-  ScriptAsset: !<reference> a60d3b86-0a33-458b-8e5a-daaeb2d7266a
+  ScriptAsset: !<reference> 3607c449-9b4c-47cc-a165-c1406d651f3f
   ScriptInputsDefault:
     _inactive: true
     _playAudio: true
@@ -459,7 +459,7 @@
     []
   Name: CapsuleButton
   Enabled: true
-  ScriptAsset: !<reference> a60d3b86-0a33-458b-8e5a-daaeb2d7266a
+  ScriptAsset: !<reference> 3607c449-9b4c-47cc-a165-c1406d651f3f
   ScriptInputsDefault:
     _inactive: true
     _playAudio: true
