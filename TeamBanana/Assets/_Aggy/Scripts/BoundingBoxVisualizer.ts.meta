@@ -1,0 +1,82 @@
+- !<AssetImportMetadata/fbad2b6d-dc52-47e0-a1f5-51ea8aa299fd>
+  ImportedAssetIds:
+    TypeScriptAsset: !<reference> 88f521c8-549a-46a4-8567-dc7f0bff3664
+  ImporterName: TypeScriptAssetImporter
+  PrimaryAsset: !<reference> 88f521c8-549a-46a4-8567-dc7f0bff3664
+  PackageType: NotAPackage
+  LegacyPackagePolicy: ~
+  ExtraData:
+    {}
+  AssetDataMap:
+    TypeScriptAsset: !<own> e5b5e0e5-ffe7-445d-ba7c-9f98f55d42b0
+  DependentFiles:
+    []
+  ImporterSettings: !<AssetImporterSettings>
+    {}
+  CompressionSettings: !<own> 00000000-0000-0000-0000-000000000000
+- !<TypeScriptAssetData/e5b5e0e5-ffe7-445d-ba7c-9f98f55d42b0>
+  SvgIcon: ""
+  SetupScript:
+    code: ""
+  Description: ""
+  VersionMajor: 0
+  VersionMinor: 0
+  VersionPatch: 0
+  ComponentUid: e76eb632-e19a-48ee-9a5c-11d8f94de27f
+  ExportUid: 00000000-0000-0000-0000-000000000000
+  PackagePolicy: CanBeUnpacked
+  ScriptInputsHidden:
+    boxObjects: false
+    boxScaleX: false
+    boxScaleY: false
+    debugLogging: false
+    flipX: false
+    flipY: false
+    holdSeconds: false
+    labelTexts: false
+    minScore: false
+    mlSpatializer: false
+    showBox: false
+    smoothing: false
+    statusObject: false
+  ScriptTypesHidden:
+    {}
+  ReadMe: !<reference> 00000000-0000-0000-0000-000000000000
+  DeclarationFile: !<reference> 00000000-0000-0000-0000-000000000000
+  Tags:
+    []
+  Attachments:
+    []
+  DefaultScriptInputs:
+    - mlSpatializer: !<MappingBased.AssignableType> 00000000-0000-0000-0000-000000000000
+      boxObjects: !<reference.SceneObject[]>
+        []
+      labelTexts: !<reference.Text[]>
+        []
+      minScore: !<float> 0.000000
+      smoothing: 0.600000
+      holdSeconds: 0.500000
+      boxScaleX: !<float> 1.000000
+      boxScaleY: !<float> 1.000000
+      flipX: false
+      flipY: false
+      showBox: false
+      debugLogging: true
+      statusObject: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
+  ScriptTypes:
+    -
+      {}
+  InputLines:
+    - '// @input AssignableType mlSpatializer {"hint":"The MLSpatializer that emits detections"}'
+    - '// @input SceneObject[] boxObjects = {} {"hint":"Screen Image objects to reuse as boxes. Drag in as many as the max boxes you want. Start with 1."}'
+    - '// @input Component.Text[] labelTexts = {} {"hint":"Optional: a Text per box (same order) showing label + confidence. Best as a child of each box."}'
+    - '// @input float minScore {"hint":"Optional: only draw boxes with at least this score", "widget":"slider", "min":0, "max":1, "step":0.01}'
+    - '// @input float smoothing = 0.6 {"hint":"Box smoothing. 0 = snap instantly (jittery), 0.8 = smooth glide (slight lag). Try 0.6.", "widget":"slider", "min":0, "max":0.95, "step":0.05}'
+    - '// @input float holdSeconds = 0.5 {"hint":"Seconds to keep a box visible after detection drops out, to stop flicker. Try 0.5.", "widget":"slider", "min":0, "max":2, "step":0.05}'
+    - '// @input float boxScaleX = 1 {"hint":"Box width multiplier. Raise if the box is too narrow for the butterfly. Webcam fix.", "widget":"slider", "min":0.5, "max":3, "step":0.05}'
+    - '// @input float boxScaleY = 1 {"hint":"Box height multiplier. Raise if the box is too short for the butterfly. Webcam fix.", "widget":"slider", "min":0.5, "max":3, "step":0.05}'
+    - '// @input bool flipX {"hint":"Mirror horizontally if boxes land on the wrong side"}'
+    - '// @input bool flipY {"hint":"Flip vertically if boxes are upside down"}'
+    - '// @input bool showBox {"hint":"Show the box outline. Off = only the label is shown (no rectangle)."}'
+    - '// @input bool debugLogging = true {"hint":"Log box placement to the Logger panel"}'
+    - '// @input SceneObject statusObject {"hint":"Shown when a butterfly is detected, hidden otherwise. Place it where you want (e.g. center, above the info) - the script never moves it."}'
