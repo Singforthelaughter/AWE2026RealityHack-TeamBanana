@@ -1194,35 +1194,7 @@
       {}
 - !<SceneObject/19467165-bea3-47c5-b39e-e276f458c293>
   PrefabRemaps:
-    - 060271b7-357f-48f3-a6ee-2f3f7718b920: 75e68824-7a63-4d0a-7b32-8ac21d278230
-    - 140976f4-0fc3-4cd5-be4a-aa089eaef842: 7e54cdce-b75d-41b6-7c90-bc7d0c86740a
-    - 16c384af-dc21-4d70-a7a1-3daed95ddb7e: 1f721636-d6a7-4c70-7bfe-22cc6516e3cd
-    - 19467165-bea3-47c5-b39e-e276f458c293: dfff2feb-e561-4a71-5849-e270596350c2
-    - 23050635-0df2-4fa7-90e5-48be7ae3342d: 95cdee28-bcdc-4fdb-5bb5-75bcc20f368d
-    - 2cb80716-1991-47db-b286-1410048d8ef0: 8772abc6-def1-412e-5706-d2ab87a651de
-    - 33308097-11e5-42d6-a5a6-b531f2749641: 3665d388-ac2f-4cf8-5fe9-b62a58ab8c73
-    - 36bbb2e8-4e2a-4192-9570-1bb910219201: 134f05be-6707-4da3-55c9-a2c42fd174fa
-    - 3a20a907-d9a8-4db2-91c8-7c8f6cedce90: 87af62bc-c955-4313-4125-96a9b0a8ad4e
-    - 45625ac6-4804-4f30-bd55-9f45814f7963: 7536e0a4-fd5b-4dde-420a-40002083124d
-    - 48382d26-c455-44ce-ac94-38909f919ee3: 1847ca50-0953-4198-6e24-edfcf7573cb0
-    - 526cbb41-8698-4a2a-af5b-0783b9e0398b: 41cffdcd-7c64-4f8f-6b56-007fddf3eb0a
-    - 58158a6c-33f0-41d5-951e-ae6891e6acde: 5f1989ba-92c0-4aeb-761e-7581e850ad5c
-    - 5e71ba14-eda2-45cf-9856-d0e9ce443665: 127acc7b-2884-40a2-7715-fdbef51a3840
-    - 5ee9c651-9dfa-4ef3-a136-6a0be06af2f7: 4431b9dc-1d99-4c8e-7305-cddf1bf703ed
-    - 62b549fd-39e1-4db2-b8ff-8b5e4a68defa: 63376b00-13d7-413f-71ef-e4418f34739d
-    - 79176f13-82eb-47a9-91a4-cd0b89b592a1: 64141590-c66f-476f-5f25-fed1ba679659
-    - 87f7e092-819c-4e27-86c9-c400121fc89a: 21ed4868-d796-4211-4805-bb5f1020914c
-    - 8d7671da-5232-49a9-b679-4fcdd115fd11: 090eb286-c121-40e4-4df2-c6598798187d
-    - a258602b-b67d-4bb4-aa73-51f2cc7f373d: 73b33fba-cf3f-47ef-6e3b-dce43e543c4d
-    - a28e2b90-1e63-4d4e-b410-e551b734d279: 01a6fd4e-a7e5-4697-706d-5e4415795a92
-    - b1aafeca-47a0-4704-92e1-af3c583a2c52: 32653526-15dd-445d-7625-c63c115830eb
-    - b71e1310-ad8c-4538-a575-7dc4809ec1bb: 3f42b8fd-091c-41af-702d-a32da79d0282
-    - b8e928bf-7bf1-480f-bf5b-5159088977ff: de9f8ad5-8261-4098-77ca-48b4d17e4b9b
-    - bf0a5969-8196-428f-859b-de782e51f8b4: 278f52b8-0776-4fc6-5670-d75abaacf333
-    - c5fe2ff3-beed-4268-afc9-f32edb35e1e5: 986f149d-1d49-43bf-7eaa-f27489788210
-    - d12aa887-260a-4ca1-8512-b4d75c132b2c: 3e191ddd-a060-42e9-669e-20c8fa29bbe5
-    - e35b90e5-8272-4307-a5c0-2bef96b0adfa: dea5f167-bb7f-414c-5bbe-732774f339ef
-    - faf846d9-937e-4d6d-96cd-f8e5a45c9f39: c42de7e4-ddc2-45d4-76c5-5490844284d1
+    []
   Name: ToolParent
   Enabled: false
   Layers: 1
@@ -1969,7 +1941,6 @@
   Enabled: true
   ScriptAsset: !<reference> 3f50c524-3213-429f-9b12-ab6d0fa89caa
   ScriptInputsDefault:
-    dbManager: true
     searchRadius: true
     maxResults: true
   ScriptTypesDefault:
@@ -1978,7 +1949,7 @@
     "":
       map: !<reference.SceneObject> dfa1c7d0-8660-43e8-95bd-ba5a9578b017
       customLocationLoader: !<MappingBased.AssignableType> 63db7d74-f6f0-4bc5-919d-4736a6ca964f
-      dbManager: !<MappingBased.AssignableType_1> 00000000-0000-0000-0000-000000000000
+      dbManager: !<MappingBased.AssignableType_1> ec3ec66a-669d-4f10-8729-2385b25c576d
       searchRadius: !<float> 5.000000
       maxResults: !<float> 50.000000
   ScriptTypes:
@@ -2360,7 +2331,7 @@
   PrefabRemaps:
     []
   Name: Boon
-  Enabled: false
+  Enabled: true
   Layers: 1
   LocalTransform: !<TransformEntity>
     Position: {x: 0.000000, y: 0.000000, z: 0.000000}
@@ -3752,7 +3723,6 @@
   Enabled: true
   ScriptAsset: !<reference> 101a2e35-763d-4f5c-9c5a-4bd321195b07
   ScriptInputsDefault:
-    customLocationsLoader: true
     markerHalfWidth: true
     markerHalfHeight: true
   ScriptTypesDefault:
@@ -3763,7 +3733,7 @@
       questMarkerPrefab: !<reference.ObjectPrefab> 140d3cb7-35bb-42a6-a5d7-18428941ada7
       inViewMaterial: !<reference.Material> 8695c20a-6433-4bd4-8fe9-27f568407aa4
       outOfViewMaterial: !<reference.Material> cf2c6c64-7672-4993-be5f-5830f29b2f58
-      customLocationsLoader: !<MappingBased.AssignableType_1> 00000000-0000-0000-0000-000000000000
+      customLocationsLoader: !<MappingBased.AssignableType_1> 63db7d74-f6f0-4bc5-919d-4736a6ca964f
       scale: !<float> 3.000000
       markerImageOffsetInDegree: !<float> -90.000000
       markerHalfWidth: !<float> 5.000000
@@ -5822,8 +5792,7 @@
     - !<own> 884ab487-f34f-48a9-9805-c2698aab9ec0
 - !<SceneObject/71d94fde-56f1-41ae-8324-4c4c91dd2c63>
   PrefabRemaps:
-    - 4720e9f2-de7b-4a8b-8b79-2d2fea77bf69: 85b94cdf-ca4d-4f6d-75e2-220161bd5582
-    - 71d94fde-56f1-41ae-8324-4c4c91dd2c63: 11d65e14-1aab-499a-599c-9af33d59235e
+    []
   Name: OpenAIAssistant
   Enabled: true
   Layers: 1
@@ -7074,8 +7043,7 @@
     []
 - !<SceneObject/8d6457ac-4cc1-4abf-8e2d-c7b88f640ec1>
   PrefabRemaps:
-    - 8d6457ac-4cc1-4abf-8e2d-c7b88f640ec1: ae248c50-7b05-4adc-682a-6a0a9cadaed0
-    - d2bd5b27-4d45-4d68-86e4-5f2a8d4eca3d: 78a9382a-17cb-49c1-7bed-dfb4ba2acd4e
+    []
   Name: StorageManager
   Enabled: true
   Layers: 1
@@ -7608,8 +7576,7 @@
   TwoSided: false
 - !<SceneObject/965ded60-a506-4450-b786-d6e7d7b68623>
   PrefabRemaps:
-    - 965ded60-a506-4450-b786-d6e7d7b68623: e1af5053-36df-453f-401f-6386d3471fee
-    - e5ca2632-81ae-462b-8dd8-0fa8b7f42712: 897f8547-1678-473f-4534-b95e57e787ed
+    []
   Name: GeminiAssistant
   Enabled: true
   Layers: 1
