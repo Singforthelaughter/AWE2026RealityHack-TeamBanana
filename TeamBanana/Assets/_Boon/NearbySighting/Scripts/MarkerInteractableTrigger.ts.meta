@@ -1,0 +1,65 @@
+- !<AssetImportMetadata/a236789b-bd3e-47c1-b3fe-38ab36cde43f>
+  ImportedAssetIds:
+    TypeScriptAsset: !<reference> 7ac2c4d1-9d8f-48b8-a2b0-b34cf1489d58
+  ImporterName: TypeScriptAssetImporter
+  PrimaryAsset: !<reference> 7ac2c4d1-9d8f-48b8-a2b0-b34cf1489d58
+  PackageType: NotAPackage
+  LegacyPackagePolicy: ~
+  ExtraData:
+    {}
+  AssetDataMap:
+    TypeScriptAsset: !<own> c1ca5f93-eb64-4d3d-bd23-48dc9c177d6e
+  DependentFiles:
+    []
+  ImporterSettings: !<AssetImporterSettings>
+    {}
+  CompressionSettings: !<own> 00000000-0000-0000-0000-000000000000
+- !<TypeScriptAssetData/c1ca5f93-eb64-4d3d-bd23-48dc9c177d6e>
+  SvgIcon: ""
+  SetupScript:
+    code: ""
+  Description: ""
+  VersionMajor: 0
+  VersionMinor: 0
+  VersionPatch: 0
+  ComponentUid: d810f446-39fa-470e-830b-100c88f16756
+  ExportUid: 00000000-0000-0000-0000-000000000000
+  PackagePolicy: CanBeUnpacked
+  ScriptInputsHidden:
+    hoverColor: false
+    image1: false
+    normalColor: false
+    text1: false
+    text2: false
+    triggerColor: false
+    triggerEndColor: false
+    triggerScaleMultiplier: false
+  ScriptTypesHidden:
+    {}
+  ReadMe: !<reference> 00000000-0000-0000-0000-000000000000
+  DeclarationFile: !<reference> 00000000-0000-0000-0000-000000000000
+  Tags:
+    []
+  Attachments:
+    []
+  DefaultScriptInputs:
+    - text1: !<reference.Text> 00000000-0000-0000-0000-000000000000
+      text2: !<reference.Text> 00000000-0000-0000-0000-000000000000
+      image1: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
+      normalColor: !<Vec4> {x: 1.000000, y: 1.000000, z: 1.000000, w: 1.000000}
+      hoverColor: !<Vec4> {x: 0.800000, y: 0.900000, z: 1.000000, w: 1.000000}
+      triggerColor: !<Vec4> {x: 0.500000, y: 0.700000, z: 1.000000, w: 1.000000}
+      triggerEndColor: !<Vec4> {x: 0.800000, y: 0.900000, z: 1.000000, w: 1.000000}
+      triggerScaleMultiplier: !<Vec3> {x: 1.100000, y: 1.100000, z: 1.100000}
+  ScriptTypes:
+    -
+      {}
+  InputLines:
+    - '// @input Component.Text text1 {"hint":"Sibling Text component"}'
+    - '// @input Component.Text text2 {"hint":"Sibling Text component"}'
+    - '// @input SceneObject image1 {"hint":"Sibling SceneObject with an Image component"}'
+    - '// @input vec4 normalColor = {1,1,1,1} {"hint":"Colour when nothing is hovering", "widget":"color"}'
+    - '// @input vec4 hoverColor = {0.8,0.9,1,1} {"hint":"Colour when hovered but not triggered", "widget":"color"}'
+    - '// @input vec4 triggerColor = {0.5,0.7,1,1} {"hint":"Colour while trigger is held", "widget":"color"}'
+    - '// @input vec4 triggerEndColor = {0.8,0.9,1,1} {"hint":"Colour immediately after trigger releases (still hovering)", "widget":"color"}'
+    - '// @input vec3 triggerScaleMultiplier = {1.1,1.1,1.1} {"hint":"Per-axis scale multiplier applied to the parent on trigger start (e.g. 1.1 = 110%)"}'

@@ -1,0 +1,80 @@
+/**
+ * Simulated butterfly sighting rows for dev/testing.
+ * Coordinates are clustered around Central London (Trafalgar Square area).
+ * Used by SupabaseDBManager.seedTestData().
+ */
+
+const now = new Date()
+
+export const SIMULATED_SIGHTINGS = [
+  {
+    snap_display_name: "test_user_1",
+    latitude: 51.5074, longitude: -0.1278,
+    identified_at: new Date(now.getTime() - 5 * 60000).toISOString(),
+    species_scientific_name: "Danaus plexippus",
+    species_common_names: ["Monarch butterfly"],
+    species_probability: 0.97,
+    species_red_list: "LEAST_CONCERN",
+    species_description: "Large orange and black migratory butterfly found across North America.",
+    species_danger: ["harmless to human health"],
+    species_role: ["pollinator", "beneficial"],
+    species_image_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/Monarch_Butterfly_Danaus_plexippus.jpg/320px-Monarch_Butterfly_Danaus_plexippus.jpg",
+    species_taxonomy: { kingdom: "Animalia", phylum: "Arthropoda", class: "Insecta", order: "Lepidoptera", family: "Nymphalidae", genus: "Danaus" },
+  },
+  {
+    snap_display_name: "test_user_2",
+    latitude: 51.5091, longitude: -0.1245,
+    identified_at: new Date(now.getTime() - 20 * 60000).toISOString(),
+    species_scientific_name: "Papilio machaon",
+    species_common_names: ["Old World swallowtail", "Common yellow swallowtail"],
+    species_probability: 0.91,
+    species_red_list: "LEAST_CONCERN",
+    species_description: "Striking yellow butterfly with black tiger-stripe pattern and blue hindwing patches.",
+    species_danger: ["harmless to human health"],
+    species_role: ["pollinator"],
+    species_image_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/Papilio_machaon_2.jpg/320px-Papilio_machaon_2.jpg",
+    species_taxonomy: { kingdom: "Animalia", phylum: "Arthropoda", class: "Insecta", order: "Lepidoptera", family: "Papilionidae", genus: "Papilio" },
+  },
+  {
+    snap_display_name: "test_user_1",
+    latitude: 51.5058, longitude: -0.1320,
+    identified_at: new Date(now.getTime() - 45 * 60000).toISOString(),
+    species_scientific_name: "Morpho peleides",
+    species_common_names: ["Blue morpho"],
+    species_probability: 0.88,
+    species_red_list: "LEAST_CONCERN",
+    species_description: "Iconic iridescent blue tropical butterfly; the blue is structural coloration, not pigment.",
+    species_danger: ["harmless to human health"],
+    species_role: ["beneficial"],
+    species_image_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/Morpho_peleides_limpida.jpg/320px-Morpho_peleides_limpida.jpg",
+    species_taxonomy: { kingdom: "Animalia", phylum: "Arthropoda", class: "Insecta", order: "Lepidoptera", family: "Nymphalidae", genus: "Morpho" },
+  },
+  {
+    snap_display_name: "test_user_3",
+    latitude: 51.5105, longitude: -0.1302,
+    identified_at: new Date(now.getTime() - 90 * 60000).toISOString(),
+    species_scientific_name: "Vanessa cardui",
+    species_common_names: ["Painted lady"],
+    species_probability: 0.94,
+    species_red_list: "LEAST_CONCERN",
+    species_description: "The world's most widespread butterfly species, found on every continent except Antarctica.",
+    species_danger: ["harmless to human health"],
+    species_role: ["pollinator", "beneficial"],
+    species_image_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Vanessa_cardui_f.jpg/320px-Vanessa_cardui_f.jpg",
+    species_taxonomy: { kingdom: "Animalia", phylum: "Arthropoda", class: "Insecta", order: "Lepidoptera", family: "Nymphalidae", genus: "Vanessa" },
+  },
+  {
+    snap_display_name: "test_user_2",
+    latitude: 51.5042, longitude: -0.1261,
+    identified_at: new Date(now.getTime() - 120 * 60000).toISOString(),
+    species_scientific_name: "Vanessa atalanta",
+    species_common_names: ["Red admiral"],
+    species_probability: 0.89,
+    species_red_list: "LEAST_CONCERN",
+    species_description: "Bold black butterfly with striking red-orange bands and white spots near the wing tips.",
+    species_danger: ["harmless to human health"],
+    species_role: ["pollinator"],
+    species_image_url: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Vanessa_atalanta_f_Luc_Viatour.jpg/320px-Vanessa_atalanta_f_Luc_Viatour.jpg",
+    species_taxonomy: { kingdom: "Animalia", phylum: "Arthropoda", class: "Insecta", order: "Lepidoptera", family: "Nymphalidae", genus: "Vanessa" },
+  },
+]

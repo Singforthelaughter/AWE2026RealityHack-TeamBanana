@@ -287,6 +287,21 @@
     CapitalizationOverride: None
   DepthTest: false
   TwoSided: false
+- !<SceneObject/1fed8334-82f4-45c9-80d4-5f27a71231f1>
+  PrefabRemaps:
+    []
+  Name: Season Calendar
+  Enabled: true
+  Layers: 1
+  LocalTransform: !<TransformEntity>
+    Position: {x: 0.000000, y: -18.200001, z: 0.020000}
+    Rotation: {x: 0.000000, y: 0.000000, z: 0.000000}
+    Scale: {x: 1.000000, y: 1.000000, z: 1.000000}
+    HasSegmentScaleCompensation: false
+  Children:
+    []
+  Components:
+    - !<own> fdfc1063-dd2d-40f4-82d7-30fe6a2174c1
 - !<Image/28c3c6ac-3550-4925-9932-c18087ec3818>
   PrefabRemaps:
     []
@@ -434,6 +449,29 @@
     - !<own> 5a26864d-20e8-4a8d-7394-1ce53253f319
   Components:
     []
+- !<ScriptComponent/3b8e1ea0-7dbf-4407-8889-3667026067fb>
+  PrefabRemaps:
+    []
+  Name: ScrollBar
+  Enabled: true
+  ScriptAsset: !<reference> cd1b64b9-c91b-4dd8-b48a-9e41a403a609
+  ScriptInputsDefault:
+    _renderOrder: true
+    size: true
+    orientation: true
+    _playAudio: true
+  ScriptTypesDefault:
+    {}
+  ScriptInputs:
+    "":
+      _renderOrder: 0
+      size: !<Vec2> {x: 20.000000, y: 1.800000}
+      orientation: Vertical
+      scrollWindow: !<MappingBased.AssignableType> 6272a05f-74b3-4e57-4ec6-91448311e9d1
+      _playAudio: false
+  ScriptTypes:
+    "":
+      {}
 - !<SceneObject/4b74e2da-7d23-47b6-6cd5-66c1286d7561>
   PrefabRemaps:
     []
@@ -557,7 +595,7 @@
     []
   Name: ScrollWindow
   Enabled: true
-  ScriptAsset: !<reference> 8ca0ce82-b275-4551-8560-820c44a54276
+  ScriptAsset: !<reference> 7adfb215-4061-45ab-8fb9-461394c57f32
   ScriptInputsDefault:
     _vertical: true
     _horizontal: true
@@ -777,7 +815,7 @@
   Enabled: true
   Layers: 1
   LocalTransform: !<TransformEntity>
-    Position: {x: -6.934608, y: -3.923411, z: 0.000000}
+    Position: {x: -6.934608, y: -25.200001, z: 0.000000}
     Rotation: {x: 0.000000, y: 0.000000, z: 0.000000}
     Scale: {x: 1.000000, y: 1.000000, z: 1.000000}
     HasSegmentScaleCompensation: false
@@ -792,6 +830,7 @@
   Enabled: true
   ScriptAsset: !<reference> 67bc52fb-fb6a-4f6e-a7d0-07cfc9541247
   ScriptInputsDefault:
+    _size: true
     _inactive: true
     _playAudio: true
     _hasShadow: true
@@ -801,7 +840,7 @@
   ScriptInputs:
     "":
       _renderOrder: 1
-      _size: !<Vec3> {x: 23.000000, y: 2.000000, z: 1.000000}
+      _size: !<Vec3> {x: 12.000000, y: 1.600000, z: 1.000000}
       _inactive: false
       _playAudio: false
       _hasShadow: false
@@ -907,27 +946,6 @@
     - !<own> bd7a8f69-1abc-40ac-4b12-ba89362203b9
   Components:
     - !<own> f00e10be-28f2-4d67-7b5d-95f78d368cc8
-- !<ScriptComponent/94344f70-97f3-49b8-6422-0826a84d5f91>
-  PrefabRemaps:
-    []
-  Name: ScrollBar
-  Enabled: true
-  ScriptAsset: !<reference> 3a0acfde-55a9-47c6-911b-4a6f87490a05
-  ScriptInputsDefault:
-    orientation: true
-    _playAudio: true
-  ScriptTypesDefault:
-    {}
-  ScriptInputs:
-    "":
-      _renderOrder: 1
-      size: !<Vec2> {x: 50.000000, y: 1.800000}
-      orientation: Vertical
-      scrollWindow: !<MappingBased.AssignableType> 6272a05f-74b3-4e57-4ec6-91448311e9d1
-      _playAudio: false
-  ScriptTypes:
-    "":
-      {}
 - !<Text/a081eef4-b109-45f5-bd50-0dd728450f70>
   PrefabRemaps:
     []
@@ -1064,6 +1082,7 @@
     - !<own> 7e052980-a828-4a48-a032-185488972e3d
     - !<own> 2b9bddfa-53d1-40e8-b924-22a3a214f680
     - !<own> 4b74e2da-7d23-47b6-6cd5-66c1286d7561
+    - !<own> 1fed8334-82f4-45c9-80d4-5f27a71231f1
     - !<own> 8266ef73-590a-45e1-56e1-b14a16c55213
     - !<own> 13cb6db5-5fee-443f-bae5-41135aad226c
     - !<own> fbb81215-43d1-44e0-947b-2df082b5c532
@@ -1104,7 +1123,7 @@
   Children:
     []
   Components:
-    - !<own> 94344f70-97f3-49b8-6422-0826a84d5f91
+    - !<own> 3b8e1ea0-7dbf-4407-8889-3667026067fb
 - !<ScriptComponent/c4a57a8e-dea8-40b4-be45-69d8300a6dc0>
   PrefabRemaps:
     []
@@ -1240,7 +1259,7 @@
     []
   Name: Frame
   Enabled: true
-  ScriptAsset: !<reference> 3b46d829-f6db-432a-914c-3551904d3994
+  ScriptAsset: !<reference> 5953e783-f6ca-4838-9d27-3a8912b50e67
   ScriptInputsDefault:
     _appearance: true
     _padding: true
@@ -1337,3 +1356,42 @@
     []
   Components:
     - !<own> db2e2b58-4dab-4bad-680f-2543aa0e417c
+- !<ScriptComponent/fdfc1063-dd2d-40f4-82d7-30fe6a2174c1>
+  PrefabRemaps:
+    []
+  Name: SeasonCalendar
+  Enabled: true
+  ScriptAsset: !<reference> 949960b9-d926-420f-bcf3-ae2939df9b67
+  ScriptInputsDefault:
+    _size: true
+    _inactive: true
+    _playAudio: true
+    _hasShadow: true
+    _shadowPositionOffset: true
+    activeMonths: true
+    startMonth: true
+    endMonth: true
+  ScriptTypesDefault:
+    {}
+  ScriptInputs:
+    "":
+      _renderOrder: 2
+      _size: !<Vec3> {x: 6.000000, y: 3.000000, z: 3.000000}
+      _inactive: false
+      _playAudio: false
+      _hasShadow: false
+      _shadowPositionOffset: !<Vec3> {x: 0.050000, y: -0.050000, z: -0.010000}
+      activeMonths: !<string[]>
+        - mar
+        - apr
+        - may
+        - jun
+        - jul
+        - aug
+        - sep
+        - oct
+      startMonth: ""
+      endMonth: ""
+  ScriptTypes:
+    "":
+      {}

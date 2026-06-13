@@ -1,0 +1,183 @@
+import {createClient, type SupabaseClient} from "SupabaseClient.lspkg/supabase-snapcloud"
+import {IDResponse} from "./KindwiseTypes"
+
+/**
+ * ButterflyIdentifier — the identification half of the pipeline.
+ *
+ * FLOW: say "identify" -> take a high-res photo -> send it to a Supabase Edge Function -> the
+ * function calls Kindwise and returns the species -> show it in `resultText`.
+ *
+ *   voice "identify"  ->  CameraModule.requestImage()  ->  Base64  ->
+ *   supabase.functions.invoke("identify-butterfly", { image })  ->  IDResponse  ->  show name
+ *
+ * ⚠️ DEVICE ONLY: `CameraModule.requestImage` (high-res capture) and `AsrModule` (voice) do NOT
+ * work in Lens Studio Preview - you'll see "Image request not supported" / "Login to My Lenses".
+ * Disable this component (or `useVoiceCommand`) when testing detection in Preview; test this on the
+ * real Spectacles.
+ *
+ * The Kindwise API key lives in Supabase secrets (server-side), never in this lens.
+ */
+@component
+export class ButterflyIdentifier extends BaseScriptComponent {
+  @input
+  @hint("Supabase project asset (URL + public token). Created via the Supabase Plugin's 'Import Credentials'.")
+  supabaseProject!: SupabaseProject
+
+  @input
+  @hint("Name of the Supabase Edge Function that processes the image and calls Kindwise")
+  functionName: string = "identify-butterfly"
+
+  @input
+  @hint("Optional Text to show the result (e.g. 'Capturing...' then the species)")
+  resultText: Text | null = null
+
+  @input
+  @hint("Listen for a spoken trigger word to start identification (device only)")
+  useVoiceCommand: boolean = true
+
+  @input
+  @hint("Spoken word that triggers capture")
+  triggerWord: string = "identify"
+
+  @input
+  @hint("Log activity to the Logger panel")
+  debugLogging: boolean = true
+
+  // Built-in Spectacles modules (resolved at construction).
+  private cameraModule = require("LensStudio:CameraModule") // high-res still capture
+  private asrModule = require("LensStudio:AsrModule") // speech-to-text for the voice trigger
+
+  private supabase: SupabaseClient | null = null
+  private busy: boolean = false // guard so we don't fire a second identification mid-flight
+
+  onAwake(): void {
+    this.createEvent("OnStartEvent").bind(() => this.start())
+  }
+
+  /** Create the Supabase client and (optionally) start listening for the voice trigger. */
+  private start(): void {
+    this.supabase = createClient(this.supabaseProject.url, this.supabaseProject.publicToken)
+    if (this.useVoiceCommand) {
+      this.startVoice()
+    }
+  }
+
+  /** Begin continuous speech transcription; each finalized phrase is checked for the trigger word. */
+  private startVoice(): void {
+    const options = AsrModule.AsrTranscriptionOptions.create()
+    options.mode = AsrModule.AsrMode.HighAccuracy
+    options.onTranscriptionUpdateEvent.add((eventArgs) => this.onTranscription(eventArgs))
+    options.onTranscriptionErrorEvent.add((code) => {
+      if (this.debugLogging) {
+        print("[ButterflyId] ASR error: " + code)
+      }
+    })
+    this.asrModule.startTranscribing(options)
+    if (this.debugLogging) {
+      print("[ButterflyId] Listening for '" + this.triggerWord + "'")
+    }
+  }
+
+  /** When a finalized phrase contains the trigger word, start an identification. */
+  private onTranscription(eventArgs: AsrModule.TranscriptionUpdateEvent): void {
+    if (!eventArgs || !eventArgs.isFinal || !eventArgs.text) {
+      return
+    }
+    const heard = ("" + eventArgs.text).toLowerCase()
+    if (heard.indexOf(this.triggerWord.toLowerCase()) !== -1) {
+      this.identify()
+    }
+  }
+
+  /**
+   * Public entry point - kicks off capture -> send -> show.
+   * Call this from a button too (e.g. Interactable onTrigger) if you don't want to rely on voice.
+   */
+  public identify(): void {
+    if (this.busy) {
+      return // already identifying; ignore re-triggers
+    }
+    this.busy = true
+    this.setResult("Capturing...")
+    this.captureAndSend()
+  }
+
+  /** Take a high-res still photo, then hand it to the encoder. (Device only.) */
+  private async captureAndSend(): Promise<void> {
+    try {
+      const imageRequest = CameraModule.createImageRequest()
+      const imageFrame = await this.cameraModule.requestImage(imageRequest)
+      this.encode(imageFrame.texture)
+    } catch (e) {
+      this.fail("Capture failed: " + e)
+    }
+  }
+
+  /** JPEG-encode the captured texture to Base64, then send it to Supabase. */
+  private encode(texture: Texture): void {
+    Base64.encodeTextureAsync(
+      texture,
+      (base64String: string) => this.sendToSupabase(base64String),
+      () => this.fail("Failed to encode image"),
+      CompressionQuality.HighQuality,
+      EncodingType.Jpg
+    )
+  }
+
+  /** Invoke the Edge Function with the image and display whatever species it returns. */
+  private async sendToSupabase(base64String: string): Promise<void> {
+    if (!this.supabase) {
+      this.fail("Supabase client not ready")
+      return
+    }
+    this.setResult("Identifying...")
+    try {
+      const {data, error} = await this.supabase.functions.invoke<IDResponse>(this.functionName, {
+        body: {image: "data:image/jpeg;base64," + base64String}
+      })
+      this.busy = false
+      if (error) {
+        this.fail("Function error: " + error)
+        return
+      }
+      this.showResult(data)
+    } catch (e) {
+      this.fail("Send failed: " + e)
+    }
+  }
+
+  /** Pull the top suggestion from the IDResponse and show its common/scientific name + confidence. */
+  private showResult(data: IDResponse | null): void {
+    const suggestions =
+      data && data.result && data.result.classification ? data.result.classification.suggestions : null
+    if (!suggestions || suggestions.length === 0) {
+      this.setResult("No butterfly identified")
+      return
+    }
+    const top = suggestions[0]
+    const commonNames = top.details ? top.details.common_names : null
+    const common = commonNames && commonNames.length > 0 ? commonNames[0] : null
+    const display = common ? common + " (" + top.name + ")" : top.name
+    const percent = Math.round(top.probability * 100)
+    this.setResult(display + " - " + percent + "%")
+    if (this.debugLogging) {
+      print("[ButterflyId] " + display + " " + percent + "%")
+    }
+  }
+
+  /** Clear the busy flag, log, and show an error message in the result text. */
+  private fail(message: string): void {
+    this.busy = false
+    if (this.debugLogging) {
+      print("[ButterflyId] " + message)
+    }
+    this.setResult(message)
+  }
+
+  /** Write a line into the optional result Text, if one is assigned. */
+  private setResult(text: string): void {
+    if (this.resultText) {
+      this.resultText.text = text
+    }
+  }
+}

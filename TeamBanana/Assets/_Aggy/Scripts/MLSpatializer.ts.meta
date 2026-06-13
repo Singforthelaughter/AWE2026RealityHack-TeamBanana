@@ -1,0 +1,63 @@
+- !<AssetImportMetadata/ecaf164f-33ca-4db0-9d32-b11a391c3119>
+  ImportedAssetIds:
+    TypeScriptAsset: !<reference> 7d1a3c4e-e767-4c4b-8ade-50bae542ad36
+  ImporterName: TypeScriptAssetImporter
+  PrimaryAsset: !<reference> 7d1a3c4e-e767-4c4b-8ade-50bae542ad36
+  PackageType: NotAPackage
+  LegacyPackagePolicy: ~
+  ExtraData:
+    {}
+  AssetDataMap:
+    TypeScriptAsset: !<own> 0c8cc0e4-96a2-42b3-bde9-f04b45211d2f
+  DependentFiles:
+    []
+  ImporterSettings: !<AssetImporterSettings>
+    {}
+  CompressionSettings: !<own> 00000000-0000-0000-0000-000000000000
+- !<TypeScriptAssetData/0c8cc0e4-96a2-42b3-bde9-f04b45211d2f>
+  SvgIcon: ""
+  SetupScript:
+    code: ""
+  Description: ""
+  VersionMajor: 0
+  VersionMinor: 0
+  VersionPatch: 0
+  ComponentUid: 241b1d57-e694-424b-943f-969f6ee2d249
+  ExportUid: 00000000-0000-0000-0000-000000000000
+  PackagePolicy: CanBeUnpacked
+  ScriptInputsHidden:
+    centerThreshold: false
+    classLabels: false
+    debugLogging: false
+    inputTexture: false
+    iouThreshold: false
+    model: false
+    scoreThreshold: false
+  ScriptTypesHidden:
+    {}
+  ReadMe: !<reference> 00000000-0000-0000-0000-000000000000
+  DeclarationFile: !<reference> 00000000-0000-0000-0000-000000000000
+  Tags:
+    []
+  Attachments:
+    []
+  DefaultScriptInputs:
+    - model: !<reference.MLAsset> 00000000-0000-0000-0000-000000000000
+      inputTexture: !<reference.Texture> 00000000-0000-0000-0000-000000000000
+      scoreThreshold: 0.200000
+      iouThreshold: 0.500000
+      classLabels: !<string[]>
+        - Butterfly
+      centerThreshold: !<float> 0.000000
+      debugLogging: true
+  ScriptTypes:
+    -
+      {}
+  InputLines:
+    - '// @input Asset.MLAsset model {"hint":"ButterflyDetection.onnx model asset"}'
+    - '// @input Asset.Texture inputTexture {"hint":"Input texture for the model - the Device Camera Texture"}'
+    - '// @input float scoreThreshold = 0.2 {"hint":"Score threshold (0-1). Lower = more sensitive (more, weaker detections).", "widget":"slider", "min":0, "max":1, "step":0.01}'
+    - '// @input float iouThreshold = 0.5 {"hint":"IoU threshold for non-maximum suppression (0-1). Higher = allow more overlapping boxes.", "widget":"slider", "min":0, "max":1, "step":0.01}'
+    - '// @input string[] classLabels = {"Butterfly"} {"hint":"Class labels. MUST be a single butterfly class - the model is 1-class (18-channel output). More entries break decoding."}'
+    - '// @input float centerThreshold {"hint":"Center crop filter (0-1). 0 = keep all; higher = drop detections near the screen edges.", "widget":"slider", "min":0, "max":1, "step":0.01}'
+    - '// @input bool debugLogging = true {"hint":"Log detection results to the Logger panel"}'

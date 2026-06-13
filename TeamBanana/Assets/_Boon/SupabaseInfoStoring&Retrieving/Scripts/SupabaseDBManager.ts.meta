@@ -1,0 +1,47 @@
+- !<AssetImportMetadata/ed7cc736-ac63-47c1-b448-8974fc10c37d>
+  ImportedAssetIds:
+    TypeScriptAsset: !<reference> 2ed7573f-b12c-45b4-902d-24f44e1817d6
+  ImporterName: TypeScriptAssetImporter
+  PrimaryAsset: !<reference> 2ed7573f-b12c-45b4-902d-24f44e1817d6
+  PackageType: NotAPackage
+  LegacyPackagePolicy: ~
+  ExtraData:
+    {}
+  AssetDataMap:
+    TypeScriptAsset: !<own> 2e2ce373-b839-4583-8543-b63201708ecc
+  DependentFiles:
+    []
+  ImporterSettings: !<AssetImporterSettings>
+    {}
+  CompressionSettings: !<own> 00000000-0000-0000-0000-000000000000
+- !<TypeScriptAssetData/2e2ce373-b839-4583-8543-b63201708ecc>
+  SvgIcon: ""
+  SetupScript:
+    code: ""
+  Description: ""
+  VersionMajor: 0
+  VersionMinor: 0
+  VersionPatch: 0
+  ComponentUid: a34dc7ea-eaa8-45d3-848b-e7af9d96d268
+  ExportUid: 00000000-0000-0000-0000-000000000000
+  PackagePolicy: CanBeUnpacked
+  ScriptInputsHidden:
+    storageBucket: false
+    supabaseProject: false
+  ScriptTypesHidden:
+    {}
+  ReadMe: !<reference> 00000000-0000-0000-0000-000000000000
+  DeclarationFile: !<reference> 00000000-0000-0000-0000-000000000000
+  Tags:
+    []
+  Attachments:
+    []
+  DefaultScriptInputs:
+    - supabaseProject: !<reference.SupabaseProject> 00000000-0000-0000-0000-000000000000
+      storageBucket: butterfly-photos
+  ScriptTypes:
+    -
+      {}
+  InputLines:
+    - '// @input Asset.SupabaseProject supabaseProject {"hint":"SupabaseProject asset from Asset Browser (Window > Supabase > Import Credentials)"}'
+    - '// @input string storageBucket = "butterfly-photos" {"hint":"Storage bucket name for sighting photos (create in Supabase dashboard)"}'

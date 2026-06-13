@@ -4,6 +4,21 @@
     - !<own> 92d47bb3-3f73-41a9-8062-3f9d23c6300b
   LazyLoading: false
   RetainAssets: true
+- !<SceneObject/10026313-5bfc-4825-864d-a4dc4a552606>
+  PrefabRemaps:
+    []
+  Name: Season Calendar
+  Enabled: true
+  Layers: 1
+  LocalTransform: !<TransformEntity>
+    Position: {x: 0.000000, y: -18.200001, z: 0.020000}
+    Rotation: {x: 0.000000, y: 0.000000, z: 0.000000}
+    Scale: {x: 1.000000, y: 1.000000, z: 1.000000}
+    HasSegmentScaleCompensation: false
+  Children:
+    []
+  Components:
+    - !<own> 32715b9d-1d5e-4d6e-8d3f-3d670c99e7da
 - !<SceneObject/12565122-f855-4e0b-8dcd-192f1c4fa812>
   PrefabRemaps:
     []
@@ -358,6 +373,45 @@
     CapitalizationOverride: None
   DepthTest: false
   TwoSided: false
+- !<ScriptComponent/32715b9d-1d5e-4d6e-8d3f-3d670c99e7da>
+  PrefabRemaps:
+    []
+  Name: SeasonCalendar
+  Enabled: true
+  ScriptAsset: !<reference> 949960b9-d926-420f-bcf3-ae2939df9b67
+  ScriptInputsDefault:
+    _size: true
+    _inactive: true
+    _playAudio: true
+    _hasShadow: true
+    _shadowPositionOffset: true
+    activeMonths: true
+    startMonth: true
+    endMonth: true
+  ScriptTypesDefault:
+    {}
+  ScriptInputs:
+    "":
+      _renderOrder: 2
+      _size: !<Vec3> {x: 6.000000, y: 3.000000, z: 3.000000}
+      _inactive: false
+      _playAudio: false
+      _hasShadow: false
+      _shadowPositionOffset: !<Vec3> {x: 0.050000, y: -0.050000, z: -0.010000}
+      activeMonths: !<string[]>
+        - mar
+        - apr
+        - may
+        - jun
+        - jul
+        - aug
+        - sep
+        - oct
+      startMonth: ""
+      endMonth: ""
+  ScriptTypes:
+    "":
+      {}
 - !<Text/3448bef9-031a-4650-a39c-a033bc8c5f8d>
   PrefabRemaps:
     []
@@ -552,6 +606,29 @@
     []
   Components:
     - !<own> 1b093d1c-7251-46b2-b061-aee1ab6391a7
+- !<ScriptComponent/455875e2-56d1-4680-bcb1-7688fd716a55>
+  PrefabRemaps:
+    []
+  Name: ScrollBar
+  Enabled: true
+  ScriptAsset: !<reference> cd1b64b9-c91b-4dd8-b48a-9e41a403a609
+  ScriptInputsDefault:
+    _renderOrder: true
+    size: true
+    orientation: true
+    _playAudio: true
+  ScriptTypesDefault:
+    {}
+  ScriptInputs:
+    "":
+      _renderOrder: 0
+      size: !<Vec2> {x: 20.000000, y: 1.800000}
+      orientation: Vertical
+      scrollWindow: !<MappingBased.AssignableType> 6272a05f-74b3-4e57-b139-6ebb7cee162e
+      _playAudio: false
+  ScriptTypes:
+    "":
+      {}
 - !<SceneObject/4b74e2da-7d23-47b6-932a-993ed7928a9e>
   PrefabRemaps:
     []
@@ -781,7 +858,7 @@
     []
   Name: ScrollWindow
   Enabled: true
-  ScriptAsset: !<reference> 8ca0ce82-b275-4551-8560-820c44a54276
+  ScriptAsset: !<reference> 7adfb215-4061-45ab-8fb9-461394c57f32
   ScriptInputsDefault:
     _vertical: true
     _horizontal: true
@@ -864,16 +941,19 @@
       {}
 - !<SceneObject/92d47bb3-3f73-41a9-8062-3f9d23c6300b>
   PrefabRemaps:
+    - 10026313-5bfc-4825-864d-a4dc4a552606: 1fed8334-82f4-45c9-80d4-5f27a71231f1
     - 12565122-f855-4e0b-8dcd-192f1c4fa812: 12565122-f855-4e0b-7232-e6d0e3b057ed
     - 134f6885-08ef-4712-9128-c0858db31da2: 134f6885-08ef-4712-6ed7-3f7a724ce25d
     - 1440c2b0-9ee4-4734-9b48-98640da19dce: fbb81215-43d1-44e0-947b-2df082b5c532
     - 14ba38ef-3861-4d9e-a827-1f2f54fdf39c: 71d735a2-ef2a-4dda-8b4c-c282e864b0d4
     - 1a487550-8e2c-431e-afda-ec6b7affe200: 1a487550-8e2c-431e-5025-139485001dff
     - 1b093d1c-7251-46b2-b061-aee1ab6391a7: a081eef4-b109-45f5-bd50-0dd728450f70
+    - 32715b9d-1d5e-4d6e-8d3f-3d670c99e7da: fdfc1063-dd2d-40f4-82d7-30fe6a2174c1
     - 3448bef9-031a-4650-a39c-a033bc8c5f8d: 3448bef9-031a-4650-5c63-5fcc4373a072
     - 3487d5a5-6b3c-4883-a78c-be4b98f955ed: 3487d5a5-6b3c-4883-5873-41b46706aa12
     - 363d42b6-dc46-4cc5-be82-275bdf1b28e2: 8432794a-4276-43b9-9747-b32c0f56a590
     - 4225f36c-7945-4eae-aa37-2f41650f72f5: 13cb6db5-5fee-443f-bae5-41135aad226c
+    - 455875e2-56d1-4680-bcb1-7688fd716a55: 3b8e1ea0-7dbf-4407-8889-3667026067fb
     - 4b74e2da-7d23-47b6-932a-993ed7928a9e: 4b74e2da-7d23-47b6-6cd5-66c1286d7561
     - 4cccc060-b02e-44f6-ac8c-fde92777df97: 4cccc060-b02e-44f6-5373-0216d8882068
     - 4f1c6889-a65d-4685-9ed5-899e81ddb58a: 4f1c6889-a65d-4685-612a-76617e224a75
@@ -888,7 +968,6 @@
     - 8266ef73-590a-45e1-a91e-4eb5e93aadec: 8266ef73-590a-45e1-56e1-b14a16c55213
     - 8398408a-5186-44b9-bead-4fdd2e2012a6: 8398408a-5186-44b9-4152-b022d1dfed59
     - 92d47bb3-3f73-41a9-8062-3f9d23c6300b: 92d47bb3-3f73-41a9-7f9d-c062dc39cff4
-    - 94344f70-97f3-49b8-9bdd-f7d957b2a06e: 94344f70-97f3-49b8-6422-0826a84d5f91
     - 976704e7-65e5-45ee-9950-fe0508f2c914: eee497d0-9459-4821-92d7-7460a7fe7047
     - 97ab7f4e-ae18-4402-80ce-71ed3bd80697: 6d188238-e8af-4882-96df-5456e28f0842
     - a449d04f-cf3e-45be-9093-d0acc10c9308: a449d04f-cf3e-45be-6f6c-2f533ef36cf7
@@ -916,27 +995,6 @@
     - !<own> bd7a8f69-1abc-40ac-b4ed-4576c9ddfc46
   Components:
     - !<own> f00e10be-28f2-4d67-84a2-6a0872c97337
-- !<ScriptComponent/94344f70-97f3-49b8-9bdd-f7d957b2a06e>
-  PrefabRemaps:
-    []
-  Name: ScrollBar
-  Enabled: true
-  ScriptAsset: !<reference> 3a0acfde-55a9-47c6-911b-4a6f87490a05
-  ScriptInputsDefault:
-    orientation: true
-    _playAudio: true
-  ScriptTypesDefault:
-    {}
-  ScriptInputs:
-    "":
-      _renderOrder: 1
-      size: !<Vec2> {x: 50.000000, y: 1.800000}
-      orientation: Vertical
-      scrollWindow: !<MappingBased.AssignableType> 6272a05f-74b3-4e57-b139-6ebb7cee162e
-      _playAudio: false
-  ScriptTypes:
-    "":
-      {}
 - !<SceneObject/976704e7-65e5-45ee-9950-fe0508f2c914>
   PrefabRemaps:
     []
@@ -1022,6 +1080,7 @@
     - !<own> ea73ac41-826f-4932-8f3a-772a45544ae7
     - !<own> c8838f72-1634-40db-bb04-89309ac99858
     - !<own> 4b74e2da-7d23-47b6-932a-993ed7928a9e
+    - !<own> 10026313-5bfc-4825-864d-a4dc4a552606
     - !<own> 61d035a5-8f52-41d5-bf5c-607036033e8b
     - !<own> 8266ef73-590a-45e1-a91e-4eb5e93aadec
     - !<own> 4225f36c-7945-4eae-aa37-2f41650f72f5
@@ -1063,7 +1122,7 @@
   Children:
     []
   Components:
-    - !<own> 94344f70-97f3-49b8-9bdd-f7d957b2a06e
+    - !<own> 455875e2-56d1-4680-bcb1-7688fd716a55
 - !<Text/c24255b2-56dc-4b5a-beef-3743478cc2ea>
   PrefabRemaps:
     []
@@ -1334,7 +1393,7 @@
     []
   Name: Frame
   Enabled: true
-  ScriptAsset: !<reference> 3b46d829-f6db-432a-914c-3551904d3994
+  ScriptAsset: !<reference> 5953e783-f6ca-4838-9d27-3a8912b50e67
   ScriptInputsDefault:
     _appearance: true
     _padding: true
