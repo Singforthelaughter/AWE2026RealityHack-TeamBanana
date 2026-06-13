@@ -42,12 +42,20 @@ export class MarkerInteractableTrigger extends BaseScriptComponent {
   private interactable: Interactable | null = null
   private parentTransform: Transform | null = null
   private originalParentScale: vec3 = vec3.one()
+  private imgComp: Image | null = null
 
   onAwake() {
     this.interactable = this.sceneObject.getComponent(Interactable.getTypeName())
     if (!this.interactable) {
       print("[MarkerInteractableTrigger] No Interactable found on " + this.sceneObject.name)
       return
+    }
+
+    if (this.image1) {
+      this.imgComp = this.image1.getComponent("Image") as Image
+      if (this.imgComp) {
+        this.imgComp.mainMaterial = this.imgComp.mainMaterial.clone()
+      }
     }
 
     const parent = this.sceneObject.getParent()
@@ -70,11 +78,8 @@ export class MarkerInteractableTrigger extends BaseScriptComponent {
       obj.textFill.color = color
     }
 
-    if (this.image1) {
-      const imgComp = this.image1.getComponent("Image") as Image
-      if (imgComp) {
-        imgComp.mainPass.baseColor = color
-      }
+    if (this.imgComp) {
+      this.imgComp.mainPass.baseColor = color
     }
   }
 

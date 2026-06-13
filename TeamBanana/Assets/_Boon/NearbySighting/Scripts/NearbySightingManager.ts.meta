@@ -27,7 +27,10 @@
   PackagePolicy: CanBeUnpacked
   ScriptInputsHidden:
     customLocationLoader: false
+    dbManager: false
     map: false
+    maxResults: false
+    searchRadius: false
   ScriptTypesHidden:
     {}
   ReadMe: !<reference> 00000000-0000-0000-0000-000000000000
@@ -39,9 +42,15 @@
   DefaultScriptInputs:
     - map: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
       customLocationLoader: !<MappingBased.AssignableType> 00000000-0000-0000-0000-000000000000
+      dbManager: !<MappingBased.AssignableType_1> 00000000-0000-0000-0000-000000000000
+      searchRadius: !<float> 5.000000
+      maxResults: !<float> 50.000000
   ScriptTypes:
     -
       {}
   InputLines:
     - // @input SceneObject map
     - // @input AssignableType customLocationLoader
+    - '// @input AssignableType_1 dbManager {"hint":"SupabaseDBManager component — handles auth automatically on start"}'
+    - '// @input float searchRadius = 5 {"hint":"Search radius in miles"}'
+    - '// @input float maxResults = 50 {"hint":"Maximum number of sightings to show on the map (0 = no limit)"}'

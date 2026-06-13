@@ -7,6 +7,10 @@ export class QuestMarker {
   distanceText: Text
   imageComponent: Image
   private interactable: SceneObject | null
+  private inViewMaterialSrc: Material | null = null
+  private inViewMaterialInst: Material | null = null
+  private outOfViewMaterialSrc: Material | null = null
+  private outOfViewMaterialInst: Material | null = null
 
   constructor(mapPin: MapPin, transform: Transform, scale: number) {
     this.mapPin = mapPin
@@ -41,13 +45,17 @@ export class QuestMarker {
       this.interactable.enabled = isInView
     }
     if (isInView) {
-      this.imageComponent.mainMaterial = inViewMaterial
-      this.markerLabel.textFill.color = new vec4(1, 1, 1, 1)
-      this.distanceText.textFill.color = new vec4(1, 1, 1, 1)
+      if (this.inViewMaterialSrc !== inViewMaterial) {
+        this.inViewMaterialSrc = inViewMaterial
+        this.inViewMaterialInst = inViewMaterial.clone()
+      }
+      this.imageComponent.mainMaterial = this.inViewMaterialInst!
     } else {
-      this.imageComponent.mainMaterial = outOfViewMaterial
-      this.markerLabel.textFill.color = new vec4(1, 1, 1, 1)
-      this.distanceText.textFill.color = new vec4(1, 1, 1, 1)
+      if (this.outOfViewMaterialSrc !== outOfViewMaterial) {
+        this.outOfViewMaterialSrc = outOfViewMaterial
+        this.outOfViewMaterialInst = outOfViewMaterial.clone()
+      }
+      this.imageComponent.mainMaterial = this.outOfViewMaterialInst!
     }
   }
 
