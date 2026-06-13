@@ -1,0 +1,56 @@
+- !<AssetImportMetadata/7f1f5d59-9057-4de8-af7e-522ecba30c9a>
+  ImportedAssetIds:
+    ObjectPrefab: !<reference> f8eab2ba-9ecc-4dc0-b898-1a164b5b5684
+  ImporterName: ObjectPrefabImporter
+  PrimaryAsset: !<reference> f8eab2ba-9ecc-4dc0-b898-1a164b5b5684
+  PackageType: NotAPackage
+  LegacyPackagePolicy: ~
+  ExtraData:
+    {}
+  AssetDataMap:
+    ObjectPrefab: !<own> 133aa78f-cb41-421b-acfa-4fa3b47bedb7
+  DependentFiles:
+    []
+  ImporterSettings: !<AssetImporterSettings>
+    {}
+  CompressionSettings: !<own> 00000000-0000-0000-0000-000000000000
+- !<ObjectPrefabAssetData/133aa78f-cb41-421b-acfa-4fa3b47bedb7>
+  Prototype: !<ObjectOwner/39eef3b9-4497-4c74-ab8e-0f44193fbc0b>
+    PackagePath: ""
+    objects:
+      - !<own> ae248c50-7b05-4adc-682a-6a0a9cadaed0
+- !<ScriptComponent/78a9382a-17cb-49c1-7bed-dfb4ba2acd4e>
+  PrefabRemaps:
+    []
+  Name: StorageManager
+  Enabled: true
+  ScriptAsset: !<reference> a0abcfc0-1e6c-41ca-b580-570ef007292f
+  ScriptInputsDefault:
+    resetStorageOnAwake: true
+    enableStorageIntegration: true
+  ScriptTypesDefault:
+    {}
+  ScriptInputs:
+    "":
+      chatStorage: !<MappingBased.AssignableType> 9724e5ac-84ec-4929-8a0b-c63551dd893e
+      resetStorageOnAwake: false
+      enableDebugLogging: false
+      enableStorageIntegration: true
+  ScriptTypes:
+    "":
+      {}
+- !<SceneObject/ae248c50-7b05-4adc-682a-6a0a9cadaed0>
+  PrefabRemaps:
+    []
+  Name: StorageManager
+  Enabled: true
+  Layers: 1
+  LocalTransform: !<TransformEntity>
+    Position: {x: 0.000000, y: 0.000000, z: 0.000000}
+    Rotation: {x: 0.000000, y: 0.000000, z: 0.000000}
+    Scale: {x: 1.000000, y: 1.000000, z: 1.000000}
+    HasSegmentScaleCompensation: false
+  Children:
+    []
+  Components:
+    - !<own> 78a9382a-17cb-49c1-7bed-dfb4ba2acd4e

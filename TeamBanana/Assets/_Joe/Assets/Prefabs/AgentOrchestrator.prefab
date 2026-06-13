@@ -1,0 +1,65 @@
+- !<ObjectPrefab/43b07841-cc68-4ed2-aae9-734e22d96d96>
+  PackagePath: ""
+  objects:
+    - !<own> 29668c6e-dca5-4472-856c-17ba0e7d5962
+  LazyLoading: false
+  RetainAssets: true
+- !<SceneObject/29668c6e-dca5-4472-856c-17ba0e7d5962>
+  PrefabRemaps:
+    - 29668c6e-dca5-4472-856c-17ba0e7d5962: 29668c6e-dca5-4472-7a93-e845f182a69d
+    - cf1c2cca-0679-409b-9b9f-02f740d9920f: cf1c2cca-0679-409b-6460-fd08bf266df0
+  Name: AgentOrchestrator
+  Enabled: true
+  Layers: 1
+  LocalTransform: !<TransformEntity>
+    Position: {x: 0.000000, y: 0.000000, z: 0.000000}
+    Rotation: {x: 0.000000, y: 0.000000, z: 0.000000}
+    Scale: {x: 1.000000, y: 1.000000, z: 1.000000}
+    HasSegmentScaleCompensation: false
+  Children:
+    []
+  Components:
+    - !<own> cf1c2cca-0679-409b-9b9f-02f740d9920f
+- !<ScriptComponent/cf1c2cca-0679-409b-9b9f-02f740d9920f>
+  PrefabRemaps:
+    []
+  Name: AgentOrchestrator
+  Enabled: true
+  ScriptAsset: !<reference> 3ab602eb-50af-4da9-87da-bba1b83d50d0
+  ScriptInputsDefault:
+    openAIAssistant: true
+    geminiAssistant: true
+    chatComponent: true
+    storageManager: true
+    toolDisplayText: true
+    agentDisplayText: true
+    enableSystem: true
+    enableAgentSystem: true
+    enableDebugLogging: true
+    conversationContextMessages: true
+    defaultAgent: true
+    enableCoordination: true
+    coordinationDepthLimit: true
+    enableVoiceOutput: true
+  ScriptTypesDefault:
+    {}
+  ScriptInputs:
+    "":
+      openAIAssistant: !<MappingBased.AssignableType> 00000000-0000-0000-0000-000000000000
+      geminiAssistant: !<MappingBased.AssignableType_1> 00000000-0000-0000-0000-000000000000
+      chatComponent: !<MappingBased.AssignableType_2> 00000000-0000-0000-0000-000000000000
+      storageManager: !<MappingBased.AssignableType_3> 00000000-0000-0000-0000-000000000000
+      toolDisplayText: !<reference.Text> 00000000-0000-0000-0000-000000000000
+      agentDisplayText: !<reference.Text> 00000000-0000-0000-0000-000000000000
+      enableSystem: true
+      enableAgentSystem: true
+      enableDebugLogging: true
+      conversationContextMessages: !<float> 10.000000
+      defaultAgent: naturalist
+      enableCoordination: true
+      coordinationDepthLimit: !<float> 3.000000
+      defaultProvider: Gemini
+      enableVoiceOutput: true
+  ScriptTypes:
+    "":
+      {}

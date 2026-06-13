@@ -1,0 +1,58 @@
+- !<AssetImportMetadata/0d1e1db7-18c6-4a00-8bb0-e922f49df7c7>
+  ImportedAssetIds:
+    ObjectPrefab: !<reference> 6684ac16-e6ac-4fdf-9ba1-3c1ab410da1a
+  ImporterName: ObjectPrefabImporter
+  PrimaryAsset: !<reference> 6684ac16-e6ac-4fdf-9ba1-3c1ab410da1a
+  PackageType: NotAPackage
+  LegacyPackagePolicy: ~
+  ExtraData:
+    {}
+  AssetDataMap:
+    ObjectPrefab: !<own> a38a88e6-23b9-48f3-9075-ebac06309f22
+  DependentFiles:
+    []
+  ImporterSettings: !<AssetImporterSettings>
+    {}
+  CompressionSettings: !<own> 00000000-0000-0000-0000-000000000000
+- !<ScriptComponent/897f8547-1678-473f-4534-b95e57e787ed>
+  PrefabRemaps:
+    []
+  Name: GeminiAssistant
+  Enabled: true
+  ScriptAsset: !<reference> 54099172-e311-4b2a-9536-8be605a7d7be
+  ScriptInputsDefault:
+    haveAudioOutput: true
+    voice: true
+  ScriptTypesDefault:
+    {}
+  ScriptInputs:
+    "":
+      websocketRequirementsObj: !<reference.SceneObject> 33a192e9-4b1b-435c-8280-cc1386a5e143
+      dynamicAudioOutput: !<MappingBased.AssignableType> 3f174ceb-da0d-4872-9d3c-db6cc267a358
+      microphoneRecorder: !<MappingBased.AssignableType_1> 5bd6aa1c-fb76-421d-8d2a-8de28ac0c858
+      haveVideoInput: false
+      haveAudioOutput: true
+      voice: Puck
+  ScriptTypes:
+    "":
+      {}
+- !<ObjectPrefabAssetData/a38a88e6-23b9-48f3-9075-ebac06309f22>
+  Prototype: !<ObjectOwner/798f18cb-4f1a-450f-b04a-6718019b08a7>
+    PackagePath: ""
+    objects:
+      - !<own> e1af5053-36df-453f-401f-6386d3471fee
+- !<SceneObject/e1af5053-36df-453f-401f-6386d3471fee>
+  PrefabRemaps:
+    []
+  Name: GeminiAssistant
+  Enabled: true
+  Layers: 1
+  LocalTransform: !<TransformEntity>
+    Position: {x: 0.000000, y: 0.000000, z: -50.000000}
+    Rotation: {x: 0.000000, y: 0.000000, z: 0.000000}
+    Scale: {x: 1.000000, y: 1.000000, z: 1.000000}
+    HasSegmentScaleCompensation: false
+  Children:
+    []
+  Components:
+    - !<own> 897f8547-1678-473f-4534-b95e57e787ed

@@ -1,0 +1,79 @@
+- !<AssetImportMetadata/738c9517-1c81-4f72-b0c9-1edd4b980008>
+  ImportedAssetIds:
+    ObjectPrefab: !<reference> 43b07841-cc68-4ed2-aae9-734e22d96d96
+  ImporterName: ObjectPrefabImporter
+  PrimaryAsset: !<reference> 43b07841-cc68-4ed2-aae9-734e22d96d96
+  PackageType: NotAPackage
+  LegacyPackagePolicy: ~
+  ExtraData:
+    {}
+  AssetDataMap:
+    ObjectPrefab: !<own> e46a2a3e-4432-4d4e-b82a-c145cde10314
+  DependentFiles:
+    []
+  ImporterSettings: !<AssetImporterSettings>
+    {}
+  CompressionSettings: !<own> 00000000-0000-0000-0000-000000000000
+- !<SceneObject/29668c6e-dca5-4472-7a93-e845f182a69d>
+  PrefabRemaps:
+    []
+  Name: AgentOrchestrator
+  Enabled: true
+  Layers: 1
+  LocalTransform: !<TransformEntity>
+    Position: {x: 0.000000, y: 0.000000, z: 0.000000}
+    Rotation: {x: 0.000000, y: 0.000000, z: 0.000000}
+    Scale: {x: 1.000000, y: 1.000000, z: 1.000000}
+    HasSegmentScaleCompensation: false
+  Children:
+    []
+  Components:
+    - !<own> cf1c2cca-0679-409b-6460-fd08bf266df0
+- !<ScriptComponent/cf1c2cca-0679-409b-6460-fd08bf266df0>
+  PrefabRemaps:
+    []
+  Name: AgentOrchestrator
+  Enabled: true
+  ScriptAsset: !<reference> 3ab602eb-50af-4da9-87da-bba1b83d50d0
+  ScriptInputsDefault:
+    openAIAssistant: true
+    geminiAssistant: true
+    chatComponent: true
+    storageManager: true
+    toolDisplayText: true
+    agentDisplayText: true
+    enableSystem: true
+    enableAgentSystem: true
+    enableDebugLogging: true
+    conversationContextMessages: true
+    defaultAgent: true
+    enableCoordination: true
+    coordinationDepthLimit: true
+    enableVoiceOutput: true
+  ScriptTypesDefault:
+    {}
+  ScriptInputs:
+    "":
+      openAIAssistant: !<MappingBased.AssignableType> 00000000-0000-0000-0000-000000000000
+      geminiAssistant: !<MappingBased.AssignableType_1> 00000000-0000-0000-0000-000000000000
+      chatComponent: !<MappingBased.AssignableType_2> 00000000-0000-0000-0000-000000000000
+      storageManager: !<MappingBased.AssignableType_3> 00000000-0000-0000-0000-000000000000
+      toolDisplayText: !<reference.Text> 00000000-0000-0000-0000-000000000000
+      agentDisplayText: !<reference.Text> 00000000-0000-0000-0000-000000000000
+      enableSystem: true
+      enableAgentSystem: true
+      enableDebugLogging: true
+      conversationContextMessages: !<float> 10.000000
+      defaultAgent: naturalist
+      enableCoordination: true
+      coordinationDepthLimit: !<float> 3.000000
+      defaultProvider: Gemini
+      enableVoiceOutput: true
+  ScriptTypes:
+    "":
+      {}
+- !<ObjectPrefabAssetData/e46a2a3e-4432-4d4e-b82a-c145cde10314>
+  Prototype: !<ObjectOwner/e47d65b4-21dd-4fad-9a17-a07f55d58327>
+    PackagePath: ""
+    objects:
+      - !<own> 29668c6e-dca5-4472-7a93-e845f182a69d

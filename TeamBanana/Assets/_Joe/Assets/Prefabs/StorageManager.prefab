@@ -1,0 +1,43 @@
+- !<ObjectPrefab/f8eab2ba-9ecc-4dc0-b898-1a164b5b5684>
+  PackagePath: ""
+  objects:
+    - !<own> ae248c50-7b05-4adc-97d5-95f56352512f
+  LazyLoading: false
+  RetainAssets: true
+- !<ScriptComponent/78a9382a-17cb-49c1-8412-204b45d532b1>
+  PrefabRemaps:
+    []
+  Name: StorageManager
+  Enabled: true
+  ScriptAsset: !<reference> a0abcfc0-1e6c-41ca-b580-570ef007292f
+  ScriptInputsDefault:
+    chatStorage: true
+    resetStorageOnAwake: true
+    enableStorageIntegration: true
+  ScriptTypesDefault:
+    {}
+  ScriptInputs:
+    "":
+      chatStorage: !<MappingBased.AssignableType> 00000000-0000-0000-0000-000000000000
+      resetStorageOnAwake: false
+      enableDebugLogging: false
+      enableStorageIntegration: true
+  ScriptTypes:
+    "":
+      {}
+- !<SceneObject/ae248c50-7b05-4adc-97d5-95f56352512f>
+  PrefabRemaps:
+    - 78a9382a-17cb-49c1-8412-204b45d532b1: 78a9382a-17cb-49c1-7bed-dfb4ba2acd4e
+    - ae248c50-7b05-4adc-97d5-95f56352512f: ae248c50-7b05-4adc-682a-6a0a9cadaed0
+  Name: StorageManager
+  Enabled: true
+  Layers: 1
+  LocalTransform: !<TransformEntity>
+    Position: {x: 0.000000, y: 0.000000, z: 0.000000}
+    Rotation: {x: 0.000000, y: 0.000000, z: 0.000000}
+    Scale: {x: 1.000000, y: 1.000000, z: 1.000000}
+    HasSegmentScaleCompensation: false
+  Children:
+    []
+  Components:
+    - !<own> 78a9382a-17cb-49c1-8412-204b45d532b1

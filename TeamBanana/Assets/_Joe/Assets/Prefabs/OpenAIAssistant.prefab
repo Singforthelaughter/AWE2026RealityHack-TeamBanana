@@ -1,0 +1,45 @@
+- !<ObjectPrefab/5864e7d4-d32f-49a4-a367-edc1896e71be>
+  PackagePath: ""
+  objects:
+    - !<own> 11d65e14-1aab-499a-a663-650cc2a6dca1
+  LazyLoading: false
+  RetainAssets: true
+- !<SceneObject/11d65e14-1aab-499a-a663-650cc2a6dca1>
+  PrefabRemaps:
+    - 11d65e14-1aab-499a-a663-650cc2a6dca1: 11d65e14-1aab-499a-599c-9af33d59235e
+    - 85b94cdf-ca4d-4f6d-8a1d-ddfe9e42aa7d: 85b94cdf-ca4d-4f6d-75e2-220161bd5582
+  Name: OpenAIAssistant
+  Enabled: true
+  Layers: 1
+  LocalTransform: !<TransformEntity>
+    Position: {x: 0.000000, y: 0.000000, z: -50.000000}
+    Rotation: {x: 0.000000, y: 0.000000, z: 0.000000}
+    Scale: {x: 1.000000, y: 1.000000, z: 1.000000}
+    HasSegmentScaleCompensation: false
+  Children:
+    []
+  Components:
+    - !<own> 85b94cdf-ca4d-4f6d-8a1d-ddfe9e42aa7d
+- !<ScriptComponent/85b94cdf-ca4d-4f6d-8a1d-ddfe9e42aa7d>
+  PrefabRemaps:
+    []
+  Name: OpenAIAssistant
+  Enabled: true
+  ScriptAsset: !<reference> cb29133c-dd8a-4158-b6bc-b394b65e77da
+  ScriptInputsDefault:
+    websocketRequirementsObj: true
+    dynamicAudioOutput: true
+    microphoneRecorder: true
+    voice: true
+  ScriptTypesDefault:
+    {}
+  ScriptInputs:
+    "":
+      websocketRequirementsObj: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
+      dynamicAudioOutput: !<MappingBased.AssignableType> 00000000-0000-0000-0000-000000000000
+      microphoneRecorder: !<MappingBased.AssignableType_1> 00000000-0000-0000-0000-000000000000
+      haveAudioOutput: true
+      voice: coral
+  ScriptTypes:
+    "":
+      {}
