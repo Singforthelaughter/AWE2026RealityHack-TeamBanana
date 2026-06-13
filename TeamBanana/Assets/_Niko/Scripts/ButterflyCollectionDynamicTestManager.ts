@@ -5,8 +5,6 @@ import {IMAGE_MATERIAL_ASSET, StateName} from "SpectaclesUIKit.lspkg/Scripts/Com
 import {ScrollWindow} from "SpectaclesUIKit.lspkg/Scripts/Components/ScrollWindow/ScrollWindow"
 import {RectangleButton} from "SpectaclesUIKit.lspkg/Scripts/Components/Button/RectangleButton"
 
-const UNIT_PLANE: RenderMesh = requireAsset("../../SpectaclesUIKit.lspkg/Meshes/Unit Plane.mesh") as RenderMesh
-
 // This script is the experimental dynamic collection/archive manager.
 //
 // Important safety notes for future AI/engineers:
@@ -685,22 +683,43 @@ export class ButterflyCollectionDynamicTestManager extends BaseScriptComponent {
   }
 
   private createNewBadgeImageVisual(badgeObject: SceneObject, entry: DynamicTestEntry): boolean {
-    // Use exactly one textured mesh visual for the generated badge.
-    // Earlier versions tried Component.Image first, which could leave a second broken/default Image
-    // texture under the real PNG on some Lens Studio imports.
-    const meshVisual = badgeObject.createComponent("RenderMeshVisual") as RenderMeshVisual
-    if (isNull(meshVisual)) {
-      this.warn("NEW badge image visual could not be created for " + entry.name)
+    // Use the assigned NEW tag PNG/texture.
+    // Keep this as a single Component.Image only: no Unit Plane mesh and no fallback visual behind it.
+    let badgeImage: any = null
+    try {
+      badgeImage = badgeObject.createComponent("Component.Image") as any
+    } catch (_error) {
+      this.warn("NEW badge Image component could not be created for " + entry.name)
       return false
     }
 
-    const material = IMAGE_MATERIAL_ASSET.clone()
-    material.mainPass.baseTex = this.newBadgeTexture
-    material.mainPass.baseColor = new vec4(1, 1, 1, 1)
-    material.mainPass.depthTest = false
-    meshVisual.mesh = UNIT_PLANE
-    meshVisual.mainMaterial = material
-    meshVisual.renderOrder = 33
+    if (isNull(badgeImage)) {
+      this.warn("NEW badge Image component is null for " + entry.name)
+      return false
+    }
+
+    if (badgeImage.mainMaterial === undefined || isNull(badgeImage.mainMaterial)) {
+      badgeImage.mainMaterial = IMAGE_MATERIAL_ASSET.clone()
+    } else {
+      badgeImage.mainMaterial = badgeImage.mainMaterial.clone()
+    }
+
+    const pass =
+      badgeImage.mainPass !== undefined && !isNull(badgeImage.mainPass)
+        ? badgeImage.mainPass
+        : badgeImage.mainMaterial !== undefined && !isNull(badgeImage.mainMaterial)
+          ? badgeImage.mainMaterial.mainPass
+          : null
+
+    if (pass === null || isNull(pass)) {
+      this.warn("NEW badge Image component has no usable material pass for " + entry.name)
+      return false
+    }
+
+    pass.baseTex = this.newBadgeTexture
+    pass.baseColor = new vec4(1, 1, 1, 1)
+    pass.depthTest = false
+    badgeImage.renderOrder = 33
     return true
   }
 
