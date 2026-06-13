@@ -241,7 +241,7 @@
   PrefabRemaps:
     []
   Name: ButterflyHoverAnimationController
-  Enabled: true
+  Enabled: false
   ScriptAsset: !<reference> e4cffbdc-7a11-4793-8634-2b43d3706f99
   ScriptInputsDefault:
     {}

@@ -1,0 +1,53 @@
+- !<AssetImportMetadata/541e9d33-5787-4aa4-a006-c37b560dd9ce>
+  ImportedAssetIds:
+    TypeScriptAsset: !<reference> d8c5f7d6-a277-4dc0-9d3d-aaee64659663
+  ImporterName: TypeScriptAssetImporter
+  PrimaryAsset: !<reference> d8c5f7d6-a277-4dc0-9d3d-aaee64659663
+  PackageType: NotAPackage
+  LegacyPackagePolicy: ~
+  ExtraData:
+    {}
+  AssetDataMap:
+    TypeScriptAsset: !<own> ccacaa18-1db6-4953-9630-42f828b9fb71
+  DependentFiles:
+    []
+  ImporterSettings: !<AssetImporterSettings>
+    {}
+  CompressionSettings: !<own> 00000000-0000-0000-0000-000000000000
+- !<TypeScriptAssetData/ccacaa18-1db6-4953-9630-42f828b9fb71>
+  SvgIcon: ""
+  SetupScript:
+    code: ""
+  Description: ""
+  VersionMajor: 0
+  VersionMinor: 0
+  VersionPatch: 0
+  ComponentUid: 6b265ec3-bbff-41ab-9f91-bc571c82d516
+  ExportUid: 00000000-0000-0000-0000-000000000000
+  PackagePolicy: CanBeUnpacked
+  ScriptInputsHidden:
+    cellGap: false
+    cellHeight: false
+    cellWidth: false
+    collectionDataJson: false
+  ScriptTypesHidden:
+    {}
+  ReadMe: !<reference> 00000000-0000-0000-0000-000000000000
+  DeclarationFile: !<reference> 00000000-0000-0000-0000-000000000000
+  Tags:
+    []
+  Attachments:
+    []
+  DefaultScriptInputs:
+    - collectionDataJson: '[{"id":"monarch","commonName":"Monarch","discovered":true,"isNew":true},{"id":"painted-lady","commonName":"Painted Lady","discovered":true},{"id":"cloudless-sulphur","commonName":"Cloudless Sulphur","discovered":true},{"id":"swallowtail","commonName":"Swallowtail","discovered":false},{"id":"red-admiral","commonName":"Red Admiral","discovered":true,"isNew":true},{"id":"gray-hairstreak","commonName":"Gray Hairstreak","discovered":false}]'
+      cellWidth: 9.100000
+      cellHeight: 8.800000
+      cellGap: 0.550000
+  ScriptTypes:
+    -
+      {}
+  InputLines:
+    - // @input string collectionDataJson
+    - // @input float cellWidth
+    - // @input float cellHeight
+    - // @input float cellGap

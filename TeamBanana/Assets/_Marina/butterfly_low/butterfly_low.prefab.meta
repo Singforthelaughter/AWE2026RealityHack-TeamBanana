@@ -28,7 +28,7 @@
       Weight: 1.000000
       PlaybackSpeed: 1.000000
       Begin: 0.000000
-      End: 0.033333
+      End: 0.999990
       Offset: 0.000000
       Reversed: false
       Disabled: false
@@ -41,7 +41,7 @@
       Weight: 1.000000
       PlaybackSpeed: 1.000000
       Begin: 0.000000
-      End: 1.041667
+      End: 31.250010
       Offset: 0.000000
       Reversed: false
       Disabled: false
@@ -54,7 +54,7 @@
       Weight: 1.000000
       PlaybackSpeed: 1.000000
       Begin: 0.000000
-      End: 1.000000
+      End: 30.000000
       Offset: 0.000000
       Reversed: false
       Disabled: false
@@ -67,7 +67,7 @@
       Weight: 1.000000
       PlaybackSpeed: 1.000000
       Begin: 0.000000
-      End: 0.033333
+      End: 0.999990
       Offset: 0.000000
       Reversed: false
       Disabled: false
@@ -80,7 +80,7 @@
       Weight: 1.000000
       PlaybackSpeed: 1.000000
       Begin: 0.000000
-      End: 1.041667
+      End: 31.250010
       Offset: 0.000000
       Reversed: false
       Disabled: false

@@ -1,0 +1,59 @@
+- !<AssetImportMetadata/daeba9ae-2e40-431d-84f6-5ff9435ce0e0>
+  ImportedAssetIds:
+    TypeScriptAsset: !<reference> 6436fc8f-4d30-43fc-9275-07f88b021b8e
+  ImporterName: TypeScriptAssetImporter
+  PrimaryAsset: !<reference> 6436fc8f-4d30-43fc-9275-07f88b021b8e
+  PackageType: NotAPackage
+  LegacyPackagePolicy: ~
+  ExtraData:
+    {}
+  AssetDataMap:
+    TypeScriptAsset: !<own> e0732518-21f6-4eae-8e1f-36fea25c9830
+  DependentFiles:
+    []
+  ImporterSettings: !<AssetImporterSettings>
+    {}
+  CompressionSettings: !<own> 00000000-0000-0000-0000-000000000000
+- !<TypeScriptAssetData/e0732518-21f6-4eae-8e1f-36fea25c9830>
+  SvgIcon: ""
+  SetupScript:
+    code: ""
+  Description: ""
+  VersionMajor: 0
+  VersionMinor: 0
+  VersionPatch: 0
+  ComponentUid: 98cbfb88-514b-4894-8a25-d14889b3dff9
+  ExportUid: 00000000-0000-0000-0000-000000000000
+  PackagePolicy: CanBeUnpacked
+  ScriptInputsHidden:
+    buildOnStart: false
+    butterflyPrefab: false
+    nearbyButterfliesWindow: false
+    newBadgeTemplate: false
+    newBadgeTexture: false
+    suggestionOpacityTexture: false
+  ScriptTypesHidden:
+    {}
+  ReadMe: !<reference> 00000000-0000-0000-0000-000000000000
+  DeclarationFile: !<reference> 00000000-0000-0000-0000-000000000000
+  Tags:
+    []
+  Attachments:
+    []
+  DefaultScriptInputs:
+    - buildOnStart: false
+      butterflyPrefab: !<reference.ObjectPrefab> 00000000-0000-0000-0000-000000000000
+      newBadgeTexture: !<reference.Texture> 00000000-0000-0000-0000-000000000000
+      newBadgeTemplate: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
+      suggestionOpacityTexture: !<reference.Texture> 00000000-0000-0000-0000-000000000000
+      nearbyButterfliesWindow: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
+  ScriptTypes:
+    -
+      {}
+  InputLines:
+    - '// @input bool buildOnStart {"hint":"Leave false until you are ready to test. The stable lite manager should stay attached as fallback."}'
+    - '// @input Asset.ObjectPrefab butterflyPrefab {"hint":"Optional butterfly_low prefab used as the centered card preview."}'
+    - '// @input Asset.Texture newBadgeTexture {"hint":"PNG/texture used for the per-card NEW badge. Assign this in the Inspector to swap badge art without code changes."}'
+    - '// @input SceneObject newBadgeTemplate {"hint":"Optional scene object used only as a NEW badge placement template. Put it under a Button/card, move/rotate/scale it in the editor, then assign it here."}'
+    - "// @input Asset.Texture suggestionOpacityTexture {\"hint\":\"Optional opacity/cutout texture for the gray suggestion butterfly. If empty, the prefab material's original opacityTex is reused.\"}"
+    - '// @input SceneObject nearbyButterfliesWindow {"hint":"Optional nearby butterflies / recommended local species window opened by the Find Next card."}'

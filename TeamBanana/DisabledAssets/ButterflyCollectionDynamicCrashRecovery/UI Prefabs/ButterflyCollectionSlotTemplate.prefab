@@ -1,0 +1,37 @@
+- !<ObjectPrefab/1a8b2acd-aee2-403a-9a44-c666e56cd42f>
+  PackagePath: ""
+  objects:
+    - !<own> 8a1eaded-bea4-492d-8c9a-edef230cb7e1
+  LazyLoading: false
+  RetainAssets: true
+- !<SceneObject/8a1eaded-bea4-492d-8c9a-edef230cb7e1>
+  PrefabRemaps:
+    []
+  Name: ButterflyCollectionSlotTemplate
+  Enabled: true
+  Layers: 1
+  LocalTransform: !<TransformEntity>
+    Position: {x: 0.000000, y: 0.000000, z: 0.000000}
+    Rotation: {x: 0.000000, y: 0.000000, z: 0.000000}
+    Scale: {x: 1.000000, y: 1.000000, z: 1.000000}
+    HasSegmentScaleCompensation: false
+  Children:
+    []
+  Components:
+    - !<own> f02efd0a-8c5d-4aaa-b9d9-513820fb7201
+- !<ScriptComponent/f02efd0a-8c5d-4aaa-b9d9-513820fb7201>
+  PrefabRemaps:
+    []
+  Name: ButterflyCollectionSlot
+  Enabled: true
+  ScriptAsset: !<reference> 820fac13-f70b-4f58-99a8-f5f38951c3fe
+  ScriptInputsDefault:
+    {}
+  ScriptTypesDefault:
+    {}
+  ScriptInputs:
+    "":
+      {}
+  ScriptTypes:
+    "":
+      {}
