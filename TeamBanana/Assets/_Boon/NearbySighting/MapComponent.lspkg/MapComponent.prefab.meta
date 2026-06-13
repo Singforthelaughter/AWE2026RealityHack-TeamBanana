@@ -3395,6 +3395,7 @@
   Enabled: true
   ScriptAsset: !<reference> 101a2e35-763d-4f5c-9c5a-4bd321195b07
   ScriptInputsDefault:
+    customLocationsLoader: true
     markerHalfWidth: true
     markerHalfHeight: true
   ScriptTypesDefault:
@@ -3405,6 +3406,7 @@
       questMarkerPrefab: !<reference.ObjectPrefab> 140d3cb7-35bb-42a6-a5d7-18428941ada7
       inViewMaterial: !<reference.Material> 8695c20a-6433-4bd4-8fe9-27f568407aa4
       outOfViewMaterial: !<reference.Material> cf2c6c64-7672-4993-be5f-5830f29b2f58
+      customLocationsLoader: !<MappingBased.AssignableType_1> 00000000-0000-0000-0000-000000000000
       scale: !<float> 3.000000
       markerImageOffsetInDegree: !<float> -90.000000
       markerHalfWidth: !<float> 5.000000

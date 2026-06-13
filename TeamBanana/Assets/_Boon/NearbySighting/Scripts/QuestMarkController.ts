@@ -13,6 +13,8 @@ import {
 } from "../MapComponent.lspkg/MapComponent/Scripts/MapUtils"
 import {QuestMarker} from "../MapComponent.lspkg/MapComponent/Scripts/QuestMarker"
 import {UICollisionSolver} from "./UICollisionDetector"
+import {CustomLocationsLoader} from "./CustomLocationsLoader"
+import {MarkerInteractableTrigger} from "./MarkerInteractableTrigger"
 
 const BOUNDARY_HALF_WIDTH_PROJECTION = 35
 const BOUNDARY_HALF_WIDTH = 26
@@ -44,6 +46,9 @@ export class QuestMarkController extends BaseScriptComponent {
   private inViewMaterial: Material
   @input
   private outOfViewMaterial: Material
+  @input
+  @hint("CustomLocationsLoader — provides sighting data per pin")
+  private customLocationsLoader!: CustomLocationsLoader
   @input
   private scale: number = 1
   @input
@@ -329,7 +334,29 @@ export class QuestMarkController extends BaseScriptComponent {
       const questMark = new QuestMarker(pin, questmarkObject.getTransform(), this.scale)
       this.defaultLabelY = questMark.markerLabel.getTransform().getLocalPosition().y
       this.questMarkers.set(pin.sceneObject.uniqueIdentifier, questMark)
+
+      const loc = this.customLocationsLoader.getLocationForPin(pin)
+      print("[QMC] loc found: " + !!loc + " | has sighting: " + !!loc?.sighting)
+      if (loc?.sighting) {
+        const interactableChild = this.findChildByName(questmarkObject, "interactable")
+        print("[QMC] interactableChild found: " + !!interactableChild)
+        if (interactableChild) {
+          const trigger = interactableChild.getComponent(
+            MarkerInteractableTrigger.getTypeName()
+          ) as MarkerInteractableTrigger
+          print("[QMC] trigger component found: " + !!trigger)
+          trigger?.setSightingData(loc.sighting)
+        }
+      }
     }
+  }
+
+  private findChildByName(parent: SceneObject, name: string): SceneObject | null {
+    for (let i = 0; i < parent.getChildrenCount(); i++) {
+      const child = parent.getChild(i)
+      if (child.name === name) return child
+    }
+    return null
   }
 
   private handleAllMapPinsRemoved(): void {

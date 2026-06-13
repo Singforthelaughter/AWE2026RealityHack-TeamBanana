@@ -26,6 +26,7 @@
   ExportUid: 00000000-0000-0000-0000-000000000000
   PackagePolicy: CanBeUnpacked
   ScriptInputsHidden:
+    customLocationsLoader: false
     inViewMaterial: false
     labelHalfHeight: false
     mapComponent: false
@@ -48,6 +49,7 @@
       questMarkerPrefab: !<reference.ObjectPrefab> 00000000-0000-0000-0000-000000000000
       inViewMaterial: !<reference.Material> 00000000-0000-0000-0000-000000000000
       outOfViewMaterial: !<reference.Material> 00000000-0000-0000-0000-000000000000
+      customLocationsLoader: !<MappingBased.AssignableType_1> 00000000-0000-0000-0000-000000000000
       scale: !<float> 1.000000
       markerImageOffsetInDegree: !<float> 0.000000
       markerHalfWidth: !<float> 5.000000
@@ -61,6 +63,7 @@
     - // @input Asset.ObjectPrefab questMarkerPrefab
     - // @input Asset.Material inViewMaterial
     - // @input Asset.Material outOfViewMaterial
+    - '// @input AssignableType_1 customLocationsLoader {"hint":"CustomLocationsLoader — provides sighting data per pin"}'
     - // @input float scale = 1
     - // @input float markerImageOffsetInDegree
     - // @input float markerHalfWidth = 5

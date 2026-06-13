@@ -1,5 +1,6 @@
 import { Interactable } from "SpectaclesInteractionKit.lspkg/Components/Interaction/Interactable/Interactable"
 import { InteractorEvent } from "SpectaclesInteractionKit.lspkg/Core/Interactor/InteractorEvent"
+import { SightingInfo } from "./CustomLocationsLoader"
 
 @component
 export class MarkerInteractableTrigger extends BaseScriptComponent {
@@ -39,10 +40,19 @@ export class MarkerInteractableTrigger extends BaseScriptComponent {
   @hint("Per-axis scale multiplier applied to the parent on trigger start (e.g. 1.1 = 110%)")
   triggerScaleMultiplier: vec3 = new vec3(1.1, 1.1, 1.1)
 
+  // @input
+  // @hint("Prefab to instantiate when this marker is triggered")
+  // detailPanelPrefab: ObjectPrefab | null = null
+
+  // @input
+  // @hint("SceneObject to parent the spawned detail panel under")
+  // spawnRoot: SceneObject | null = null
+
   private interactable: Interactable | null = null
   private parentTransform: Transform | null = null
   private originalParentScale: vec3 = vec3.one()
   private imgComp: Image | null = null
+  private sightingData: SightingInfo | null = null
 
   onAwake() {
     this.interactable = this.sceneObject.getComponent(Interactable.getTypeName())
@@ -100,10 +110,23 @@ export class MarkerInteractableTrigger extends BaseScriptComponent {
     }
   }
 
+  setSightingData(data: SightingInfo): void {
+    this.sightingData = data
+  }
+
   private onTriggerEnd = (_: InteractorEvent): void => {
     this.setColor(this.triggerEndColor)
     if (this.parentTransform) {
       this.parentTransform.setLocalScale(this.originalParentScale)
     }
+    if (this.sightingData) print(`[MarkerInteractableTrigger] Opened detail for: ${this.sightingData.speciesCommonNames}`)
+    // if (this.sightingData && this.detailPanelPrefab) {
+    //   const spawnParent = this.spawnRoot ?? this.sceneObject.getParent()
+    //   const panel = this.detailPanelPrefab.instantiate(spawnParent)
+    //   // TODO: get your detail panel component and pass this.sightingData to it:
+    //   // (panel.getComponent("YourDetailPanel") as YourDetailPanel).populate(this.sightingData)
+    //   print(`[MarkerInteractableTrigger] Opened detail for: ${this.sightingData.speciesScientificName}`)
+    //   void panel
+    // }
   }
 }

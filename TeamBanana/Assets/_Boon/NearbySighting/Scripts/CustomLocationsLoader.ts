@@ -1,10 +1,23 @@
 import { MapComponent } from "../MapComponent.lspkg/MapComponent/Scripts/MapComponent"
 import { MapPin } from "../MapComponent.lspkg/MapComponent/Scripts/MapPin"
 
+export type SightingInfo = {
+  id: string
+  snapDisplayName: string | null
+  photoUrl: string | null
+  speciesScientificName: string | null
+  speciesCommonNames: string[] | null
+  speciesProbability: number | null
+  speciesDescription: string | null
+  speciesImageUrl: string | null
+  identifiedAt: string
+}
+
 export type CustomLocation = {
   label: string
   latitude: number
   longitude: number
+  sighting?: SightingInfo
 }
 
 /**
@@ -20,6 +33,9 @@ export class CustomLocationsLoader extends BaseScriptComponent {
   private pins: MapPin[] = []
   private mapReady: boolean = false
   private pendingLocations: CustomLocation[] = []
+  private pinLocationMap: Map<string, CustomLocation> = new Map()
+  // holds the location being placed right now, for the synchronous onMapAddPin callback window
+  private activePlacingLocation: CustomLocation | null = null
 
   onAwake() {
     this.createEvent("OnStartEvent").bind(this.onStart.bind(this))
@@ -58,10 +74,20 @@ export class CustomLocationsLoader extends BaseScriptComponent {
       this.mapComponent.removeMapPin(pin)
     }
     this.pins = []
+    this.pinLocationMap.clear()
+  }
+
+  getLocationForPin(pin: MapPin): CustomLocation | undefined {
+    // activePlacingLocation covers the case where onMapAddPin fires synchronously
+    // inside createMapPin before pinLocationMap.set() has run
+    return this.pinLocationMap.get(pin.sceneObject.uniqueIdentifier) ?? this.activePlacingLocation ?? undefined
   }
 
   private placePin(loc: CustomLocation): MapPin {
+    this.activePlacingLocation = loc
     const pin = this.mapComponent.createMapPin(loc.longitude, loc.latitude, loc.label)
+    this.pinLocationMap.set(pin.sceneObject.uniqueIdentifier, loc)
+    this.activePlacingLocation = null
     this.pins.push(pin)
     return pin
   }

@@ -1,0 +1,62 @@
+- !<AssetImportMetadata/5ca6f9d5-d0ad-4a46-9032-6810d8517131>
+  ImportedAssetIds:
+    TypeScriptAsset: !<reference> 14a5bda7-9756-4b71-b863-f2179e01e327
+  ImporterName: TypeScriptAssetImporter
+  PrimaryAsset: !<reference> 14a5bda7-9756-4b71-b863-f2179e01e327
+  PackageType: NotAPackage
+  LegacyPackagePolicy: ~
+  ExtraData:
+    {}
+  AssetDataMap:
+    TypeScriptAsset: !<own> 2711ae2a-07ac-44e5-8948-5ae6890166ab
+  DependentFiles:
+    []
+  ImporterSettings: !<AssetImporterSettings>
+    {}
+  CompressionSettings: !<own> 00000000-0000-0000-0000-000000000000
+- !<TypeScriptAssetData/2711ae2a-07ac-44e5-8948-5ae6890166ab>
+  SvgIcon: ""
+  SetupScript:
+    code: ""
+  Description: ""
+  VersionMajor: 0
+  VersionMinor: 0
+  VersionPatch: 0
+  ComponentUid: fd523fed-31dd-421b-a90f-b6a712f0ff6c
+  ExportUid: 00000000-0000-0000-0000-000000000000
+  PackagePolicy: CanBeUnpacked
+  ScriptInputsHidden:
+    runTestModeAtStart: false
+    supabaseProject: false
+    testButterfly: false
+    testImageUrl: false
+    testOpacityImage: false
+    testTextureImage: false
+    timerText: false
+  ScriptTypesHidden:
+    {}
+  ReadMe: !<reference> 00000000-0000-0000-0000-000000000000
+  DeclarationFile: !<reference> 00000000-0000-0000-0000-000000000000
+  Tags:
+    []
+  Attachments:
+    []
+  DefaultScriptInputs:
+    - supabaseProject: !<reference.SupabaseProject> 00000000-0000-0000-0000-000000000000
+      runTestModeAtStart: false
+      testTextureImage: !<reference.Image> 00000000-0000-0000-0000-000000000000
+      testOpacityImage: !<reference.Image> 00000000-0000-0000-0000-000000000000
+      testImageUrl: ""
+      testButterfly: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
+      timerText: !<reference.Text> 00000000-0000-0000-0000-000000000000
+  ScriptTypes:
+    -
+      {}
+  InputLines:
+    - "// @input Asset.SupabaseProject supabaseProject {\"hint\":\"Supabase project asset (URL + public token). Created via the Supabase Plugin's 'Import Credentials'.\"}"
+    - '// @input bool runTestModeAtStart {"hint":"Enable to show test objects and automatically run a test call on start"}'
+    - // @input Component.Image testTextureImage
+    - // @input Component.Image testOpacityImage
+    - '// @input string testImageUrl {"hint":"Image URL to test with on start"}'
+    - // @input SceneObject testButterfly
+    - '// @input Component.Text timerText {"hint":"Text component to display timing info"}'

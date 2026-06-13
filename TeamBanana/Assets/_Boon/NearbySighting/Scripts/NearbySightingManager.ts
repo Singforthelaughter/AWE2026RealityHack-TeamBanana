@@ -46,9 +46,9 @@ export class NearbySightingManager extends BaseScriptComponent {
       this.locationService = GeoLocation.createLocationService()
       this.locationService.accuracy = GeoLocationAccuracy.Navigation
 
-      //   this.dbManager.seedTestData()
+      // this.dbManager.seedTestData()
 
-      //   this.openNearbySighting()
+      // this.openNearbySighting()
     })
   }
 
@@ -79,6 +79,17 @@ export class NearbySightingManager extends BaseScriptComponent {
             label: (s.species_common_names?.[0] ?? s.species_scientific_name) || "Butterfly",
             latitude: s.latitude as number,
             longitude: s.longitude as number,
+            sighting: {
+              id: s.id,
+              snapDisplayName: s.snap_display_name,
+              photoUrl: s.photo_url,
+              speciesScientificName: s.species_scientific_name,
+              speciesCommonNames: s.species_common_names,
+              speciesProbability: s.species_probability,
+              speciesDescription: s.species_description,
+              speciesImageUrl: s.species_image_url,
+              identifiedAt: s.identified_at,
+            },
           }))
 
         print(locations.length)
