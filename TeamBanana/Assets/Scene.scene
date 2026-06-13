@@ -1880,9 +1880,9 @@
     {}
   ScriptInputs:
     "":
-      openAIToken: 3ee0db03-19d4-42c1-a117-caa79cb697e0
-      googleToken: 08b3fe92-7033-4089-9dba-99f272802360
-      snapToken: 4e844bad-5dd6-4b3b-b3dd-231d33ca1d39
+      openAIToken: tokenhere
+      googleToken: tokenhere
+      snapToken: tokenhere
       enableLogging: false
       enableLoggingLifecycle: false
   ScriptTypes:
