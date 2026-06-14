@@ -18,8 +18,9 @@ const internetModule = require("LensStudio:InternetModule") as InternetModule
  */
 @component
 export class ButterflyInfoDisplayManager extends BaseScriptComponent {
+  @ui.label("Place butterfly info prefab here")
   @input
-  @hint("Prefab to instantiate when a result arrives")
+  @hint("Butterfly Info Display prefab to instantiate when a result arrives")
   prefab!: ObjectPrefab
 
   @input
@@ -112,31 +113,45 @@ export class ButterflyInfoDisplayManager extends BaseScriptComponent {
   }
 
   private populate(fields: {
-    name?: string; common_name?: string; common_names?: string; probability?: string
-    description?: string; description_gpt?: string; red_list?: string
-    danger?: string; danger_description?: string; role?: string
-    kingdom?: string; phylum?: string; class?: string; order?: string; family?: string; genus?: string
-    spotter?: string; last_seen?: string; seen_by?: string
+    name?: string
+    common_name?: string
+    common_names?: string
+    probability?: string
+    description?: string
+    description_gpt?: string
+    red_list?: string
+    danger?: string
+    danger_description?: string
+    role?: string
+    kingdom?: string
+    phylum?: string
+    class?: string
+    order?: string
+    family?: string
+    genus?: string
+    spotter?: string
+    last_seen?: string
+    seen_by?: string
   }): void {
-    this.setField("name",               fields.name ?? "")
-    this.setField("common_name",        fields.common_name ?? "")
-    this.setField("common_names",       fields.common_names ?? "")
-    this.setField("probability",        fields.probability ?? "")
-    this.setField("description",        fields.description ?? "")
-    this.setField("description_gpt",    fields.description_gpt ?? "")
-    this.setField("red_list",           fields.red_list ?? "")
-    this.setField("danger",             fields.danger ?? "")
+    this.setField("name", fields.name ?? "")
+    this.setField("common_name", fields.common_name ?? "")
+    this.setField("common_names", fields.common_names ?? "")
+    this.setField("probability", fields.probability ?? "")
+    this.setField("description", fields.description ?? "")
+    this.setField("description_gpt", fields.description_gpt ?? "")
+    this.setField("red_list", fields.red_list ?? "")
+    this.setField("danger", fields.danger ?? "")
     this.setField("danger_description", fields.danger_description ?? "")
-    this.setField("role",               fields.role ?? "")
-    this.setField("kingdom",            fields.kingdom ?? "")
-    this.setField("phylum",             fields.phylum ?? "")
-    this.setField("class",              fields.class ?? "")
-    this.setField("order",              fields.order ?? "")
-    this.setField("family",             fields.family ?? "")
-    this.setField("genus",              fields.genus ?? "")
-    this.setField("spotter",            fields.spotter ?? "")
-    this.setField("last_seen",          fields.last_seen ?? "")
-    this.setField("seen_by",            fields.seen_by ?? "")
+    this.setField("role", fields.role ?? "")
+    this.setField("kingdom", fields.kingdom ?? "")
+    this.setField("phylum", fields.phylum ?? "")
+    this.setField("class", fields.class ?? "")
+    this.setField("order", fields.order ?? "")
+    this.setField("family", fields.family ?? "")
+    this.setField("genus", fields.genus ?? "")
+    this.setField("spotter", fields.spotter ?? "")
+    this.setField("last_seen", fields.last_seen ?? "")
+    this.setField("seen_by", fields.seen_by ?? "")
   }
 
   /**
@@ -148,24 +163,24 @@ export class ButterflyInfoDisplayManager extends BaseScriptComponent {
     const d = suggestion.details
 
     this.populate({
-      name:               suggestion.name,
-      common_name:        d?.common_names?.[0] ?? "",
-      common_names:       d?.common_names?.join(", ") ?? "",
-      probability:        Math.round(suggestion.probability * 100) + "%",
-      description:        d?.description?.value ?? d?.description_gpt ?? "",
-      description_gpt:    d?.description_gpt ?? "",
-      red_list:           d?.red_list ?? "",
-      danger:             d?.danger?.join(", ") ?? "",
+      name: suggestion.name,
+      common_name: d?.common_names?.[0] ?? "",
+      common_names: d?.common_names?.join(", ") ?? "",
+      probability: Math.round(suggestion.probability * 100) + "%",
+      description: d?.description?.value ?? d?.description_gpt ?? "",
+      description_gpt: d?.description_gpt ?? "",
+      red_list: d?.red_list ?? "",
+      danger: d?.danger?.join(", ") ?? "",
       danger_description: d?.danger_description ?? "",
-      role:               d?.role?.join(", ") ?? "",
-      kingdom:            d?.taxonomy?.kingdom ?? "",
-      phylum:             d?.taxonomy?.phylum ?? "",
-      class:              d?.taxonomy?.class ?? "",
-      order:              d?.taxonomy?.order ?? "",
-      family:             d?.taxonomy?.family ?? "",
-      genus:              d?.taxonomy?.genus ?? "",
-      last_seen:          new Date().toISOString(),
-      seen_by:            this.snapDisplayName,
+      role: d?.role?.join(", ") ?? "",
+      kingdom: d?.taxonomy?.kingdom ?? "",
+      phylum: d?.taxonomy?.phylum ?? "",
+      class: d?.taxonomy?.class ?? "",
+      order: d?.taxonomy?.order ?? "",
+      family: d?.taxonomy?.family ?? "",
+      genus: d?.taxonomy?.genus ?? "",
+      last_seen: new Date().toISOString(),
+      seen_by: this.snapDisplayName,
     })
 
     if (this.debugLogging) {
@@ -190,8 +205,12 @@ export class ButterflyInfoDisplayManager extends BaseScriptComponent {
       imageUrls.push(url)
     }
 
-    if (d?.images) { for (const img of d.images) addUrl(img.value) }
-    if (suggestion.similar_images) { for (const img of suggestion.similar_images) addUrl(img.url) }
+    if (d?.images) {
+      for (const img of d.images) addUrl(img.value)
+    }
+    if (suggestion.similar_images) {
+      for (const img of suggestion.similar_images) addUrl(img.url)
+    }
     addUrl(d?.image?.value) // wikidata fallback — added last, skipped by addUrl if it's wikidata
 
     imageUrls.forEach(async (url, i) => {
@@ -210,24 +229,24 @@ export class ButterflyInfoDisplayManager extends BaseScriptComponent {
 
     const tax = sighting.speciesTaxonomy
     this.populate({
-      name:               sighting.speciesScientificName ?? "",
-      common_name:        sighting.speciesCommonNames?.[0] ?? "",
-      common_names:       sighting.speciesCommonNames?.join(", ") ?? "",
-      probability:        sighting.speciesProbability != null ? Math.round(sighting.speciesProbability * 100) + "%" : "",
-      description:        sighting.speciesDescription ?? "",
-      red_list:           sighting.speciesRedList ?? "",
-      danger:             sighting.speciesDanger?.join(", ") ?? "",
+      name: sighting.speciesScientificName ?? "",
+      common_name: sighting.speciesCommonNames?.[0] ?? "",
+      common_names: sighting.speciesCommonNames?.join(", ") ?? "",
+      probability: sighting.speciesProbability != null ? Math.round(sighting.speciesProbability * 100) + "%" : "",
+      description: sighting.speciesDescription ?? "",
+      red_list: sighting.speciesRedList ?? "",
+      danger: sighting.speciesDanger?.join(", ") ?? "",
       danger_description: sighting.speciesDangerDescription ?? "",
-      role:               sighting.speciesRole?.join(", ") ?? "",
-      kingdom:            tax?.kingdom ?? "",
-      phylum:             tax?.phylum ?? "",
-      class:              tax?.class ?? "",
-      order:              tax?.order ?? "",
-      family:             tax?.family ?? "",
-      genus:              tax?.genus ?? "",
-      spotter:            sighting.snapDisplayName ?? "",
-      last_seen:          sighting.identifiedAt ?? "",
-      seen_by:            sighting.snapDisplayName ?? "",
+      role: sighting.speciesRole?.join(", ") ?? "",
+      kingdom: tax?.kingdom ?? "",
+      phylum: tax?.phylum ?? "",
+      class: tax?.class ?? "",
+      order: tax?.order ?? "",
+      family: tax?.family ?? "",
+      genus: tax?.genus ?? "",
+      spotter: sighting.snapDisplayName ?? "",
+      last_seen: sighting.identifiedAt ?? "",
+      seen_by: sighting.snapDisplayName ?? "",
     })
 
     if (sighting.photoUrl) {
