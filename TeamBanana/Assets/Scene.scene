@@ -9369,8 +9369,8 @@
     - !<own> a5c3cb2f-a12a-433b-9b4a-f27342312a7c
   Components:
     - !<own> ef6ad773-55e8-472b-bbed-e80c0cfcc62e
-    - !<own> 253edfc2-f867-48bc-b9b6-803a2b7fed64
     - !<own> 81061a47-44a7-4f8c-8977-4a708181137b
+    - !<own> 253edfc2-f867-48bc-b9b6-803a2b7fed64
 - !<ScriptComponent/a00611c5-f292-4959-90f6-fdb09a1085cb>
   PrefabRemaps:
     []
