@@ -105,7 +105,7 @@ TimeManager             (no project imports — singleton, global.timeManager)
 TimeManagerExample  ──► TimeManager (via global), external Logger package
 
 ── Cross-team ─────────────────────────────────────────────
-None yet. Add entries here when a script imports from another team's folder.
+NearbySightingsTool ──► SupabaseDBManager (_Boon)
 ```
 
 ---
@@ -429,11 +429,44 @@ Status: No scripts yet. Add entries here when scripts are created.
 ---
 
 <!-- BEGIN_SECTION: _Joe -->
-## _Joe
+## _Joe — Agent System & Tools
 
 Owner: **Joe**  
-Folder: `Assets/_Joe/`  
-Status: No scripts yet. Add entries here when scripts are created.
+Folder: `Assets/_Joe/Assets/Scripts/`  
+Feature: AI agent system for butterfly outdoor education with tool-based architecture.
+
+---
+
+### Agent System (Agents/)
+
+| Script | Purpose |
+|---|---|
+| `AgentOrchestrator.ts` | Top-level component. Wires agents, language interface, routing, and coordination. Inspector input for `dbManager` enables the nearby sightings tool. |
+| `AgentRouter.ts` | Routes user queries to Naturalist (discovery) or Archivist (knowledge) based on confidence scoring. Accepts optional `dbManager` to pass to agents. |
+| `AgentCoordinator.ts` | Manages cross-agent collaboration with priority queue and depth limits. |
+| `AgentLanguageInterface.ts` | Abstraction over OpenAI/Gemini LLM providers. |
+| `AgentMemorySystem.ts` | In-memory conversation history management. |
+| `AgentToolExecutor.ts` | Executes registered tools with parameter validation, timeout, and events. |
+| `AgentTypes.ts` | Shared TypeScript interfaces: `Tool`, `ToolResult`, `Message`, `LLMResponse`, etc. |
+| `OutdoorAgent.ts` | Abstract base class for agents. Defines `registerTool()`, `execute()`, `canHandleQuery()`. |
+| `NaturalistAgent.ts` | Gentle Socratic discovery guide. Voice-only, no camera. Registers `general_conversation` and optionally `nearby_sightings` tools. |
+| `ArchivistAgent.ts` | Enthusiastic storyteller and knowledge curator. Can use camera for identification. Registers `general_conversation` and optionally `nearby_sightings` tools. |
+
+### Tools (Tools/)
+
+| Script | Purpose |
+|---|---|
+| `NearbySightingsTool.ts` | **NEW** — Queries Supabase (via `SupabaseDBManager`) for butterfly sightings near the user's GPS location. Returns species, distances, photos. Cached for 30s. |
+| `GeneralConversationTool.ts` | LLM fallback for general conversation. |
+| `SpatialTool.ts` | Camera-based spatial analysis of the environment. |
+| `LocationTool.ts` | Gets current GPS coordinates from Spectacles `LocationService`. |
+| `WeatherTool.ts` | Gets weather conditions from Spectacles `UserContextSystem`. |
+| `ToolRouter.ts` | AI-powered tool selection. Indexes `spatial_tool`, `general_conversation`, and `nearby_sightings` (when `dbManager` is available). |
+| `index.ts` | Tool exports and `createTools()` factory. |
+
+### Cross-team imports
+
+`NearbySightingsTool` imports `SupabaseDBManager` from `_Boon/SupabaseInfoStoring&Retrieving/Scripts/`.
 
 <!-- END_SECTION: _Joe -->
 

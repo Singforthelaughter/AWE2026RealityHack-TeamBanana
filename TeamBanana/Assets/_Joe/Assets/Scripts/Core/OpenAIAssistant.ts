@@ -63,6 +63,9 @@ Always maintain an encouraging, patient, and supportive tone. Focus on helping s
     ])
   )
   private voice: string = "coral"
+  @input
+  @hint("Enable verbose debug logging to the console")
+  enableDebugLogging: boolean = false
   @ui.group_end
   @ui.separator
   private audioProcessor: AudioProcessor = new AudioProcessor()
@@ -99,7 +102,7 @@ Always maintain an encouraging, patient, and supportive tone. Focus on helping s
     })
 
     this.OAIRealtime.onOpen.add((event) => {
-      print("Connection opened")
+      if (this.enableDebugLogging) print("Connection opened")
       this.sessionSetup()
     })
 
@@ -107,8 +110,7 @@ Always maintain an encouraging, patient, and supportive tone. Focus on helping s
 
     this.OAIRealtime.onMessage.add((message) => {
       // DEBUG: Log all message types to see what OpenAI sends for programmatic text
-      if (message.type !== "response.audio.delta") {
-        // Skip audio delta spam
+      if (this.enableDebugLogging && message.type !== "response.audio.delta") {
         print(`OpenAIAssistant: 🔍 DEBUG - Received message type: ${message.type}`)
         if (message.delta) {
           print(`OpenAIAssistant: 🔍 DEBUG - Message delta: "${message.delta}"`)
@@ -132,12 +134,12 @@ Always maintain an encouraging, patient, and supportive tone. Focus on helping s
       }
       // Handle response.output_item.added for programmatic text responses
       else if (message.type === "response.output_item.added") {
-        print(`OpenAIAssistant: 🔍 DEBUG - output_item.added: ${JSON.stringify(message.item)}`)
+        if (this.enableDebugLogging) print(`OpenAIAssistant: 🔍 DEBUG - output_item.added: ${JSON.stringify(message.item)}`)
         if (message.item && message.item.type === "message" && message.item.content) {
           // Extract text from message content
           for (const content of message.item.content) {
             if (content.type === "text" && content.text) {
-              print(`OpenAIAssistant: 🔍 Found text in output_item.added: "${content.text}"`)
+              if (this.enableDebugLogging) print(`OpenAIAssistant: 🔍 Found text in output_item.added: "${content.text}"`)
               this.updateTextEvent.invoke({
                 text: content.text,
                 completed: false
@@ -149,12 +151,12 @@ Always maintain an encouraging, patient, and supportive tone. Focus on helping s
       }
       // Handle response.output_item.done for final text responses
       else if (message.type === "response.output_item.done") {
-        print(`OpenAIAssistant: 🔍 DEBUG - output_item.done: ${JSON.stringify(message.item)}`)
+        if (this.enableDebugLogging) print(`OpenAIAssistant: 🔍 DEBUG - output_item.done: ${JSON.stringify(message.item)}`)
         if (message.item && message.item.type === "message" && message.item.content) {
           // Extract text from message content
           for (const content of message.item.content) {
             if (content.type === "text" && content.text) {
-              print(`OpenAIAssistant: 🔍 Found text in output_item.done: "${content.text}"`)
+              if (this.enableDebugLogging) print(`OpenAIAssistant: 🔍 Found text in output_item.done: "${content.text}"`)
               this.updateTextEvent.invoke({
                 text: content.text,
                 completed: true
@@ -166,8 +168,10 @@ Always maintain an encouraging, patient, and supportive tone. Focus on helping s
         // Also check for function calls
         else if (message.item && message.item.type === "function_call") {
           const functionCall = message.item
-          print(`Function called: ${functionCall.name}`)
-          print(`Function args: ${functionCall.arguments}`)
+          if (this.enableDebugLogging) {
+            print(`Function called: ${functionCall.name}`)
+            print(`Function args: ${functionCall.arguments}`)
+          }
 
           const args = JSON.parse(functionCall.arguments)
           this.functionCallEvent.invoke({
@@ -177,7 +181,7 @@ Always maintain an encouraging, patient, and supportive tone. Focus on helping s
           })
         }
       } else if (message.type === "response.done") {
-        print(`OpenAIAssistant: 🔍 DEBUG - response.done received`)
+        if (this.enableDebugLogging) print(`OpenAIAssistant: 🔍 DEBUG - response.done received`)
         completedTextDisplay = true
       }
 
@@ -188,7 +192,7 @@ Always maintain an encouraging, patient, and supportive tone. Focus on helping s
       }
       // Listen for user began speaking
       else if (message.type === "input_audio_buffer.speech_started") {
-        print("Speech started, interrupting the AI")
+        if (this.enableDebugLogging) print("Speech started, interrupting the AI")
         this.dynamicAudioOutput.interruptAudioOutput()
       }
     })
@@ -209,16 +213,9 @@ Always maintain an encouraging, patient, and supportive tone. Focus on helping s
   public streamData(stream: boolean) {
     // Check if we're in orchestrated mode - if so, don't handle voice input directly
     // The orchestrator will handle voice input and call us for AI processing only
-    print(`OpenAIAssistant: streamData called with stream=${stream}`)
-
-    // Don't start/stop recording if we're being controlled by an orchestrator
-    // This prevents competing voice input systems
-    if (stream) {
+    if (this.enableDebugLogging) {
+      print(`OpenAIAssistant: streamData called with stream=${stream}`)
       print("OpenAIAssistant: 🔒 Voice input disabled - orchestrated system should handle voice input")
-      // this.microphoneRecorder.startRecording(); // Commented out to prevent conflicts
-    } else {
-      print("OpenAIAssistant: 🔒 Voice input disabled - orchestrated system should handle voice input")
-      // this.microphoneRecorder.stopRecording(); // Commented out to prevent conflicts
     }
   }
 
@@ -236,25 +233,6 @@ Always maintain an encouraging, patient, and supportive tone. Focus on helping s
       modalitiesArray.push("audio")
     }
 
-    const tools = [
-      {
-        type: "function",
-        name: "Snap3D",
-        description: "Generates a 3D model based on a text prompt",
-        parameters: {
-          type: "object",
-          properties: {
-            prompt: {
-              type: "string",
-              description:
-                "The text prompt to generate a 3D model from. Cartoonish styles work best. Use 'full body' when generating characters."
-            }
-          },
-          required: ["prompt"]
-        }
-      } as OpenAITypes.Common.ToolDefinition
-    ]
-
     // Set up the session
     const sessionUpdateMsg = {
       type: "session.update",
@@ -263,7 +241,6 @@ Always maintain an encouraging, patient, and supportive tone. Focus on helping s
         voice: this.voice,
         modalities: modalitiesArray,
         input_audio_format: "pcm16",
-        tools: tools,
         output_audio_format: "pcm16",
         turn_detection: {
           type: "server_vad",
@@ -293,7 +270,7 @@ Always maintain an encouraging, patient, and supportive tone. Focus on helping s
   }
 
   public sendFunctionCallUpdate(functionName: string, callId: string, response: string): void {
-    print("Call id = " + callId)
+    if (this.enableDebugLogging) print("Call id = " + callId)
     const messageToSend = {
       type: "conversation.item.create",
       item: {
@@ -316,7 +293,7 @@ Always maintain an encouraging, patient, and supportive tone. Focus on helping s
       return
     }
 
-    print(`OpenAIAssistant: Sending message with audio: "${content.substring(0, 100)}..."`)
+    if (this.enableDebugLogging) print(`OpenAIAssistant: Sending message with audio: "${content.substring(0, 100)}..."`)
 
     // Send user message to conversation
     const userMessageToSend = {
@@ -351,7 +328,7 @@ Always maintain an encouraging, patient, and supportive tone. Focus on helping s
 
     this.OAIRealtime.send(responseRequest)
 
-    print(`OpenAIAssistant: Message sent with modalities: ${modalitiesArray.join(", ")}`)
+    if (this.enableDebugLogging) print(`OpenAIAssistant: Message sent with modalities: ${modalitiesArray.join(", ")}`)
   }
 
   /**
@@ -364,7 +341,7 @@ Always maintain an encouraging, patient, and supportive tone. Focus on helping s
       return
     }
 
-    print(`OpenAIAssistant: 📝 Sending text message: "${content.substring(0, 100)}..."`)
+    if (this.enableDebugLogging) print(`OpenAIAssistant: 📝 Sending text message: "${content.substring(0, 100)}..."`)
 
     // Send user message to conversation
     const userMessageToSend = {
@@ -394,6 +371,6 @@ Always maintain an encouraging, patient, and supportive tone. Focus on helping s
 
     this.OAIRealtime.send(responseRequest)
 
-    print("OpenAIAssistant: Text message sent, waiting for AI response")
+    if (this.enableDebugLogging) print("OpenAIAssistant: Text message sent, waiting for AI response")
   }
 }

@@ -18,6 +18,12 @@ export class AgentLanguageInterface {
   private providerInitialized: {[key: string]: boolean} = {openai: false, gemini: false}
   private isCollectingToolResponse: boolean = false // Flag to prevent interference during tool text collection
 
+  public enableDebugLogging: boolean = false
+
+  private log(msg: string): void {
+    if (this.enableDebugLogging) print(msg)
+  }
+
   // Events for unified communication
   public onTextUpdate: Event<{text: string; completed: boolean; provider: string}> = new Event()
   public onFunctionCall: Event<{name: string; args: any; callId?: string; provider: string}> = new Event()
@@ -32,7 +38,7 @@ export class AgentLanguageInterface {
     // FIX: Actually initialize the AI sessions
     this.initializeSession()
 
-    print("AgentLanguageInterface: Language interface initialized")
+    this.log("AgentLanguageInterface: Language interface initialized")
   }
 
   // ================================
@@ -43,7 +49,7 @@ export class AgentLanguageInterface {
     try {
       // FIX: Setup event handlers for ALL providers to capture transcription events
       // We need handlers for both because we might use different providers for different features
-      print(`AgentLanguageInterface: Setting up events for all available providers`)
+      this.log(`AgentLanguageInterface: Setting up events for all available providers`)
 
       // Setup OpenAI event handlers
       if (this.openAIAssistant) {
@@ -52,18 +58,18 @@ export class AgentLanguageInterface {
           this.openAIAssistant.updateTextEvent.add((data) => {
             this.handleTextUpdate(data, "openai")
           })
-          print("AgentLanguageInterface: OpenAI updateTextEvent connected")
+          this.log("AgentLanguageInterface: OpenAI updateTextEvent connected")
         } else {
-          print("AgentLanguageInterface: OpenAI updateTextEvent not available yet")
+          this.log("AgentLanguageInterface: OpenAI updateTextEvent not available yet")
         }
 
         if (this.openAIAssistant.functionCallEvent && this.openAIAssistant.functionCallEvent.add) {
           this.openAIAssistant.functionCallEvent.add((data) => {
             this.handleFunctionCall(data, "openai")
           })
-          print("AgentLanguageInterface: OpenAI functionCallEvent connected")
+          this.log("AgentLanguageInterface: OpenAI functionCallEvent connected")
         } else {
-          print("AgentLanguageInterface: OpenAI functionCallEvent not available yet")
+          this.log("AgentLanguageInterface: OpenAI functionCallEvent not available yet")
         }
       }
 
@@ -73,24 +79,24 @@ export class AgentLanguageInterface {
           this.geminiAssistant.updateTextEvent.add((data) => {
             this.handleTextUpdate(data, "gemini")
           })
-          print("AgentLanguageInterface: Gemini updateTextEvent connected")
+          this.log("AgentLanguageInterface: Gemini updateTextEvent connected")
         } else {
-          print("AgentLanguageInterface: Gemini updateTextEvent not available yet")
+          this.log("AgentLanguageInterface: Gemini updateTextEvent not available yet")
         }
 
         if (this.geminiAssistant.functionCallEvent && this.geminiAssistant.functionCallEvent.add) {
           this.geminiAssistant.functionCallEvent.add((data) => {
             this.handleFunctionCall(data, "gemini")
           })
-          print("AgentLanguageInterface: Gemini functionCallEvent connected")
+          this.log("AgentLanguageInterface: Gemini functionCallEvent connected")
         } else {
-          print("AgentLanguageInterface: Gemini functionCallEvent not available yet")
+          this.log("AgentLanguageInterface: Gemini functionCallEvent not available yet")
         }
       }
 
-      print(`AgentLanguageInterface: Event handlers configured for all available providers`)
+      this.log(`AgentLanguageInterface: Event handlers configured for all available providers`)
     } catch (error) {
-      print(`AgentLanguageInterface: Event handler setup failed: ${error}`)
+      this.log(`AgentLanguageInterface: Event handler setup failed: ${error}`)
     }
   }
 
@@ -98,7 +104,7 @@ export class AgentLanguageInterface {
     this.openAIAssistant = openAIAssistant
     this.geminiAssistant = geminiAssistant
     this.setupEventHandlers()
-    print("AgentLanguageInterface: AI assistants updated and reconnected")
+    this.log("AgentLanguageInterface: AI assistants updated and reconnected")
   }
 
   // ================================
@@ -107,23 +113,23 @@ export class AgentLanguageInterface {
 
   public switchProvider(provider: "openai" | "gemini"): void {
     if (provider === this.currentProvider) {
-      print(`AgentLanguageInterface: Already using ${provider} provider`)
+      this.log(`AgentLanguageInterface: Already using ${provider} provider`)
       return
     }
 
     // Validate provider availability
     if (provider === "openai" && !this.openAIAssistant) {
-      print("AgentLanguageInterface: OpenAI Assistant not available")
+      this.log("AgentLanguageInterface: OpenAI Assistant not available")
       return
     }
 
     if (provider === "gemini" && !this.geminiAssistant) {
-      print("AgentLanguageInterface: Gemini Assistant not available")
+      this.log("AgentLanguageInterface: Gemini Assistant not available")
       return
     }
 
     this.currentProvider = provider
-    print(`AgentLanguageInterface: Switched to ${provider} provider`)
+    this.log(`AgentLanguageInterface: Switched to ${provider} provider`)
 
     // Initialize session if needed
     this.initializeCurrentProvider()
@@ -134,7 +140,7 @@ export class AgentLanguageInterface {
   }
 
   public setDefaultProvider(provider: "openai" | "gemini"): void {
-    print(`AgentLanguageInterface: Setting default provider to: ${provider}`)
+    this.log(`AgentLanguageInterface: Setting default provider to: ${provider}`)
     this.currentProvider = provider
   }
 
@@ -155,41 +161,41 @@ export class AgentLanguageInterface {
 
   private initializeCurrentProvider(): void {
     if (this.providerInitialized[this.currentProvider]) {
-      print(`AgentLanguageInterface: ${this.currentProvider} session already initialized`)
+      this.log(`AgentLanguageInterface: ${this.currentProvider} session already initialized`)
       return
     }
 
-    print(`AgentLanguageInterface: 🔍 Debug - Current provider: ${this.currentProvider}`)
-    print(`AgentLanguageInterface: 🔍 Debug - OpenAI assistant: ${this.openAIAssistant ? "available" : "null"}`)
-    print(`AgentLanguageInterface: 🔍 Debug - Gemini assistant: ${this.geminiAssistant ? "available" : "null"}`)
+    this.log(`AgentLanguageInterface: 🔍 Debug - Current provider: ${this.currentProvider}`)
+    this.log(`AgentLanguageInterface: 🔍 Debug - OpenAI assistant: ${this.openAIAssistant ? "available" : "null"}`)
+    this.log(`AgentLanguageInterface: 🔍 Debug - Gemini assistant: ${this.geminiAssistant ? "available" : "null"}`)
 
     try {
       if (this.currentProvider.toLowerCase() === "openai" && this.openAIAssistant) {
-        print("AgentLanguageInterface: Initializing OpenAI session...")
+        this.log("AgentLanguageInterface: Initializing OpenAI session...")
 
         // FIX: Actually call the session creation method
         if (typeof this.openAIAssistant.createOpenAIRealtimeSession === "function") {
           this.openAIAssistant.createOpenAIRealtimeSession()
-          print("AgentLanguageInterface: OpenAI session created successfully")
+          this.log("AgentLanguageInterface: OpenAI session created successfully")
         } else {
           throw new Error("OpenAI createOpenAIRealtimeSession method not available")
         }
       } else if (this.currentProvider.toLowerCase() === "gemini" && this.geminiAssistant) {
-        print("AgentLanguageInterface: Initializing Gemini session...")
+        this.log("AgentLanguageInterface: Initializing Gemini session...")
 
         // FIX: Actually call the session creation method
         if (typeof this.geminiAssistant.createGeminiLiveSession === "function") {
           this.geminiAssistant.createGeminiLiveSession()
-          print("AgentLanguageInterface: Gemini session created successfully")
+          this.log("AgentLanguageInterface: Gemini session created successfully")
         } else {
           throw new Error("Gemini createGeminiLiveSession method not available")
         }
       } else {
-        print(`AgentLanguageInterface: Debug - Provider check failed for "${this.currentProvider}" (case-insensitive)`)
-        print(
+        this.log(`AgentLanguageInterface: Debug - Provider check failed for "${this.currentProvider}" (case-insensitive)`)
+        this.log(
           `AgentLanguageInterface: Debug - OpenAI check: ${this.currentProvider.toLowerCase() === "openai"} && ${!!this.openAIAssistant}`
         )
-        print(
+        this.log(
           `AgentLanguageInterface: Debug - Gemini check: ${this.currentProvider.toLowerCase() === "gemini"} && ${!!this.geminiAssistant}`
         )
         throw new Error(`No assistant available for provider: ${this.currentProvider}`)
@@ -198,9 +204,9 @@ export class AgentLanguageInterface {
       this.providerInitialized[this.currentProvider] = true
       this.isInitialized = true
       this.onConnectionStatus.invoke({connected: true, provider: this.currentProvider})
-      print(`AgentLanguageInterface: ${this.currentProvider} provider fully initialized`)
+      this.log(`AgentLanguageInterface: ${this.currentProvider} provider fully initialized`)
     } catch (error) {
-      print(`AgentLanguageInterface: Failed to initialize session: ${error}`)
+      this.log(`AgentLanguageInterface: Failed to initialize session: ${error}`)
       this.onError.invoke({error: `Session initialization failed: ${error}`, provider: this.currentProvider})
       throw error // Re-throw to prevent tools from running without proper AI setup
     }
@@ -217,19 +223,19 @@ export class AgentLanguageInterface {
 
     // Force Gemini for image inputs if available
     if (hasImageData && providerToUse === "openai" && this.geminiAssistant) {
-      print("AgentLanguageInterface: Image data detected - forcing Gemini for vision support")
+      this.log("AgentLanguageInterface: Image data detected - forcing Gemini for vision support")
       providerToUse = "gemini"
     }
 
     // Fallback if preferred provider isn't available
     if (providerToUse === "gemini" && !this.geminiAssistant && this.openAIAssistant) {
-      print("AgentLanguageInterface: Gemini not available - falling back to OpenAI")
+      this.log("AgentLanguageInterface: Gemini not available - falling back to OpenAI")
       providerToUse = "openai"
       if (hasImageData) {
-        print("AgentLanguageInterface: Warning: Image data will be ignored with OpenAI fallback")
+        this.log("AgentLanguageInterface: Warning: Image data will be ignored with OpenAI fallback")
       }
     } else if (providerToUse === "openai" && !this.openAIAssistant && this.geminiAssistant) {
-      print("AgentLanguageInterface: OpenAI not available - falling back to Gemini")
+      this.log("AgentLanguageInterface: OpenAI not available - falling back to Gemini")
       providerToUse = "gemini"
     }
 
@@ -243,7 +249,7 @@ export class AgentLanguageInterface {
     }
 
     try {
-      print(
+      this.log(
         `AgentLanguageInterface: Using provider: ${providerToUse} for response generation (voice: ${!options?.textOnly})`
       )
 
@@ -253,7 +259,7 @@ export class AgentLanguageInterface {
         return await this.generateGeminiResponse(messages, options)
       }
     } catch (error) {
-      print(`AgentLanguageInterface: Response generation failed: ${error}`)
+      this.log(`AgentLanguageInterface: Response generation failed: ${error}`)
       this.onError.invoke({error: `Response generation failed: ${error}`, provider: this.currentProvider})
 
       // Fallback to a simple educational response
@@ -268,7 +274,7 @@ export class AgentLanguageInterface {
   public async generateTextResponse(messages: Message[], options?: LLMOptions): Promise<string> {
     // FIX: Ensure current provider session is properly initialized
     if (!this.providerInitialized[this.currentProvider]) {
-      print(`AgentLanguageInterface: ${this.currentProvider} session not initialized, attempting to initialize...`)
+      this.log(`AgentLanguageInterface: ${this.currentProvider} session not initialized, attempting to initialize...`)
       this.initializeCurrentProvider()
 
       // Wait for initialization to complete
@@ -283,7 +289,7 @@ export class AgentLanguageInterface {
         return response
       }
     } catch (error) {
-      print(`AgentLanguageInterface: Text response generation failed: ${error}`)
+      this.log(`AgentLanguageInterface: Text response generation failed: ${error}`)
       this.onError.invoke({error: `Text response generation failed: ${error}`, provider: this.currentProvider})
 
       // No fallbacks for text generation - this indicates a real problem
@@ -296,7 +302,7 @@ export class AgentLanguageInterface {
     const lastUserMessage = messages.filter((m) => m.role === "user").pop()
     const userQuery = lastUserMessage?.content || "learning topic"
 
-    print("AgentLanguageInterface: Using fallback response due to AI backend unavailability")
+    this.log("AgentLanguageInterface: Using fallback response due to AI backend unavailability")
 
     // More sophisticated educational responses based on query content
     const lowerQuery = userQuery.toLowerCase().trim()
@@ -348,7 +354,7 @@ export class AgentLanguageInterface {
       const shouldUseVoice = !options || options.textOnly !== true
 
       if (!shouldUseVoice) {
-        print("AgentLanguageInterface: 📝 Using OpenAI Chat Completions API for text-only response")
+        this.log("AgentLanguageInterface: 📝 Using OpenAI Chat Completions API for text-only response")
         const responseText = await this.generateOpenAITextResponse(messages, options)
         return {
           content: responseText,
@@ -361,18 +367,18 @@ export class AgentLanguageInterface {
         }
       }
 
-      print("AgentLanguageInterface: Using OpenAI Realtime API with audio output - voice enabled")
+      this.log("AgentLanguageInterface: Using OpenAI Realtime API with audio output - voice enabled")
 
       // FIX: Enable audio streaming for OpenAI Realtime API
       if (this.openAIAssistant) {
-        print("AgentLanguageInterface: Starting audio streaming for OpenAI")
+        this.log("AgentLanguageInterface: Starting audio streaming for OpenAI")
         this.openAIAssistant.streamData(true)
       }
 
       // FIX: Send full context to OpenAI Realtime session for processing with audio
       const lastUserMessage = messages[messages.length - 1]
       if (lastUserMessage && lastUserMessage.role === "user") {
-        print("AgentLanguageInterface: Sending contextual message to OpenAI Realtime session with audio")
+        this.log("AgentLanguageInterface: Sending contextual message to OpenAI Realtime session with audio")
 
         // Build comprehensive message with full context for Realtime API
         const fullContextMessage = this.buildContextualMessage(messages)
@@ -381,7 +387,7 @@ export class AgentLanguageInterface {
         this.openAIAssistant?.sendMessageWithAudio(fullContextMessage)
 
         // FIX: For voice mode, don't wait for text - let transcription events flow through
-        print("AgentLanguageInterface: OpenAI voice mode - returning placeholder for transcription")
+        this.log("AgentLanguageInterface: OpenAI voice mode - returning placeholder for transcription")
         return {
           content: "[Voice response - transcription pending]",
           finishReason: "stop",
@@ -395,14 +401,14 @@ export class AgentLanguageInterface {
 
       throw new Error("No user message found to process")
     } catch (error) {
-      print(`AgentLanguageInterface: OpenAI response generation failed: ${error}`)
+      this.log(`AgentLanguageInterface: OpenAI response generation failed: ${error}`)
       return this.generateFallbackResponse(messages)
     }
   }
 
   private async generateGeminiResponse(messages: Message[], options?: LLMOptions): Promise<LLMResponse> {
     if (!this.geminiAssistant) {
-      print("AgentLanguageInterface: Gemini Assistant not available, using fallback")
+      this.log("AgentLanguageInterface: Gemini Assistant not available, using fallback")
       return this.generateFallbackResponse(messages)
     }
 
@@ -412,7 +418,7 @@ export class AgentLanguageInterface {
       const shouldUseVoice = !options || options.textOnly !== true
 
       if (!shouldUseVoice) {
-        print("AgentLanguageInterface: 📝 Generating Gemini text-only response using Models API")
+        this.log("AgentLanguageInterface: 📝 Generating Gemini text-only response using Models API")
         const textResponse = await this.generateGeminiTextResponse(messages, options)
         return {
           content: textResponse,
@@ -425,16 +431,16 @@ export class AgentLanguageInterface {
         }
       }
 
-      print("AgentLanguageInterface: Using Gemini Live API with voice/video capabilities enabled")
+      this.log("AgentLanguageInterface: Using Gemini Live API with voice/video capabilities enabled")
 
       // FIX: Wait for WebSocket setup to complete before sending any data
-      print("AgentLanguageInterface: Waiting for Gemini Live setup to complete...")
+      this.log("AgentLanguageInterface: Waiting for Gemini Live setup to complete...")
       await this.geminiAssistant.waitForSetup()
-      print("AgentLanguageInterface: ✅ Setup confirmed ready")
+      this.log("AgentLanguageInterface: ✅ Setup confirmed ready")
 
       // FIX: Enable video streaming for spatial queries
       if (this.geminiAssistant && !options?.textOnly) {
-        print("AgentLanguageInterface: 📹 Starting video streaming for spatial awareness")
+        this.log("AgentLanguageInterface: 📹 Starting video streaming for spatial awareness")
         this.geminiAssistant.streamData(true)
       }
 
@@ -449,19 +455,19 @@ export class AgentLanguageInterface {
 
         // Check if we have image data to send along with the text
         if (lastUserMessage.imageData && lastUserMessage.imageData.length > 100) {
-          print("AgentLanguageInterface: Sending text + image + context to Gemini Live session")
+          this.log("AgentLanguageInterface: Sending text + image + context to Gemini Live session")
           this.sendMultimodalMessageToGemini(fullContextMessage, lastUserMessage.imageData)
         } else {
-          print("AgentLanguageInterface: Sending contextual message to Gemini Live session")
+          this.log("AgentLanguageInterface: Sending contextual message to Gemini Live session")
           this.geminiAssistant.sendTextMessage(fullContextMessage)
         }
-        print("AgentLanguageInterface: Sent full context message to Gemini Live session with audio enabled")
+        this.log("AgentLanguageInterface: Sent full context message to Gemini Live session with audio enabled")
       }
 
       // FIX: For voice mode, we don't wait for text - the transcription will come later
       // Return a placeholder that will be replaced by actual transcription in AgentOrchestrator
       if (!options?.textOnly) {
-        print("AgentLanguageInterface: Voice mode - returning placeholder for transcription")
+        this.log("AgentLanguageInterface: Voice mode - returning placeholder for transcription")
         return {
           content: "[Voice response - transcription pending]",
           finishReason: "stop",
@@ -480,7 +486,7 @@ export class AgentLanguageInterface {
         throw new Error("No response received from Gemini Live session")
       }
 
-      print(
+      this.log(
         `AgentLanguageInterface: Gemini Live response received: "${responseText.substring(0, 100)}..." (${responseText.length} chars)`
       )
 
@@ -494,7 +500,7 @@ export class AgentLanguageInterface {
         }
       }
     } catch (error) {
-      print(`AgentLanguageInterface: Gemini Live response failed: ${error}`)
+      this.log(`AgentLanguageInterface: Gemini Live response failed: ${error}`)
       return this.generateFallbackResponse(messages)
     }
   }
@@ -505,7 +511,7 @@ export class AgentLanguageInterface {
    */
   private async generateGeminiTextResponse(messages: Message[], options?: LLMOptions): Promise<string> {
     try {
-      print("AgentLanguageInterface: 📝 Generating Gemini text-only response using Models API")
+      this.log("AgentLanguageInterface: 📝 Generating Gemini text-only response using Models API")
 
       // Import Gemini Models API
       const {Gemini} = require("RemoteServiceGateway.lspkg/HostedExternal/Gemini")
@@ -526,17 +532,17 @@ export class AgentLanguageInterface {
         }
       }
 
-      print("AgentLanguageInterface: Calling Gemini Models API...")
+      this.log("AgentLanguageInterface: Calling Gemini Models API...")
 
       const response = await Gemini.models(request)
 
       const textResponse = response.candidates[0].content.parts[0].text
 
-      print(`AgentLanguageInterface: Gemini Models API response received: "${textResponse.substring(0, 100)}..."`)
+      this.log(`AgentLanguageInterface: Gemini Models API response received: "${textResponse.substring(0, 100)}..."`)
 
       return textResponse
     } catch (error) {
-      print(`AgentLanguageInterface: Gemini Models API response failed: ${error}`)
+      this.log(`AgentLanguageInterface: Gemini Models API response failed: ${error}`)
       throw error
     }
   }
@@ -547,7 +553,7 @@ export class AgentLanguageInterface {
    */
   private async generateOpenAITextResponse(messages: Message[], options?: LLMOptions): Promise<string> {
     try {
-      print("AgentLanguageInterface: 📝 Using OpenAI Chat Completions API for reliable text generation")
+      this.log("AgentLanguageInterface: 📝 Using OpenAI Chat Completions API for reliable text generation")
 
       // Import OpenAI API directly
       const {OpenAI} = require("RemoteServiceGateway.lspkg/HostedExternal/OpenAI")
@@ -558,7 +564,7 @@ export class AgentLanguageInterface {
         content: msg.content
       }))
 
-      print(`AgentLanguageInterface: Sending ${openAIMessages.length} messages to OpenAI Chat Completions`)
+      this.log(`AgentLanguageInterface: Sending ${openAIMessages.length} messages to OpenAI Chat Completions`)
 
       // Call OpenAI Chat Completions API
       const response = await OpenAI.chatCompletions({
@@ -573,11 +579,11 @@ export class AgentLanguageInterface {
       }
 
       const responseText = response.choices[0].message.content
-      print(`AgentLanguageInterface: OpenAI Chat Completions response: "${responseText.substring(0, 100)}..."`)
+      this.log(`AgentLanguageInterface: OpenAI Chat Completions response: "${responseText.substring(0, 100)}..."`)
 
       return responseText
     } catch (error) {
-      print(`AgentLanguageInterface: OpenAI Chat Completions failed: ${error}`)
+      this.log(`AgentLanguageInterface: OpenAI Chat Completions failed: ${error}`)
       throw error
     }
   }
@@ -608,7 +614,7 @@ export class AgentLanguageInterface {
 
       // Set flag to prevent other systems from interfering with tool text collection
       this.isCollectingToolResponse = true
-      print(`AgentLanguageInterface: 🔒 Tool text collection started - other handlers will be paused`)
+      this.log(`AgentLanguageInterface: 🔒 Tool text collection started - other handlers will be paused`)
 
       // Helper function to complete the response
       const completeResponse = (reason: string) => {
@@ -616,12 +622,12 @@ export class AgentLanguageInterface {
           responseComplete = true
           clearTimeout(timeoutId)
           if (silenceTimeoutId) clearTimeout(silenceTimeoutId)
-          print(
+          this.log(
             `AgentLanguageInterface: Text collection completed (${reason}): "${responseText.substring(0, 100)}..." (${responseText.length} chars)`
           )
           this.onTextUpdate.remove(textUpdateHandler)
           this.isCollectingToolResponse = false
-          print(`AgentLanguageInterface: 🔓 Tool text collection completed - other handlers can resume`)
+          this.log(`AgentLanguageInterface: 🔓 Tool text collection completed - other handlers can resume`)
 
           // Return the collected text or a default message if nothing was collected
           const finalResponse = responseText.trim()
@@ -663,7 +669,7 @@ export class AgentLanguageInterface {
           text.toLowerCase().includes("session started")
 
         if (isSystemMessage) {
-          print(`AgentLanguageInterface: 🚫 Ignoring system message: "${text}"`)
+          this.log(`AgentLanguageInterface: 🚫 Ignoring system message: "${text}"`)
           return
         }
 
@@ -675,7 +681,7 @@ export class AgentLanguageInterface {
           }
           responseText += text
           lastTextTime = Date.now()
-          print(`AgentLanguageInterface: 📝 Collecting AI text: "${text}" (total: ${responseText.length} chars)`)
+          this.log(`AgentLanguageInterface: 📝 Collecting AI text: "${text}" (total: ${responseText.length} chars)`)
 
           // Reset silence timer whenever we receive new text
           resetSilenceTimer()
@@ -684,7 +690,7 @@ export class AgentLanguageInterface {
         // Handle explicit completion markers
         if (data.completed) {
           completionAttempts++
-          print(`AgentLanguageInterface: Completion attempt ${completionAttempts} with ${responseText.length} chars`)
+          this.log(`AgentLanguageInterface: Completion attempt ${completionAttempts} with ${responseText.length} chars`)
 
           // For streaming responses, wait a bit more for any final chunks
           setTimeout(() => {
@@ -706,7 +712,7 @@ export class AgentLanguageInterface {
       // Start initial silence timer
       resetSilenceTimer()
 
-      print(`AgentLanguageInterface: Starting text response collection with ${timeoutMs}ms timeout`)
+      this.log(`AgentLanguageInterface: Starting text response collection with ${timeoutMs}ms timeout`)
     })
   }
 
@@ -723,7 +729,7 @@ export class AgentLanguageInterface {
       const startTime = Date.now()
       const checkReady = () => {
         if (this.providerInitialized[this.currentProvider]) {
-          print(`AgentLanguageInterface: ${this.currentProvider} session ready for communication`)
+          this.log(`AgentLanguageInterface: ${this.currentProvider} session ready for communication`)
           resolve()
         } else if (Date.now() - startTime > timeoutMs) {
           reject(new Error(`${this.currentProvider} session initialization timeout after ${timeoutMs}ms`))
@@ -780,20 +786,20 @@ export class AgentLanguageInterface {
    */
   private sendMultimodalMessageToGemini(textContent: string, imageData: string): void {
     if (!this.geminiAssistant) {
-      print("AgentLanguageInterface: Gemini Assistant not available for multimodal message")
+      this.log("AgentLanguageInterface: Gemini Assistant not available for multimodal message")
       return
     }
 
     try {
       // Send image data directly to the Gemini Live session
       this.geminiAssistant.sendImageMessage(imageData)
-      print("AgentLanguageInterface: Sent image data to Gemini Live session")
+      this.log("AgentLanguageInterface: Sent image data to Gemini Live session")
 
       // Then send the text message
       this.geminiAssistant.sendTextMessage(textContent)
-      print("AgentLanguageInterface: 📝 Sent text content to Gemini Live session")
+      this.log("AgentLanguageInterface: 📝 Sent text content to Gemini Live session")
     } catch (error) {
-      print(`AgentLanguageInterface: Failed to send multimodal message: ${error}`)
+      this.log(`AgentLanguageInterface: Failed to send multimodal message: ${error}`)
       // Fallback to text-only
       this.geminiAssistant.sendTextMessage(textContent)
     }
@@ -805,20 +811,20 @@ export class AgentLanguageInterface {
 
   public streamData(stream: boolean): void {
     if (!this.isInitialized) {
-      print("AgentLanguageInterface: Session not initialized, cannot stream data")
+      this.log("AgentLanguageInterface: Session not initialized, cannot stream data")
       return
     }
 
     try {
       if (this.currentProvider.toLowerCase() === "openai" && this.openAIAssistant) {
         this.openAIAssistant.streamData(stream)
-        print(`AgentLanguageInterface: OpenAI streaming ${stream ? "started" : "stopped"}`)
+        this.log(`AgentLanguageInterface: OpenAI streaming ${stream ? "started" : "stopped"}`)
       } else if (this.currentProvider.toLowerCase() === "gemini" && this.geminiAssistant) {
         this.geminiAssistant.streamData(stream)
-        print(`AgentLanguageInterface: Gemini streaming ${stream ? "started" : "stopped"}`)
+        this.log(`AgentLanguageInterface: Gemini streaming ${stream ? "started" : "stopped"}`)
       }
     } catch (error) {
-      print(`AgentLanguageInterface: Streaming control failed: ${error}`)
+      this.log(`AgentLanguageInterface: Streaming control failed: ${error}`)
       this.onError.invoke({error: `Streaming control failed: ${error}`, provider: this.currentProvider})
     }
   }
@@ -827,13 +833,13 @@ export class AgentLanguageInterface {
     try {
       if (this.currentProvider.toLowerCase() === "openai" && this.openAIAssistant) {
         this.openAIAssistant.interruptAudioOutput()
-        print("AgentLanguageInterface: OpenAI audio interrupted")
+        this.log("AgentLanguageInterface: OpenAI audio interrupted")
       } else if (this.currentProvider.toLowerCase() === "gemini" && this.geminiAssistant) {
         this.geminiAssistant.interruptAudioOutput()
-        print("AgentLanguageInterface: Gemini audio interrupted")
+        this.log("AgentLanguageInterface: Gemini audio interrupted")
       }
     } catch (error) {
-      print(`AgentLanguageInterface: Audio interruption failed: ${error}`)
+      this.log(`AgentLanguageInterface: Audio interruption failed: ${error}`)
       this.onError.invoke({error: `Audio interruption failed: ${error}`, provider: this.currentProvider})
     }
   }
@@ -847,16 +853,16 @@ export class AgentLanguageInterface {
       if (this.currentProvider.toLowerCase() === "openai" && this.openAIAssistant) {
         if (callId) {
           this.openAIAssistant.sendFunctionCallUpdate(functionName, callId, result)
-          print(`AgentLanguageInterface: OpenAI function result sent: ${functionName}`)
+          this.log(`AgentLanguageInterface: OpenAI function result sent: ${functionName}`)
         } else {
-          print("AgentLanguageInterface: OpenAI requires callId for function results")
+          this.log("AgentLanguageInterface: OpenAI requires callId for function results")
         }
       } else if (this.currentProvider.toLowerCase() === "gemini" && this.geminiAssistant) {
         this.geminiAssistant.sendFunctionCallUpdate(functionName, result)
-        print(`AgentLanguageInterface: Gemini function result sent: ${functionName}`)
+        this.log(`AgentLanguageInterface: Gemini function result sent: ${functionName}`)
       }
     } catch (error) {
-      print(`AgentLanguageInterface: Function result sending failed: ${error}`)
+      this.log(`AgentLanguageInterface: Function result sending failed: ${error}`)
       this.onError.invoke({error: `Function result sending failed: ${error}`, provider: this.currentProvider})
     }
   }
@@ -874,7 +880,7 @@ export class AgentLanguageInterface {
     })
 
     if (data.text && data.text.length > 0) {
-      print(
+      this.log(
         `AgentLanguageInterface: 📝 Text update from ${provider}: "${data.text.substring(0, 50)}..." (completed: ${data.completed})`
       )
     }
@@ -889,7 +895,7 @@ export class AgentLanguageInterface {
       provider: provider
     })
 
-    print(`AgentLanguageInterface: Function call from ${provider}: ${data.name}`)
+    this.log(`AgentLanguageInterface: Function call from ${provider}: ${data.name}`)
   }
 
   // ================================
@@ -917,7 +923,7 @@ export class AgentLanguageInterface {
   public resetSession(): void {
     this.isInitialized = false
     this.providerInitialized = {openai: false, gemini: false}
-    print("AgentLanguageInterface: Session reset")
+    this.log("AgentLanguageInterface: Session reset")
   }
 
   public async testConnection(): Promise<boolean> {
@@ -929,7 +935,7 @@ export class AgentLanguageInterface {
       // Test basic connectivity
       return this.providerInitialized[this.currentProvider]
     } catch (error) {
-      print(`AgentLanguageInterface: Connection test failed: ${error}`)
+      this.log(`AgentLanguageInterface: Connection test failed: ${error}`)
       return false
     }
   }

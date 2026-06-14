@@ -4,6 +4,8 @@ import {NaturalistAgent} from "./NaturalistAgent"
 import {ArchivistAgent} from "./ArchivistAgent"
 import {Message} from "./AgentTypes"
 import Event from "SpectaclesInteractionKit.lspkg/Utils/Event"
+import {SupabaseDBManager} from "_Boon/SupabaseInfoStoring&Retrieving/Scripts/SupabaseDBManager"
+import {NearbySightingManager} from "_Boon/NearbySighting/Scripts/NearbySightingManager"
 
 /**
  * Agent routing configuration
@@ -47,7 +49,7 @@ export class AgentRouter {
   public onRoutingDecision: Event<RoutingDecision> = new Event()
   public onCoordinationRequested: Event<{fromAgent: string; toAgent: string; context: string; priority: number}> = new Event()
 
-  constructor(languageInterface: AgentLanguageInterface, config?: Partial<RoutingConfig>) {
+  constructor(languageInterface: AgentLanguageInterface, config?: Partial<RoutingConfig>, dbManager?: SupabaseDBManager, mapManager?: NearbySightingManager) {
     this.languageInterface = languageInterface
     this.config = {
       confidenceThreshold: 0.6,
@@ -57,20 +59,20 @@ export class AgentRouter {
       ...config
     }
 
-    this.initializeAgents()
+    this.initializeAgents(dbManager, mapManager)
     print(`AgentRouter: 🧠 Intelligent router initialized with ${this.agents.size} agents`)
   }
 
   /**
    * Initialize outdoor education agents
    */
-  private initializeAgents(): void {
+  private initializeAgents(dbManager?: SupabaseDBManager, mapManager?: NearbySightingManager): void {
     // Create Naturalist agent
-    const naturalist = new NaturalistAgent(this.languageInterface)
+    const naturalist = new NaturalistAgent(this.languageInterface, dbManager, mapManager)
     this.registerAgent(naturalist)
 
     // Create Archivist agent
-    const archivist = new ArchivistAgent(this.languageInterface)
+    const archivist = new ArchivistAgent(this.languageInterface, dbManager, mapManager)
     this.registerAgent(archivist)
   }
 

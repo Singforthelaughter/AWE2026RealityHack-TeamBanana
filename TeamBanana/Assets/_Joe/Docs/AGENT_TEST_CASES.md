@@ -30,6 +30,7 @@ This document contains comprehensive test cases for testing the new agent system
 6. [Cross-Agent Coordination Tests](#cross-agent-coordination-tests)
 7. [Knowledge Source Tests](#knowledge-source-tests)
 8. [Tool Use Tests](#tool-use-tests)
+9. [Nearby Sightings Tool Tests](#nearby-sightings-tool-tests)
 
 ---
 
@@ -1373,6 +1374,228 @@ NaturalistAgent: Proceeding with degraded functionality
 
 ---
 
+### Test 44: Nearby Sightings Tool — Basic Query
+
+**Scenario**: User asks what butterflies have been spotted near them
+
+**Voice Command**: "What butterflies have been spotted near me?"
+
+**Expected Tool Call**:
+```typescript
+{
+  tool: "nearby_sightings",
+  parameters: {
+    radius: 5,
+    limit: 10,
+    unit: "miles"
+  }
+}
+```
+
+**Expected Debug Logs**:
+```
+AgentOrchestrator: Processing voice input: "What butterflies have been spotted near me?"
+AgentRouter: 'naturalist' confidence: 0.75
+AgentOrchestrator: Routed to naturalist
+NaturalistAgent: Processing query: "What butterflies have been spotted near me?"
+NaturalistAgent: Activating nearby_sightings...
+NearbySightingsTool: Executing — radius: 5 miles, limit: 10
+NearbySightingsTool: Found 3 sightings within 5 miles
+NaturalistAgent: Nearby sightings tool result integrated into response
+```
+
+**Expected Tool Response**:
+```typescript
+{
+  success: true,
+  result: {
+    userLocation: { latitude: 37.7749, longitude: -122.4194 },
+    sightings: [
+      {
+        id: "abc-123",
+        speciesScientificName: "Danaus plexippus",
+        speciesCommonNames: ["Monarch butterfly"],
+        speciesProbability: 0.95,
+        distanceKm: 0.05,
+        identifiedAt: "2026-06-14T10:00:00Z"
+      }
+    ],
+    count: 3,
+    radius: 5,
+    unit: "miles"
+  },
+  executionTime: 1234
+}
+```
+
+**Expected Agent Response Elements**:
+- Mentions the count of nearby sightings
+- Names species using common names when available
+- Naturalist tone: questions to encourage exploration
+- Archivist tone: enthusiastic facts about the species found
+
+---
+
+### Test 45: Nearby Sightings with Custom Radius
+
+**Scenario**: User asks for butterflies within a specific distance
+
+**Voice Command**: "Are there any butterflies within 10 kilometers?"
+
+**Expected Tool Call**:
+```typescript
+{
+  tool: "nearby_sightings",
+  parameters: {
+    radius: 10,
+    limit: 10,
+    unit: "km"
+  }
+}
+```
+
+**Expected Debug Logs**:
+```
+AgentOrchestrator: Processing voice input: "Are there any butterflies within 10 kilometers?"
+AgentRouter: 'naturalist' confidence: 0.80
+NaturalistAgent: Activating nearby_sightings...
+NearbySightingsTool: Executing — radius: 10 km, limit: 10
+NearbySightingsTool: Found 7 sightings within 10 km
+```
+
+---
+
+### Test 46: Archivist Agent Using Nearby Sightings
+
+**Scenario**: User asks Archivist for species information about local butterflies
+
+**Voice Command**: "What species live around here?"
+
+**Expected Routing Decision**:
+```typescript
+{
+  selectedAgent: "archivist",
+  confidence: 0.70,
+  reasoning: "Selected archivist with confidence 0.70. Alternatives considered: naturalist(0.40)."
+}
+```
+
+**Expected Debug Logs**:
+```
+AgentOrchestrator: Processing voice input: "What species live around here?"
+AgentRouter: 'archivist' confidence: 0.70
+ArchivistAgent: Processing knowledge query: "What species live around here?"
+ArchivistAgent: Activating nearby_sightings...
+NearbySightingsTool: Found 4 sightings within 5 miles
+ArchivistAgent: Enhancing response with nearby species data
+ArchivistAgent: Generated knowledge response: "Did you know we have Monarchs nearby?..."
+```
+
+**Expected Response Characteristics**:
+- Archivist enthusiasm woven into educational narrative
+- Shares facts about species found locally
+- May offer to tell stories about specific species
+
+---
+
+### Test 47: Naturalist Using Nearby Sightings for Discovery Guidance
+
+**Scenario**: Naturalist uses nearby data to guide exploration
+
+**Voice Command**: "Where should I go to find butterflies?"
+
+**Expected Debug Logs**:
+```
+AgentOrchestrator: Processing voice input: "Where should I go to find butterflies?"
+AgentRouter: 'naturalist' confidence: 0.85
+NaturalistAgent: Activating nearby_sightings...
+NearbySightingsTool: Found 5 sightings within 5 miles
+NaturalistAgent: Using sighting locations for discovery guidance
+NaturalistAgent: Generated discovery response: "Butterfly enthusiasts have spotted a few species not far from here. What direction do you feel drawn to explore first?"
+```
+
+**Expected Response Characteristics**:
+- Socratic framing — guides rather than lists locations
+- References sightings as "other explorers have found"
+- Follows up with observation questions
+
+---
+
+### Test 48: No Nearby Sightings Found
+
+**Scenario**: No sightings within the search radius
+
+**Voice Command**: "What's been seen around here lately?"
+
+**Expected Tool Response**:
+```typescript
+{
+  success: true,
+  result: {
+    userLocation: { latitude: 37.7749, longitude: -122.4194 },
+    sightings: [],
+    count: 0,
+    radius: 5,
+    unit: "miles"
+  },
+  executionTime: 890
+}
+```
+
+**Expected Agent Response**:
+- Naturalist: "No one has reported sightings nearby — that means you could be the first! What plants do you notice?"
+- Archivist: "This area hasn't had any reported sightings yet. Shall I tell you what butterflies to look for based on the habitat?"
+
+---
+
+### Test 49: Nearby Sightings Tool Cache Behavior
+
+**Scenario**: Follow-up question within 30 seconds uses cached data
+
+**First Query**: "What butterflies are nearby?"
+**Second Query (15s later)**: "Tell me more about the first one"
+
+**Expected Debug Logs**:
+```
+// First query
+NearbySightingsTool: Found 3 sightings within 5 miles
+
+// Second query — cache hit
+NearbySightingsTool: Returning cached sightings
+```
+
+**Expected Cache Statistics**:
+```typescript
+{
+  cacheTTL: 30000,     // 30 seconds
+  cacheHits: 1,
+  savedRoundTrips: 1
+}
+```
+
+---
+
+### Test 50: Nearby Sightings GPS Unavailable
+
+**Scenario**: GPS permission denied or unavailable
+
+**Voice Command**: "What butterflies are near me?"
+
+**Expected Tool Response**:
+```typescript
+{
+  success: false,
+  error: "Unable to retrieve nearby sightings. Please check location permissions and try again.",
+  executionTime: 150
+}
+```
+
+**Expected Agent Fallback**:
+- Naturalist: "I'd love to tell you about nearby butterflies, but I need location access. What do you notice around you right now?"
+- Archivist: "I can't check local sightings without location access, but I can tell you about butterflies common in this region."
+
+---
+
 ## Testing Instructions
 
 ### How to Run These Tests with Microphone
@@ -1446,7 +1669,7 @@ NaturalistAgent: Proceeding with degraded functionality
 ## Summary
 
 This test suite covers:
-- **43+ test cases** across all agent components
+- **50 test cases** across all agent components
 - **Voice input testing** with natural language commands
 - **Tool call verification** with expected parameters
 - **Debug log validation** for transparency
@@ -1456,7 +1679,7 @@ This test suite covers:
 - **Performance testing** for response times
 - **Integration scenarios** for complete user journeys
 - **Knowledge source testing** with cache, fallback, and multi-source scenarios
-- **Tool use testing** with weather, location, spatial tools and tool integration
+- **Tool use testing** with weather, location, spatial, and nearby_sightings tools and tool integration
 
 ### Critical Architecture Distinctions
 
@@ -1491,9 +1714,10 @@ Each test case provides clear expectations for voice commands, tool calls, logs,
 1. Weather Tool: Ask about weather conditions ("Is it good for butterflies?")
 2. Location Tool: Ask local species questions ("What butterflies are here?")
 3. Spatial Tool: Ask habitat analysis ("Is this a good spot?")
-4. Watch for tool activation logs and parameter validation
-5. Verify tool responses enhance agent responses
-6. Test error handling when tools are unavailable
+4. Nearby Sightings Tool: Ask about local sightings ("What butterflies have been spotted near me?")
+5. Watch for tool activation logs and parameter validation
+6. Verify tool responses enhance agent responses
+7. Test error handling when tools are unavailable
 
 #### Testing Tool Integration
 1. Ask questions requiring multiple contexts ("What should I expect here now?")

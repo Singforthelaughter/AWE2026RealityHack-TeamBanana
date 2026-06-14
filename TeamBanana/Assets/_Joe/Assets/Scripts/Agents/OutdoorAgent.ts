@@ -21,6 +21,9 @@ export interface IOutdoorAgent {
   registerTool(tool: Tool): void
   getTool(name: string): Tool | undefined
 
+  // Tool display
+  setToolDisplayCallback(cb: (toolName: string, args: Record<string, unknown>) => void): void
+
   // Coordination
   canHandleQuery(query: string, context?: any): Promise<number> // Returns confidence score 0-1
   requestCoordination(
@@ -78,6 +81,13 @@ export abstract class OutdoorAgent implements IOutdoorAgent {
   // Events for agent communication
   public onResponseGenerated: Event<OutdoorAgentResponse> = new Event()
   public onCoordinationRequested: Event<{fromAgent: string; toAgent: string; context: string; priority: number}> = new Event()
+
+  // Callback for tool display text (set by orchestrator)
+  private toolDisplayCallback: ((toolName: string, args: Record<string, unknown>) => void) | null = null
+
+  public setToolDisplayCallback(cb: (toolName: string, args: Record<string, unknown>) => void): void {
+    this.toolDisplayCallback = cb
+  }
 
   constructor(languageInterface: AgentLanguageInterface) {
     this.languageInterface = languageInterface
@@ -177,6 +187,11 @@ export abstract class OutdoorAgent implements IOutdoorAgent {
         error: `Tool '${toolName}' not found`,
         executionTime: 0
       }
+    }
+
+    // Display tool usage on the UI tool display text
+    if (this.toolDisplayCallback) {
+      this.toolDisplayCallback(toolName, args)
     }
 
     try {

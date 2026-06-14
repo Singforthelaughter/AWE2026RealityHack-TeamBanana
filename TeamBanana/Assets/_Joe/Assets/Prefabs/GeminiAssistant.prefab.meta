@@ -23,6 +23,7 @@
   ScriptInputsDefault:
     haveAudioOutput: true
     voice: true
+    enableDebugLogging: true
   ScriptTypesDefault:
     {}
   ScriptInputs:
@@ -33,6 +34,7 @@
       haveVideoInput: false
       haveAudioOutput: true
       voice: Puck
+      enableDebugLogging: false
   ScriptTypes:
     "":
       {}

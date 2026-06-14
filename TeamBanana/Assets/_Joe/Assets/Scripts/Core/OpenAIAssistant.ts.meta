@@ -27,6 +27,7 @@
   PackagePolicy: CanBeUnpacked
   ScriptInputsHidden:
     dynamicAudioOutput: false
+    enableDebugLogging: false
     haveAudioOutput: false
     microphoneRecorder: false
     voice: false
@@ -45,6 +46,7 @@
       microphoneRecorder: !<MappingBased.AssignableType_1> 00000000-0000-0000-0000-000000000000
       haveAudioOutput: false
       voice: coral
+      enableDebugLogging: false
   ScriptTypes:
     -
       {}
@@ -66,5 +68,6 @@
     - '// @ui {"widget":"label", "label":"<span style=\"color: yellow;\">To prevent audio feedback loop in Lens Studio Editor, use headphones or manage your microphone input.</span>"}'
     - // @input bool haveAudioOutput = true
     - '// @input string voice = "coral" {"widget":"combobox", "values":[{"label":"alloy", "value":"alloy"}, {"label":"ash", "value":"ash"}, {"label":"ballad", "value":"ballad"}, {"label":"coral", "value":"coral"}, {"label":"echo", "value":"echo"}, {"label":"sage", "value":"sage"}, {"label":"shimmer", "value":"shimmer"}, {"label":"verse", "value":"verse"}], "showIf":"haveAudioOutput", "showIfValue":true}'
+    - '// @input bool enableDebugLogging {"hint":"Enable verbose debug logging to the console"}'
     - '// @ui {"widget":"group_end"}'
     - '// @ui {"widget":"separator"}'

@@ -31,6 +31,7 @@
     bottomPosition: false
     chatModeChronological: false
     chatbotCardPrefab: false
+    enableDebugLogging: false
     enableScrollSystem: false
     initialNumberOfCards: false
     maxTestCards: false
@@ -74,6 +75,7 @@
       testInterval: !<float> 2.000000
       maxTestCards: 40
       chatModeChronological: true
+      enableDebugLogging: false
       spacingMultiplier: !<float> 1.000000
   ScriptTypes:
     -
@@ -98,4 +100,5 @@
     - '// @input number testInterval = "2.0" {"hint":"Interval between test card additions (seconds)"}'
     - '// @input int maxTestCards = "40" {"hint":"Maximum number of cards for testing"}'
     - '// @input bool chatModeChronological = true {"hint":"Enable chronological chat mode"}'
+    - '// @input bool enableDebugLogging {"hint":"Enable verbose debug logging to the console"}'
     - '// @input number spacingMultiplier = "1.0" {"hint":"Multiplier for spacing between cards"}'

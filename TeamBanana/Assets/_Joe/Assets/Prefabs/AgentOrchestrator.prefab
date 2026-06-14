@@ -1,4 +1,4 @@
-- !<ObjectPrefab/43b07841-cc68-4ed2-aae9-734e22d96d96>
+- !<ObjectPrefab/355985de-707f-4ca5-9948-a57bea4e887e>
   PackagePath: ""
   objects:
     - !<own> 29668c6e-dca5-4472-856c-17ba0e7d5962
@@ -33,6 +33,8 @@
     storageManager: true
     toolDisplayText: true
     agentDisplayText: true
+    dbManager: true
+    nearbySightingManager: true
     enableSystem: true
     enableAgentSystem: true
     enableDebugLogging: true
@@ -51,6 +53,8 @@
       storageManager: !<MappingBased.AssignableType_3> 00000000-0000-0000-0000-000000000000
       toolDisplayText: !<reference.Text> 00000000-0000-0000-0000-000000000000
       agentDisplayText: !<reference.Text> 00000000-0000-0000-0000-000000000000
+      dbManager: !<MappingBased.AssignableType_4> 00000000-0000-0000-0000-000000000000
+      nearbySightingManager: !<MappingBased.AssignableType_5> 00000000-0000-0000-0000-000000000000
       enableSystem: true
       enableAgentSystem: true
       enableDebugLogging: true

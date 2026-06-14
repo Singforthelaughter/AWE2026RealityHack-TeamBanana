@@ -159,6 +159,7 @@
     testInterval: true
     maxTestCards: true
     chatModeChronological: true
+    enableDebugLogging: true
   ScriptTypesDefault:
     {}
   ScriptInputs:
@@ -182,6 +183,7 @@
       testInterval: !<float> 2.000000
       maxTestCards: 40
       chatModeChronological: true
+      enableDebugLogging: false
       spacingMultiplier: 0.800000
   ScriptTypes:
     "":

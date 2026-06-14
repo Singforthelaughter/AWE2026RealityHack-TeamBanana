@@ -37,6 +37,7 @@
   ScriptAsset: !<reference> cb29133c-dd8a-4158-b6bc-b394b65e77da
   ScriptInputsDefault:
     voice: true
+    enableDebugLogging: true
   ScriptTypesDefault:
     {}
   ScriptInputs:
@@ -46,6 +47,7 @@
       microphoneRecorder: !<MappingBased.AssignableType_1> 5bd6aa1c-fb76-421d-8d2a-8de28ac0c858
       haveAudioOutput: true
       voice: coral
+      enableDebugLogging: false
   ScriptTypes:
     "":
       {}

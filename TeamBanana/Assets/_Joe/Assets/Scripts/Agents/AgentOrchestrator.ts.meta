@@ -30,6 +30,7 @@
     chatComponent: false
     conversationContextMessages: false
     coordinationDepthLimit: false
+    dbManager: false
     defaultAgent: false
     defaultProvider: false
     enableAgentSystem: false
@@ -38,6 +39,7 @@
     enableSystem: false
     enableVoiceOutput: false
     geminiAssistant: false
+    nearbySightingManager: false
     openAIAssistant: false
     storageManager: false
     toolDisplayText: false
@@ -56,6 +58,8 @@
       storageManager: !<MappingBased.AssignableType_3> 00000000-0000-0000-0000-000000000000
       toolDisplayText: !<reference.Text> 00000000-0000-0000-0000-000000000000
       agentDisplayText: !<reference.Text> 00000000-0000-0000-0000-000000000000
+      dbManager: !<MappingBased.AssignableType_4> 00000000-0000-0000-0000-000000000000
+      nearbySightingManager: !<MappingBased.AssignableType_5> 00000000-0000-0000-0000-000000000000
       enableSystem: true
       enableAgentSystem: true
       enableDebugLogging: true
@@ -75,6 +79,8 @@
     - '// @input AssignableType_3 storageManager {"hint":"Storage Manager for centralized storage control"}'
     - '// @input Component.Text toolDisplayText {"hint":"Text display component for agent usage information"}'
     - '// @input Component.Text agentDisplayText {"hint":"Text display component for current agent indicator"}'
+    - '// @input AssignableType_4 dbManager {"hint":"SupabaseDBManager — enables nearby sightings tool for agents"}'
+    - '// @input AssignableType_5 nearbySightingManager {"hint":"NearbySightingManager — triggers AR map display when nearby sightings are queried"}'
     - '// @ui {"widget":"group_start", "label":"System Configuration"}'
     - // @input bool enableSystem = true
     - '// @input bool enableAgentSystem = true {"hint":"Enable butterfly agent system vs. legacy tool router"}'

@@ -2,7 +2,10 @@ import {OutdoorAgent, IOutdoorAgent, OutdoorAgentResponse, AgentPersonality} fro
 import {AgentLanguageInterface} from "./AgentLanguageInterface"
 import {Tool} from "./AgentTypes"
 import {GeneralConversationTool} from "../Tools/GeneralConversationTool"
+import {NearbySightingsTool} from "../Tools/NearbySightingsTool"
 import {MockButterflyKnowledge} from "../Knowledge/MockButterflyKnowledge"
+import {SupabaseDBManager} from "_Boon/SupabaseInfoStoring&Retrieving/Scripts/SupabaseDBManager"
+import {NearbySightingManager} from "_Boon/NearbySighting/Scripts/NearbySightingManager"
 
 /**
  * Archivist Agent - Enthusiastic storyteller and butterfly knowledge curator
@@ -58,8 +61,9 @@ export class ArchivistAgent extends OutdoorAgent {
   }
 
   private generalConversationTool: GeneralConversationTool
+  private nearbySightingsTool: NearbySightingsTool | null = null
 
-  constructor(languageInterface: AgentLanguageInterface) {
+  constructor(languageInterface: AgentLanguageInterface, dbManager?: SupabaseDBManager, mapManager?: NearbySightingManager) {
     super(languageInterface)
 
     // Initialize knowledge base
@@ -84,6 +88,21 @@ export class ArchivistAgent extends OutdoorAgent {
         return {...result, executionTime: Date.now() - startTime}
       }
     })
+
+    // Register nearby sightings tool if dbManager is available
+    if (dbManager) {
+      this.nearbySightingsTool = new NearbySightingsTool(dbManager)
+      if (mapManager) {
+        this.nearbySightingsTool.setMapManager(mapManager)
+      }
+      this.registerTool({
+        name: "nearby_sightings",
+        description: "Find butterfly sightings near the user's current GPS location",
+        parameters: this.nearbySightingsTool.parameters,
+        execute: (args: Record<string, unknown>) => this.nearbySightingsTool!.execute(args)
+      })
+      print("ArchivistAgent: 🦋 Nearby sightings tool registered")
+    }
 
     print("ArchivistAgent: 📚 Enthusiastic storyteller initialized")
   }
@@ -210,21 +229,44 @@ IMPORTANT: You're a storyteller who brings observations to life. Every butterfly
     try {
       print(`ArchivistAgent: Processing knowledge query: "${(query as string).substring(0, 50)}..."`)
 
+      const queryStr = query as string
+
       // Check for species mentions to enhance knowledge
-      const speciesInfo = this.knowledgeBase.identifySpeciesInQuery(query as string)
+      const speciesInfo = this.knowledgeBase.identifySpeciesInQuery(queryStr)
       if (speciesInfo) {
         this.storyState.lastSpeciesMentioned = speciesInfo
       }
 
-      // Enhance query with knowledge base context
-      const enhancedQuery = this.enhanceQueryWithKnowledge(query as string, speciesInfo)
+      // Check if nearby sightings tool should be activated
+      let toolContext = ""
+      if (this.shouldUseNearbySightings(queryStr)) {
+        print("ArchivistAgent: Activating nearby_sightings...")
+        const toolResult = await this.executeTool("nearby_sightings", {
+          radius: 5,
+          limit: 10,
+          unit: "miles",
+          showOnMap: true
+        })
+        if (toolResult.success && toolResult.result) {
+          const result = toolResult.result as import("../Tools/NearbySightingsTool").NearbySightingsResult
+          const tool = this.nearbySightingsTool
+          toolContext = tool
+            ? "\n\n[NEARBY SIGHTINGS: " + tool.formatSightingsSummary(result) + "]"
+            : "\n\n[NEARBY SIGHTINGS: " + result.count + " sightings found within " + result.radius + " " + result.unit + "]"
+          print("ArchivistAgent: Nearby sightings tool result integrated into response")
+        }
+      }
+
+      // Enhance query with knowledge base context + tool context
+      let enhancedQuery = this.enhanceQueryWithKnowledge(queryStr, speciesInfo)
+      if (toolContext) enhancedQuery += toolContext
 
       // Generate response with storytelling approach
       const messages = this.buildMessages(enhancedQuery, context)
       const response = await this.generateLLMResponse(messages, {
         temperature: 0.9, // Higher for more creative storytelling
-        maxTokens: 250,
-        textOnly: false // Voice output with energetic pacing
+        maxTokens: toolContext ? 350 : 250,
+        textOnly: !!toolContext // Use text-only when we have tool data
       })
 
       const message = response.content || "I love sharing butterfly knowledge! What would you like to know about these amazing creatures?"
@@ -306,6 +348,52 @@ IMPORTANT: You're a storyteller who brings observations to life. Every butterfly
   /**
    * Determine if Naturalist coordination would enhance response
    */
+  /**
+   * Determine if the nearby sightings tool should be activated for this query.
+   */
+  private shouldUseNearbySightings(query: string): boolean {
+    if (!this.nearbySightingsTool) {
+      print("ArchivistAgent: nearby_sightings tool not registered — dbManager not wired?")
+      return false
+    }
+    const q = query.toLowerCase()
+
+    // Must mention butterflies, species, or sightings — not just location
+    const butterflyContext =
+      q.includes("butterfly") ||
+      q.includes("butterflies") ||
+      q.includes("species") ||
+      q.includes("sighting") ||
+      q.includes("spotted") ||
+      q.includes("monarch") ||
+      q.includes("swallowtail") ||
+      q.includes("seen any") ||
+      q.includes("any around") ||
+      q.includes("what's flying") ||
+      q.includes("what is flying") ||
+      q.includes("been found") ||
+      q.includes("live around")
+
+    // And must have a location signal
+    const locationContext =
+      q.includes("near") ||
+      q.includes("around here") ||
+      q.includes("from here") ||
+      q.includes("in this area") ||
+      q.includes("local") ||
+      q.includes("close by") ||
+      q.includes("close to me") ||
+      q.includes("where") ||
+      q.includes("find") ||
+      q.includes("anyone")
+
+    const matches = butterflyContext && locationContext
+    if (matches) {
+      print(`ArchivistAgent: ✅ nearby_sightings keyword match on: "${q.substring(0, 60)}"`)
+    }
+    return matches
+  }
+
   private shouldRequestCoordination(
     message: string,
     query: string

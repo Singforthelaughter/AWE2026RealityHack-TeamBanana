@@ -31,6 +31,7 @@
     dynamicAudioOutput: true
     microphoneRecorder: true
     voice: true
+    enableDebugLogging: true
   ScriptTypesDefault:
     {}
   ScriptInputs:
@@ -40,6 +41,7 @@
       microphoneRecorder: !<MappingBased.AssignableType_1> 00000000-0000-0000-0000-000000000000
       haveAudioOutput: true
       voice: coral
+      enableDebugLogging: false
   ScriptTypes:
     "":
       {}

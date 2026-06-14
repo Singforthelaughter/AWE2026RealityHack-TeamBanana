@@ -9,6 +9,8 @@ import {AgentMemorySystem} from "./AgentMemorySystem"
 import {ChatMessage, SystemState} from "./AgentTypes"
 import {AgentRouter} from "./AgentRouter"
 import {AgentCoordinator} from "./AgentCoordinator"
+import {SupabaseDBManager} from "_Boon/SupabaseInfoStoring&Retrieving/Scripts/SupabaseDBManager"
+import {NearbySightingManager} from "_Boon/NearbySighting/Scripts/NearbySightingManager"
 
 /**
  * AgentOrchestrator - Central coordinator for butterfly outdoor education system
@@ -55,6 +57,14 @@ export class AgentOrchestrator extends BaseScriptComponent {
   @input
   @hint("Text display component for current agent indicator")
   agentDisplayText: Text = null!
+
+  @input
+  @hint("SupabaseDBManager — enables nearby sightings tool for agents")
+  dbManager: SupabaseDBManager | null = null
+
+  @input
+  @hint("NearbySightingManager — triggers AR map display when nearby sightings are queried")
+  nearbySightingManager: NearbySightingManager | null = null
 
   // ================================
   // Configuration
@@ -114,6 +124,7 @@ export class AgentOrchestrator extends BaseScriptComponent {
   private accumulatedTranscription: string = ""
   private transcriptionSilenceTimer: any = null
   private lastTranscriptionTime: number = 0
+  private suppressNextAutoResponse: boolean = false
 
   // Agent UI state
   private currentAgentColor: string = "#4CAF50" // Default: Naturalist green
@@ -215,7 +226,8 @@ export class AgentOrchestrator extends BaseScriptComponent {
       try {
         this.languageInterface = new AgentLanguageInterface(this.openAIAssistant, this.geminiAssistant)
         this.languageInterface.setDefaultProvider(this.defaultProvider as "openai" | "gemini")
-        print("AgentOrchestrator: Language interface created successfully")
+        this.languageInterface.enableDebugLogging = this.enableDebugLogging
+        if (this.enableDebugLogging) print("AgentOrchestrator: Language interface created successfully")
       } catch (error) {
         print(`AgentOrchestrator: Language interface initialization failed: ${error}`)
         throw new Error(`Language interface initialization failed: ${error}`)
@@ -248,7 +260,7 @@ export class AgentOrchestrator extends BaseScriptComponent {
         fallbackAgent: this.defaultAgent,
         enableCoordination: this.enableCoordination,
         debugRouting: this.enableDebugLogging
-      })
+      }, this.dbManager ?? undefined, this.nearbySightingManager ?? undefined)
 
       // Initialize agent coordinator
       this.agentCoordinator = new AgentCoordinator(this.agentRouter, {
@@ -256,6 +268,19 @@ export class AgentOrchestrator extends BaseScriptComponent {
         enableSpeakerAnnouncements: true,
         dialogueTimeout: 5000
       })
+
+      // Wire tool display callback to each agent so tool usage appears on UI
+      const toolDisplayCb = (toolName: string, args: Record<string, unknown>) => {
+        if (this.toolDisplayText) {
+          this.toolDisplayText.text = `${toolName}(${JSON.stringify(args)})`
+        }
+        if (this.enableDebugLogging) {
+          print(`AgentOrchestrator: 🛠️ Tool used: ${toolName}`)
+        }
+      }
+      for (const agent of this.agentRouter.getAllAgents()) {
+        agent.setToolDisplayCallback(toolDisplayCb)
+      }
 
       print("AgentOrchestrator: 🦋 Agent system initialized")
       print(`AgentOrchestrator: Registered agents: ${this.agentRouter?.getAllAgents().length}`)
@@ -404,12 +429,16 @@ export class AgentOrchestrator extends BaseScriptComponent {
         agent: this.currentAgentTone
       })
 
+      // Note: do NOT reset suppressNextAutoResponse here — Gemini's auto-response
+      // may arrive after the agent response. The flag self-resets in handleTextUpdate.
+
       if (this.enableDebugLogging) {
         print(`AgentOrchestrator: Query processed successfully`)
       }
 
       return response
     } catch (error) {
+      this.suppressNextAutoResponse = false // error path — agent won't respond, let Gemini talk
       const errorMessage = `Query processing failed: ${error}`
       this.handleError(errorMessage)
       return errorMessage
@@ -571,6 +600,16 @@ export class AgentOrchestrator extends BaseScriptComponent {
         data.text.includes("Session initialized") ||
         data.text.toLowerCase().includes("websocket")
 
+      // Skip Gemini's auto-response — agent system will provide the real response
+      if (this.suppressNextAutoResponse) {
+        this.accumulatedTranscription = "" // discard any partial text already gathered
+        if (data.completed) {
+          this.suppressNextAutoResponse = false
+          if (this.enableDebugLogging) print("AgentOrchestrator: 🚫 Suppressed auto-response — agent response incoming")
+        }
+        return
+      }
+
       if (!isSystemMessage) {
         // Accumulate text
         if (
@@ -626,6 +665,17 @@ export class AgentOrchestrator extends BaseScriptComponent {
     }
     const query = data.text.trim()
     print(`AgentOrchestrator: 🎤 User speech FINAL: "${query}" — routing to agent system`)
+
+    // Suppress Gemini's VAD auto-response. The agent system will generate a richer
+    // response (potentially with tool context) instead.
+    this.suppressNextAutoResponse = true
+    if (this.geminiAssistant) {
+      this.geminiAssistant.interruptAudioOutput()
+    }
+    if (this.openAIAssistant) {
+      this.openAIAssistant.interruptAudioOutput()
+    }
+
     // Route through agent system for naturalist/archivist persona
     this.processUserQuery(query)
   }

@@ -1,19 +1,24 @@
-- !<AssetImportMetadata/738c9517-1c81-4f72-b0c9-1edd4b980008>
+- !<AssetImportMetadata/230f679e-f46a-44b5-8412-5b3e4dbafe0a>
   ImportedAssetIds:
-    ObjectPrefab: !<reference> 43b07841-cc68-4ed2-aae9-734e22d96d96
+    ObjectPrefab: !<reference> 355985de-707f-4ca5-9948-a57bea4e887e
   ImporterName: ObjectPrefabImporter
-  PrimaryAsset: !<reference> 43b07841-cc68-4ed2-aae9-734e22d96d96
+  PrimaryAsset: !<reference> 355985de-707f-4ca5-9948-a57bea4e887e
   PackageType: NotAPackage
   LegacyPackagePolicy: ~
   ExtraData:
     {}
   AssetDataMap:
-    ObjectPrefab: !<own> e46a2a3e-4432-4d4e-b82a-c145cde10314
+    ObjectPrefab: !<own> 0f0a7b6b-fba7-44b8-aabd-a2c3eba7be16
   DependentFiles:
     []
   ImporterSettings: !<AssetImporterSettings>
     {}
   CompressionSettings: !<own> 00000000-0000-0000-0000-000000000000
+- !<ObjectPrefabAssetData/0f0a7b6b-fba7-44b8-aabd-a2c3eba7be16>
+  Prototype: !<ObjectOwner/87b7ba98-4e6a-40b2-aa58-1d741fd0a01f>
+    PackagePath: ""
+    objects:
+      - !<own> 29668c6e-dca5-4472-7a93-e845f182a69d
 - !<SceneObject/29668c6e-dca5-4472-7a93-e845f182a69d>
   PrefabRemaps:
     []
@@ -42,6 +47,8 @@
     storageManager: true
     toolDisplayText: true
     agentDisplayText: true
+    dbManager: true
+    nearbySightingManager: true
     enableSystem: true
     enableAgentSystem: true
     enableDebugLogging: true
@@ -60,6 +67,8 @@
       storageManager: !<MappingBased.AssignableType_3> 00000000-0000-0000-0000-000000000000
       toolDisplayText: !<reference.Text> 00000000-0000-0000-0000-000000000000
       agentDisplayText: !<reference.Text> 00000000-0000-0000-0000-000000000000
+      dbManager: !<MappingBased.AssignableType_4> 00000000-0000-0000-0000-000000000000
+      nearbySightingManager: !<MappingBased.AssignableType_5> 00000000-0000-0000-0000-000000000000
       enableSystem: true
       enableAgentSystem: true
       enableDebugLogging: true
@@ -72,8 +81,3 @@
   ScriptTypes:
     "":
       {}
-- !<ObjectPrefabAssetData/e46a2a3e-4432-4d4e-b82a-c145cde10314>
-  Prototype: !<ObjectOwner/e47d65b4-21dd-4fad-9a17-a07f55d58327>
-    PackagePath: ""
-    objects:
-      - !<own> 29668c6e-dca5-4472-7a93-e845f182a69d

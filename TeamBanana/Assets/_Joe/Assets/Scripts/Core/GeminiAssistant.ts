@@ -6,6 +6,7 @@ import {MicrophoneRecorder} from "RemoteServiceGateway.lspkg/Helpers/MicrophoneR
 import {VideoController} from "RemoteServiceGateway.lspkg/Helpers/VideoController"
 import {GeminiTypes} from "RemoteServiceGateway.lspkg/HostedExternal/GeminiTypes"
 import {PinchButton} from "SpectaclesInteractionKit.lspkg/Components/UI/PinchButton/PinchButton"
+import {ToggleButton} from "SpectaclesInteractionKit.lspkg/Components/UI/ToggleButton/ToggleButton"
 import Event from "SpectaclesInteractionKit.lspkg/Utils/Event"
 
 @component
@@ -50,6 +51,9 @@ export class GeminiAssistant extends BaseScriptComponent {
     ])
   )
   private voice: string = "Puck"
+  @input
+  @hint("Enable verbose debug logging to the console")
+  enableDebugLogging: boolean = false
   @ui.group_end
   @ui.separator
   private audioProcessor: AudioProcessor = new AudioProcessor()
@@ -73,11 +77,11 @@ export class GeminiAssistant extends BaseScriptComponent {
   private setupCompleted: boolean = false
 
   onAwake() {
-    print("GeminiAssistant: Assistant awakening")
+    if (this.enableDebugLogging) print("GeminiAssistant: Assistant awakening")
     // Initialize Gemini Live session on start to ensure it's available
     this.createEvent("OnStartEvent").bind(() => {
       if (this.websocketRequirementsObj && this.dynamicAudioOutput && this.microphoneRecorder) {
-        print("GeminiAssistant: Initializing Live session with required components")
+        if (this.enableDebugLogging) print("GeminiAssistant: Initializing Live session with required components")
         this.createGeminiLiveSession()
       } else {
         print("GeminiAssistant: Missing required components for Live session")
@@ -91,7 +95,7 @@ export class GeminiAssistant extends BaseScriptComponent {
   createGeminiLiveSession() {
     // Prevent duplicate session creation — reuse existing connection
     if (this.GeminiLive) {
-      print("GeminiAssistant: Live session already exists, reusing existing connection")
+      if (this.enableDebugLogging) print("GeminiAssistant: Live session already exists, reusing existing connection")
       return
     }
 
@@ -113,18 +117,18 @@ export class GeminiAssistant extends BaseScriptComponent {
     this.GeminiLive = Gemini.liveConnect()
 
     this.GeminiLive.onOpen.add((event) => {
-      print("Connection opened")
+      if (this.enableDebugLogging) print("Connection opened")
       this.sessionSetup()
     })
 
     let completedTextDisplay = true
 
     this.GeminiLive.onMessage.add((message) => {
-      print("Received message: " + JSON.stringify(message))
+      if (this.enableDebugLogging) print("Received message: " + JSON.stringify(message))
       // Setup complete, begin sending data
       if (message.setupComplete) {
         message = message as GeminiTypes.Live.SetupCompleteEvent
-        print("Setup complete")
+        if (this.enableDebugLogging) print("Setup complete")
         this.setupCompleted = true
         this.onSetupComplete.invoke()
         this.setupInputs()
@@ -139,7 +143,7 @@ export class GeminiAssistant extends BaseScriptComponent {
           for (const part of sc.modelTurn.parts) {
             if (part.inlineData?.mimeType && part.inlineData.mimeType.startsWith("audio/pcm")) {
               const audio = Base64.decode(part.inlineData.data)
-              print(`GeminiAssistant: 🔊 Audio frame received (${part.inlineData.mimeType}, ${audio.length} bytes)`)
+              if (this.enableDebugLogging) print(`GeminiAssistant: 🔊 Audio frame received (${part.inlineData.mimeType}, ${audio.length} bytes)`)
               this.dynamicAudioOutput.addAudioFrame(audio)
             }
             if (part.text) {
@@ -148,7 +152,7 @@ export class GeminiAssistant extends BaseScriptComponent {
             }
           }
         } else if (sc.modelTurn) {
-          print(`GeminiAssistant: modelTurn received but no parts: ${JSON.stringify(sc.modelTurn).substring(0, 100)}`)
+          if (this.enableDebugLogging) print(`GeminiAssistant: modelTurn received but no parts: ${JSON.stringify(sc.modelTurn).substring(0, 100)}`)
         }
 
         if (sc.interrupted) {
@@ -158,7 +162,7 @@ export class GeminiAssistant extends BaseScriptComponent {
         // User speech transcription
         if (sc.inputTranscription?.text) {
           const isFinal = sc.inputTranscription.isFinal || sc.inputTranscription.finished || false
-          print(`GeminiAssistant: 🎤 USER SAID${isFinal ? " (FINAL)" : ""}: "${sc.inputTranscription.text}"`)
+          if (this.enableDebugLogging) print(`GeminiAssistant: 🎤 USER SAID${isFinal ? " (FINAL)" : ""}: "${sc.inputTranscription.text}"`)
           this.userSpeechEvent.invoke({text: sc.inputTranscription.text, isFinal: isFinal})
         }
 
@@ -179,7 +183,7 @@ export class GeminiAssistant extends BaseScriptComponent {
 
       if (message.toolCall) {
         message = message as GeminiTypes.Live.ToolCallEvent
-        print(JSON.stringify(message))
+        if (this.enableDebugLogging) print(JSON.stringify(message))
         // Handle tool calls
         message.toolCall.functionCalls?.forEach((functionCall) => {
           this.functionCallEvent.invoke({
@@ -200,23 +204,21 @@ export class GeminiAssistant extends BaseScriptComponent {
   }
 
   public streamData(stream: boolean) {
-    print(`GeminiAssistant: streamData called with stream=${stream}`)
+    if (this.enableDebugLogging) print(`GeminiAssistant: streamData called with stream=${stream}`)
 
     if (stream) {
+      print("🎤 Mic ON")
       this.microphoneRecorder.startRecording()
-      print("GeminiAssistant: 🎤 Microphone started for Gemini Live voice input")
 
       if (this.haveVideoInput) {
         this.videoController.startRecording()
-        print("GeminiAssistant: 📹 Video recording started for spatial awareness")
       }
     } else {
+      print("🎤 Mic OFF")
       this.microphoneRecorder.stopRecording()
-      print("GeminiAssistant: 🎤 Microphone stopped")
 
       if (this.haveVideoInput) {
         this.videoController.stopRecording()
-        print("GeminiAssistant: 📹 Video recording stopped")
       }
     }
   }
@@ -261,6 +263,9 @@ export class GeminiAssistant extends BaseScriptComponent {
     this.wireMicButton()
   }
 
+  private micActive: boolean = false
+  private micToggleButton: ToggleButton | null = null
+
   private wireMicButton(): void {
     const obj = this.findSceneObjectByName("MicButton")
     if (!obj) { print("GeminiAssistant: MicButton not found — use streamData() to control mic"); return }
@@ -268,14 +273,23 @@ export class GeminiAssistant extends BaseScriptComponent {
       || (obj as any).getComponent("Button")
       || (obj as any).getComponent("Interactable")
     if (!btn) { print("GeminiAssistant: No button component on MicButton"); return }
-    let active = false
-    if (btn.onButtonPinched && btn.onButtonPinched.add) {
-      btn.onButtonPinched.add(() => { active = !active; active ? this.streamData(true) : this.streamData(false) })
-    } else if (btn.onTriggerStart && btn.onTriggerStart.add) {
-      btn.onTriggerStart.add(() => this.streamData(true))
-      btn.onTriggerEnd.add(() => this.streamData(false))
+
+    this.micToggleButton = (obj as any).getComponent(ToggleButton.getTypeName()) as ToggleButton | null
+
+    if (btn.onTriggerStart && btn.onTriggerStart.add) {
+      btn.onTriggerStart.add(() => {
+        this.micActive = !this.micActive
+        if (this.micToggleButton) this.micToggleButton.isToggledOn = this.micActive
+        this.streamData(this.micActive)
+      })
+    } else if (btn.onButtonPinched && btn.onButtonPinched.add) {
+      btn.onButtonPinched.add(() => {
+        this.micActive = !this.micActive
+        if (this.micToggleButton) this.micToggleButton.isToggledOn = this.micActive
+        this.streamData(this.micActive)
+      })
     }
-    print("GeminiAssistant: 🎤 MicButton wired for push-to-talk")
+    if (this.enableDebugLogging) print("GeminiAssistant: 🎤 MicButton wired for toggle")
   }
 
   private findSceneObjectByName(name: string): SceneObject | null {
@@ -322,7 +336,7 @@ export class GeminiAssistant extends BaseScriptComponent {
       return
     }
 
-    print(`GeminiAssistant: 📝 Sending text message: "${content.substring(0, 100)}..."`)
+    if (this.enableDebugLogging) print(`GeminiAssistant: 📝 Sending text message: "${content.substring(0, 100)}..."`)
 
     // Send user message to conversation
     const messageToSend = {
@@ -343,7 +357,7 @@ export class GeminiAssistant extends BaseScriptComponent {
 
     this.GeminiLive.send(messageToSend)
 
-    print("GeminiAssistant: Text message sent, waiting for AI response")
+    if (this.enableDebugLogging) print("GeminiAssistant: Text message sent, waiting for AI response")
   }
 
   /**
@@ -355,7 +369,7 @@ export class GeminiAssistant extends BaseScriptComponent {
       return
     }
 
-    print("GeminiAssistant: Sending image data to Live session")
+    if (this.enableDebugLogging) print("GeminiAssistant: Sending image data to Live session")
 
     // Send image data using realtime_input format
     const imageMessage = {
@@ -371,7 +385,7 @@ export class GeminiAssistant extends BaseScriptComponent {
 
     this.GeminiLive.send(imageMessage)
 
-    print("GeminiAssistant: Image data sent to Live session")
+    if (this.enableDebugLogging) print("GeminiAssistant: Image data sent to Live session")
   }
 
   /**
@@ -390,7 +404,7 @@ export class GeminiAssistant extends BaseScriptComponent {
   }
 
   private sessionSetup() {
-    print("GeminiAssistant: Setting up Gemini Live session...")
+    if (this.enableDebugLogging) print("GeminiAssistant: Setting up Gemini Live session...")
 
     let generationConfig = {
       responseModalities: ["AUDIO"],
@@ -413,28 +427,6 @@ export class GeminiAssistant extends BaseScriptComponent {
 
     const modelUri = `models/gemini-2.0-flash-live-preview-04-09`
 
-    const tools = [
-      {
-        function_declarations: [
-          {
-            name: "Snap3D",
-            description: "Generates a 3D model based on a text prompt",
-            parameters: {
-              type: "object",
-              properties: {
-                prompt: {
-                  type: "string",
-                  description:
-                    "The text prompt to generate a 3D model from. Cartoonish styles work best. Use 'full body' when generating characters."
-                }
-              },
-              required: ["prompt"]
-            }
-          }
-        ]
-      }
-    ]
-
     const sessionSetupMessage = {
       setup: {
         model: modelUri,
@@ -446,7 +438,6 @@ export class GeminiAssistant extends BaseScriptComponent {
             }
           ]
         },
-        tools: tools,
         contextWindowCompression: {
           triggerTokens: 20000,
           slidingWindow: {targetTokens: 16000}
@@ -461,10 +452,12 @@ export class GeminiAssistant extends BaseScriptComponent {
       }
     } as any
 
-    print(`GeminiAssistant: Sending session setup with model: ${modelUri}`)
-    print(`GeminiAssistant: Response modalities: ${generationConfig?.responseModalities?.join(", ")}`)
-    print(`GeminiAssistant: Audio output enabled: ${this.haveAudioOutput}`)
-    print(`GeminiAssistant: 📹 Video input enabled: ${this.haveVideoInput}`)
+    if (this.enableDebugLogging) {
+      print(`GeminiAssistant: Sending session setup with model: ${modelUri}`)
+      print(`GeminiAssistant: Response modalities: ${generationConfig?.responseModalities?.join(", ")}`)
+      print(`GeminiAssistant: Audio output enabled: ${this.haveAudioOutput}`)
+      print(`GeminiAssistant: 📹 Video input enabled: ${this.haveVideoInput}`)
+    }
 
     this.GeminiLive.send(sessionSetupMessage)
   }

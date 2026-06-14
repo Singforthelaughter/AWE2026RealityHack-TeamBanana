@@ -2,6 +2,8 @@ import {AgentLanguageInterface} from "../Agents/AgentLanguageInterface"
 import {ChatStorage} from "../Storage/ChatStorage"
 import {GeneralConversationTool} from "./GeneralConversationTool"
 import {SpatialTool} from "./SpatialTool"
+import {NearbySightingsTool} from "./NearbySightingsTool"
+import {SupabaseDBManager} from "_Boon/SupabaseInfoStoring&Retrieving/Scripts/SupabaseDBManager"
 
 /**
  * Tool metadata for AI routing decisions
@@ -23,7 +25,7 @@ export class ToolRouter {
   private toolIndex: Map<string, ToolMetadata> = new Map()
   private enableDebugLogging: boolean = true
 
-  constructor(languageInterface: AgentLanguageInterface, _deprecatedStorage?: any) {
+  constructor(languageInterface: AgentLanguageInterface, _deprecatedStorage?: any, dbManager?: SupabaseDBManager) {
     this.languageInterface = languageInterface
 
     // Initialize tools
@@ -31,6 +33,30 @@ export class ToolRouter {
     const spatialTool = new SpatialTool(languageInterface)
 
     // Index tools with their capabilities and use cases
+
+    // Nearby sightings tool (only if dbManager is available)
+    if (dbManager) {
+      const nearbySightingsTool = new NearbySightingsTool(dbManager)
+      this.indexTool("nearby_sightings", {
+        name: "nearby_sightings",
+        description: "Find butterfly sightings near the user's current location from community-reported data",
+        capabilities: [
+          "Query nearby butterfly sightings by GPS proximity",
+          "Return species names, distances, and sighting details",
+          "Show what butterflies other users have found nearby",
+          "Provide local butterfly activity and recent sighting information"
+        ],
+        useWhen: [
+          "User asks about nearby butterflies or recent sightings",
+          "User wants to know what butterfly species are in the area",
+          "User asks 'what has been spotted around here'",
+          "User asks about local butterfly activity or what others have seen",
+          "User wants to find butterflies near their current location"
+        ],
+        instance: nearbySightingsTool
+      })
+    }
+
     this.indexTool("spatial_tool", {
       name: "spatial_tool",
       description: "Answers questions about live lecture environment using camera input and spatial awareness",

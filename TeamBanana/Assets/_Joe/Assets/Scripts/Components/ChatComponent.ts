@@ -201,6 +201,10 @@ export class ChatComponent extends BaseScriptComponent {
   @hint("Enable chronological chat mode")
   chatModeChronological: boolean = true
 
+  @input
+  @hint("Enable verbose debug logging to the console")
+  enableDebugLogging: boolean = false
+
   // Spacing System
   @input("number", "1.0")
   @hint("Multiplier for spacing between cards")
@@ -228,15 +232,17 @@ export class ChatComponent extends BaseScriptComponent {
   initialize = (): void => {
     if (this.initialized) return
 
-    print("ChatComponent: initialize() called")
-    print(`ChatComponent: sceneObject=${this.sceneObject?.name}`)
-    print(`ChatComponent: userCardPrefab=${this.userCardPrefab ? "set" : "NULL"}`)
-    print(`ChatComponent: chatbotCardPrefab=${this.chatbotCardPrefab ? "set" : "NULL"}`)
-    print(`ChatComponent: topLastPos=${this.topLastPosition ? "set" : "NULL"}`)
-    print(`ChatComponent: topPos=${this.topPosition ? "set" : "NULL"}`)
-    print(`ChatComponent: midPos=${this.midPosition ? "set" : "NULL"}`)
-    print(`ChatComponent: botPos=${this.bottomPosition ? "set" : "NULL"}`)
-    print(`ChatComponent: botLastPos=${this.bottomLastPosition ? "set" : "NULL"}`)
+    if (this.enableDebugLogging) {
+      print("ChatComponent: initialize() called")
+      print(`ChatComponent: sceneObject=${this.sceneObject?.name}`)
+      print(`ChatComponent: userCardPrefab=${this.userCardPrefab ? "set" : "NULL"}`)
+      print(`ChatComponent: chatbotCardPrefab=${this.chatbotCardPrefab ? "set" : "NULL"}`)
+      print(`ChatComponent: topLastPos=${this.topLastPosition ? "set" : "NULL"}`)
+      print(`ChatComponent: topPos=${this.topPosition ? "set" : "NULL"}`)
+      print(`ChatComponent: midPos=${this.midPosition ? "set" : "NULL"}`)
+      print(`ChatComponent: botPos=${this.bottomPosition ? "set" : "NULL"}`)
+      print(`ChatComponent: botLastPos=${this.bottomLastPosition ? "set" : "NULL"}`)
+    }
 
     if (!this.validateInputs()) {
       print("ChatComponent: Invalid inputs, cannot initialize")
@@ -253,12 +259,12 @@ export class ChatComponent extends BaseScriptComponent {
     }
 
     this.calculateDynamicPositions()
-    print(`ChatComponent: currentPositions[2] (mid)=${this.currentPositions[2]}`)
+    if (this.enableDebugLogging) print(`ChatComponent: currentPositions[2] (mid)=${this.currentPositions[2]}`)
     this.layoutInitialCards()
     this.setupSwipeInteraction()
 
     this.initialized = true
-    print(`ChatComponent: Initialized with ${this.cardData.length} cards, currentIndex=${this.currentIndex}`)
+    if (this.enableDebugLogging) print(`ChatComponent: Initialized with ${this.cardData.length} cards, currentIndex=${this.currentIndex}`)
   }
 
   private validateInputs(): boolean {
@@ -323,7 +329,7 @@ export class ChatComponent extends BaseScriptComponent {
       this.cards.push(cardObject)
       this.cardData.push(data)
 
-      print(`ChatComponent: Created card ${i} name=${cardObject.name} parent=${this.sceneObject?.name}`)
+      if (this.enableDebugLogging) print(`ChatComponent: Created card ${i} name=${cardObject.name} parent=${this.sceneObject?.name}`)
     }
   }
 
@@ -338,7 +344,7 @@ export class ChatComponent extends BaseScriptComponent {
 
     // Find and set textIndex (displays card number)
     const textIndexObj = findChildByName(cardObject, "TextIndex")
-    print(`ChatComponent: setupCardContent ${cardObject.name} textIndex found=${textIndexObj ? "yes" : "NO"}`)
+    if (this.enableDebugLogging) print(`ChatComponent: setupCardContent ${cardObject.name} textIndex found=${textIndexObj ? "yes" : "NO"}`)
     if (textIndexObj) {
       try {
         const textComp = textIndexObj.getComponent("Component.Text") as any
@@ -352,7 +358,7 @@ export class ChatComponent extends BaseScriptComponent {
 
     // Find and set textContent (displays message text)
     const textContentObj = findChildByName(cardObject, "TextContent")
-    print(`ChatComponent: setupCardContent ${cardObject.name} textContent found=${textContentObj ? "yes" : "NO"}`)
+    if (this.enableDebugLogging) print(`ChatComponent: setupCardContent ${cardObject.name} textContent found=${textContentObj ? "yes" : "NO"}`)
     if (textContentObj) {
       try {
         const textComp: any = textContentObj.getComponent("Component.Text")
@@ -372,7 +378,7 @@ export class ChatComponent extends BaseScriptComponent {
             textComp.backgroundSettings.margins.right = 2
             textComp.backgroundSettings.margins.top = 2
           }
-          print(`ChatComponent: Set textContent to "${data.textContent.substring(0, 30)}..."`)
+          if (this.enableDebugLogging) print(`ChatComponent: Set textContent to "${data.textContent.substring(0, 30)}..."`)
         }
       } catch (e) {
         print(`ChatComponent: Could not set textContent on ${cardObject.name}: ${e}`)
@@ -400,7 +406,7 @@ export class ChatComponent extends BaseScriptComponent {
 
     const indices = calculateVisibleIndices(this.currentIndex, this.cardData.length)
     const visibleIndices = [indices.topLast, indices.top, indices.mid, indices.bottom, indices.bottomLast]
-    print(`ChatComponent: layoutInitialCards indices=[${visibleIndices}] currentIndex=${this.currentIndex} totalCards=${this.cardData.length}`)
+    if (this.enableDebugLogging) print(`ChatComponent: layoutInitialCards indices=[${visibleIndices}] currentIndex=${this.currentIndex} totalCards=${this.cardData.length}`)
 
     visibleIndices.forEach((cardIndex, positionIndex) => {
       if (cardIndex >= 0 && cardIndex < this.cards.length) {
@@ -408,7 +414,7 @@ export class ChatComponent extends BaseScriptComponent {
         card.enabled = true
         const pos = this.currentPositions[positionIndex]
         card.getTransform().setLocalPosition(pos)
-        print(`ChatComponent: Card ${cardIndex} placed at posIndex=${positionIndex} worldPos=${card.getTransform().getWorldPosition()}`)
+        if (this.enableDebugLogging) print(`ChatComponent: Card ${cardIndex} placed at posIndex=${positionIndex} worldPos=${card.getTransform().getWorldPosition()}`)
       }
     })
   }
