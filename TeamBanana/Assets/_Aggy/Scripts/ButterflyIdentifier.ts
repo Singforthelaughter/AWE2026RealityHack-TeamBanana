@@ -1,5 +1,7 @@
-import {createClient, type SupabaseClient} from "SupabaseClient.lspkg/supabase-snapcloud"
-import {IDResponse} from "./KindwiseTypes"
+import { createClient, type SupabaseClient } from "SupabaseClient.lspkg/supabase-snapcloud"
+import { IDResponse, Suggestion } from "./KindwiseTypes"
+import { SupabaseDBManager } from "../../_Boon/SupabaseInfoStoring&Retrieving/Scripts/SupabaseDBManager"
+import { ButterflyWingGenerator } from "../../_Boon/GenerateButterflyWingTexture/Scripts/ButterflyWingTextureGenerator"
 
 /**
  * ButterflyIdentifier — the identification half of the pipeline.
@@ -43,12 +45,22 @@ export class ButterflyIdentifier extends BaseScriptComponent {
   @hint("Log activity to the Logger panel")
   debugLogging: boolean = true
 
+  @ui.separator
+  @input
+  @hint("SupabaseDBManager component for storing sightings to the database")
+  dbManager!: SupabaseDBManager
+
+  @input
+  @hint("ButterflyWingGenerator component for generating procedural wing textures")
+  wingGenerator!: ButterflyWingGenerator
+
   // Built-in Spectacles modules (resolved at construction).
   private cameraModule = require("LensStudio:CameraModule") // high-res still capture
   private asrModule = require("LensStudio:AsrModule") // speech-to-text for the voice trigger
 
   private supabase: SupabaseClient | null = null
   private busy: boolean = false // guard so we don't fire a second identification mid-flight
+  private lastCapturedTexture: Texture | null = null
 
   onAwake(): void {
     this.createEvent("OnStartEvent").bind(() => this.start())
@@ -115,12 +127,13 @@ export class ButterflyIdentifier extends BaseScriptComponent {
 
   /** JPEG-encode the captured texture to Base64, then send it to Supabase. */
   private encode(texture: Texture): void {
+    this.lastCapturedTexture = texture
     Base64.encodeTextureAsync(
       texture,
       (base64String: string) => this.sendToSupabase(base64String),
       () => this.fail("Failed to encode image"),
       CompressionQuality.HighQuality,
-      EncodingType.Jpg
+      EncodingType.Jpg,
     )
   }
 
@@ -132,8 +145,8 @@ export class ButterflyIdentifier extends BaseScriptComponent {
     }
     this.setResult("Identifying...")
     try {
-      const {data, error} = await this.supabase.functions.invoke<IDResponse>(this.functionName, {
-        body: {image: "data:image/jpeg;base64," + base64String}
+      const { data, error } = await this.supabase.functions.invoke<IDResponse>(this.functionName, {
+        body: { image: "data:image/jpeg;base64," + base64String },
       })
       this.busy = false
       if (error) {
@@ -146,15 +159,14 @@ export class ButterflyIdentifier extends BaseScriptComponent {
     }
   }
 
-  /** Pull the top suggestion from the IDResponse and show its common/scientific name + confidence. */
-  private showResult(data: IDResponse | null): void {
-    const suggestions =
-      data && data.result && data.result.classification ? data.result.classification.suggestions : null
+  /** Pull the top suggestion from the IDResponse, show its name, then generate wing textures and store the sighting. */
+  private async showResult(data: IDResponse | null): Promise<void> {
+    const suggestions = data && data.result && data.result.classification ? data.result.classification.suggestions : null
     if (!suggestions || suggestions.length === 0) {
       this.setResult("No butterfly identified")
       return
     }
-    const top = suggestions[0]
+    const top = suggestions[0] as Suggestion
     const commonNames = top.details ? top.details.common_names : null
     const common = commonNames && commonNames.length > 0 ? commonNames[0] : null
     const display = common ? common + " (" + top.name + ")" : top.name
@@ -163,6 +175,71 @@ export class ButterflyIdentifier extends BaseScriptComponent {
     if (this.debugLogging) {
       print("[ButterflyId] " + display + " " + percent + "%")
     }
+
+    //added by boon
+    const { wingTexture, wingOpacityMap } = await this.generateWingTexturesAndStoreSighting(top)
+    //instantiate 3d butterfly here with generated texture
+    /**Code to instantiate 3d butterfly*/
+  }
+
+  /**
+   * Generates procedural wing textures for the identified species, then stores the sighting.
+   * Uses the species image URL from the Kindwise result as the source for wing generation.
+   * Falls back to storing without wing textures if no image URL is available or wingGenerator is unset.
+   * Returns the generated textures once the sighting is stored, or null for both if unavailable.
+   */
+  private async generateWingTexturesAndStoreSighting(top: Suggestion): Promise<{ wingTexture: Texture | null; wingOpacityMap: Texture | null }> {
+    const imageUrl = top.details?.image?.value ?? top.similar_images?.[0]?.url ?? null
+    if (imageUrl && this.wingGenerator) {
+      const textures = await new Promise<{ wingTexture: Texture; wingOpacityMap: Texture } | null>((resolve) => {
+        this.wingGenerator.generateWingTextures(
+          imageUrl,
+          (wingTexture, wingOpacityMap) => resolve({ wingTexture, wingOpacityMap }),
+          (err) => {
+            if (this.debugLogging) {
+              print("[ButterflyId] Wing generation failed: " + err)
+            }
+            resolve(null)
+          },
+        )
+      })
+
+      if (this.debugLogging) {
+        print("[ButterflyId] Wing textures " + (textures ? "generated for " + top.name : "unavailable"))
+      }
+
+      if (this.dbManager) {
+        const record = await this.dbManager.storeSighting({
+          suggestion: top,
+          photoTexture: this.lastCapturedTexture,
+          wingTexture: textures?.wingTexture ?? null,
+          wingOpacityMap: textures?.wingOpacityMap ?? null,
+          latitude: null,
+          longitude: null,
+        })
+        if (this.debugLogging) {
+          print("[ButterflyId] storeSighting " + (record ? "OK: " + record.photo_url : "failed"))
+        }
+      }
+
+      return { wingTexture: textures?.wingTexture ?? null, wingOpacityMap: textures?.wingOpacityMap ?? null }
+    }
+
+    if (this.dbManager) {
+      const record = await this.dbManager.storeSighting({
+        suggestion: top,
+        photoTexture: this.lastCapturedTexture,
+        wingTexture: null,
+        wingOpacityMap: null,
+        latitude: null,
+        longitude: null,
+      })
+      if (this.debugLogging) {
+        print("[ButterflyId] storeSighting (no wing textures) " + (record ? "OK" : "failed"))
+      }
+    }
+
+    return { wingTexture: null, wingOpacityMap: null }
   }
 
   /** Clear the busy flag, log, and show an error message in the result text. */

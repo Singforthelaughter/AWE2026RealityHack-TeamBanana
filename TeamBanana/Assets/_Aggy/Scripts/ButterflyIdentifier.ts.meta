@@ -26,12 +26,14 @@
   ExportUid: 00000000-0000-0000-0000-000000000000
   PackagePolicy: CanBeUnpacked
   ScriptInputsHidden:
+    dbManager: false
     debugLogging: false
     functionName: false
     resultText: false
     supabaseProject: false
     triggerWord: false
     useVoiceCommand: false
+    wingGenerator: false
   ScriptTypesHidden:
     {}
   ReadMe: !<reference> 00000000-0000-0000-0000-000000000000
@@ -47,6 +49,8 @@
       useVoiceCommand: true
       triggerWord: identify
       debugLogging: true
+      dbManager: !<MappingBased.AssignableType> 00000000-0000-0000-0000-000000000000
+      wingGenerator: !<MappingBased.AssignableType_1> 00000000-0000-0000-0000-000000000000
   ScriptTypes:
     -
       {}
@@ -57,3 +61,6 @@
     - '// @input bool useVoiceCommand = true {"hint":"Listen for a spoken trigger word to start identification (device only)"}'
     - '// @input string triggerWord = "identify" {"hint":"Spoken word that triggers capture"}'
     - '// @input bool debugLogging = true {"hint":"Log activity to the Logger panel"}'
+    - '// @ui {"widget":"separator"}'
+    - '// @input AssignableType dbManager {"hint":"SupabaseDBManager component for storing sightings to the database"}'
+    - '// @input AssignableType_1 wingGenerator {"hint":"ButterflyWingGenerator component for generating procedural wing textures"}'

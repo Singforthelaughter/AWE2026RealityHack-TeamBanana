@@ -5,7 +5,6 @@
     - !<own> 0005641c-028d-459a-0000-000000014b4d
     - !<own> 4c44293d-a06b-4cb3-b74a-4c7091f6b05f
     - !<own> 5aa0f98b-e799-448c-a2dc-cae5d04fa2a4
-    - !<own> 9245fe05-c300-4f0c-b7d0-d069d304466e
     - !<own> a52d3b68-5d62-49a1-ac34-bd0c1ab04379
     - !<own> 2f26d3fc-e0e8-40e9-85fc-d560762eb609
     - !<own> e2e35a4e-6348-4e5d-8a2d-9d27c7d96515
@@ -443,7 +442,7 @@
   PrefabRemaps:
     []
   Name: ChatParent
-  Enabled: true
+  Enabled: false
   Layers: 1
   LocalTransform: !<TransformEntity>
     Position: {x: 0.000000, y: -30.000000, z: -100.000000}
@@ -7283,21 +7282,6 @@
     CapitalizationOverride: None
   DepthTest: false
   TwoSided: false
-- !<SceneObject/9245fe05-c300-4f0c-b7d0-d069d304466e>
-  PrefabRemaps:
-    []
-  Name: "**Put your scene objects under your name**"
-  Enabled: false
-  Layers: 1
-  LocalTransform: !<TransformEntity>
-    Position: {x: 0.000000, y: 0.000000, z: 0.000000}
-    Rotation: {x: 0.000000, y: 0.000000, z: 0.000000}
-    Scale: {x: 1.000000, y: 1.000000, z: 1.000000}
-    HasSegmentScaleCompensation: false
-  Children:
-    []
-  Components:
-    []
 - !<SceneObject/929164ef-2d41-474a-a457-1bf03d6cd9f1>
   PrefabRemaps:
     []
@@ -10868,6 +10852,8 @@
     useVoiceCommand: true
     triggerWord: true
     debugLogging: true
+    dbManager: true
+    wingGenerator: true
   ScriptTypesDefault:
     {}
   ScriptInputs:
@@ -10878,6 +10864,8 @@
       useVoiceCommand: true
       triggerWord: identify
       debugLogging: true
+      dbManager: !<MappingBased.AssignableType> 00000000-0000-0000-0000-000000000000
+      wingGenerator: !<MappingBased.AssignableType_1> 00000000-0000-0000-0000-000000000000
   ScriptTypes:
     "":
       {}

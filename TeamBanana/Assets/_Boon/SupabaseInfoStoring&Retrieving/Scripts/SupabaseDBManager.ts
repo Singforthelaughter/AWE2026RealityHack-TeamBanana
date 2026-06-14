@@ -63,6 +63,7 @@ type SightingRecord = {
   longitude: number | null
   photo_url: string | null
   wing_texture_url: string | null
+  wing_opacity_map_url: string | null
   identified_at: string
   species_scientific_name: string | null
   species_common_names: string[] | null
@@ -184,6 +185,7 @@ export class SupabaseDBManager extends BaseScriptComponent {
     suggestion: Suggestion
     photoTexture: Texture | null
     wingTexture: Texture | null
+    wingOpacityMap: Texture | null
     latitude: number | null
     longitude: number | null
     identifiedAt?: Date
@@ -196,13 +198,16 @@ export class SupabaseDBManager extends BaseScriptComponent {
     const ts = (params.identifiedAt ?? new Date()).toISOString()
     const slug = `${this.uid}_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`
 
-    // Upload both textures as binary JPEGs in parallel
-    const [photoUrl, wingUrl] = await Promise.all([
+    // Upload all textures as binary JPEGs in parallel
+    const [photoUrl, wingUrl, wingOpacityUrl] = await Promise.all([
       params.photoTexture
         ? this.uploadTexture(params.photoTexture, `photos/${slug}_photo.jpg`)
         : Promise.resolve(null),
       params.wingTexture
         ? this.uploadTexture(params.wingTexture, `wings/${slug}_wing.jpg`)
+        : Promise.resolve(null),
+      params.wingOpacityMap
+        ? this.uploadTexture(params.wingOpacityMap, `wings/${slug}_wing_opacity.jpg`)
         : Promise.resolve(null),
     ])
 
@@ -214,6 +219,7 @@ export class SupabaseDBManager extends BaseScriptComponent {
       longitude:                  params.longitude,
       photo_url:                  photoUrl,
       wing_texture_url:           wingUrl,
+      wing_opacity_map_url:       wingOpacityUrl,
       identified_at:              ts,
       species_scientific_name:    params.suggestion.name,
       species_common_names:       d.common_names ?? null,
