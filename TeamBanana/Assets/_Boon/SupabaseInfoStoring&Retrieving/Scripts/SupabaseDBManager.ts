@@ -9,11 +9,9 @@
  *   - `suggestion`    — the top Kindwise Suggestion (from IDResponse.result.classification.suggestions[0])
  *   - `photoTexture`  — Texture from the user's camera capture (or null)
  *   - `wingTexture`   — Texture of the butterfly wing material (or null)
- *   - `latitude`      — GPS latitude (or null if unavailable)
- *   - `longitude`     — GPS longitude (or null if unavailable)
  *   - `identifiedAt`  — optional Date; defaults to now()
  *
- * Auth and snap display name are handled automatically on start — do not pass them.
+ * Auth, snap display name, and GPS coordinates are handled automatically — do not pass them.
  * Returns the inserted SightingRecord, or null on failure.
  *
  * Example:
@@ -36,7 +34,7 @@
  *   record.species_probability      — 0–1 confidence
  *   record.photo_url                — public URL to the user's capture photo
  *   record.wing_texture_url         — public URL to the wing texture image
- *   record.latitude / .longitude    — GPS position of the sighting
+ *   record.latitude / .longitude    — GPS position (auto-captured from RawLocationModule)
  *   record.snap_display_name        — user's Snap display name at time of sighting
  *   record.identified_at            — ISO timestamp string
  *
@@ -53,6 +51,7 @@
 import { Suggestion } from "../../../_Aggy/Scripts/KindwiseTypes"
 import { createClient, SupabaseClient } from "SupabaseClient.lspkg/supabase-snapcloud"
 import { SIMULATED_SIGHTINGS } from "./SimulatedData"
+require("LensStudio:RawLocationModule")
 
 // One row from the butterfly_sightings table.
 type SightingRecord = {
@@ -93,6 +92,7 @@ export class SupabaseDBManager extends BaseScriptComponent {
   private client!: SupabaseClient
   private uid: string | null = null
   private snapDisplayName: string | null = null
+  private locationService: LocationService | null = null
   private readonly TABLE = "butterfly_sightings"
 
   onAwake() {
@@ -108,6 +108,8 @@ export class SupabaseDBManager extends BaseScriptComponent {
     global.userContextSystem.requestDisplayName((name: string) => {
       this.snapDisplayName = name || null
     })
+    this.locationService = GeoLocation.createLocationService()
+    this.locationService.accuracy = GeoLocationAccuracy.Navigation
     await this.signIn()
   }
 
@@ -186,8 +188,6 @@ export class SupabaseDBManager extends BaseScriptComponent {
     photoTexture: Texture | null
     wingTexture: Texture | null
     wingOpacityMap: Texture | null
-    latitude: number | null
-    longitude: number | null
     identifiedAt?: Date
   }): Promise<SightingRecord | null> {
     if (!(await this.ensureAuth())) {
@@ -198,8 +198,9 @@ export class SupabaseDBManager extends BaseScriptComponent {
     const ts = (params.identifiedAt ?? new Date()).toISOString()
     const slug = `${this.uid}_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`
 
-    // Upload all textures as binary JPEGs in parallel
-    const [photoUrl, wingUrl, wingOpacityUrl] = await Promise.all([
+    // Fetch GPS and upload all textures in parallel
+    const [location, photoUrl, wingUrl, wingOpacityUrl] = await Promise.all([
+      this.getLocation(),
       params.photoTexture
         ? this.uploadTexture(params.photoTexture, `photos/${slug}_photo.jpg`)
         : Promise.resolve(null),
@@ -215,8 +216,8 @@ export class SupabaseDBManager extends BaseScriptComponent {
     const row = {
       // user_id is omitted — Supabase sets it to auth.uid() via DEFAULT + RLS
       snap_display_name:          this.snapDisplayName,
-      latitude:                   params.latitude,
-      longitude:                  params.longitude,
+      latitude:                   location.latitude,
+      longitude:                  location.longitude,
       photo_url:                  photoUrl,
       wing_texture_url:           wingUrl,
       wing_opacity_map_url:       wingOpacityUrl,
@@ -242,6 +243,22 @@ export class SupabaseDBManager extends BaseScriptComponent {
       return null
     }
     return data as unknown as SightingRecord
+  }
+
+  private getLocation(): Promise<{ latitude: number | null; longitude: number | null }> {
+    return new Promise((resolve) => {
+      if (!this.locationService) {
+        resolve({ latitude: null, longitude: null })
+        return
+      }
+      this.locationService.getCurrentPosition(
+        (geoPosition) => resolve({ latitude: geoPosition.latitude, longitude: geoPosition.longitude }),
+        (error) => {
+          print("[SupabaseDBManager] Location error: " + error)
+          resolve({ latitude: null, longitude: null })
+        },
+      )
+    })
   }
 
   // Texture → base64 → Uint8Array → Storage upload → public URL

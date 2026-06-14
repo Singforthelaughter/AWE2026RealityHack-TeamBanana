@@ -214,8 +214,6 @@ export class ButterflyIdentifier extends BaseScriptComponent {
           photoTexture: this.lastCapturedTexture,
           wingTexture: textures?.wingTexture ?? null,
           wingOpacityMap: textures?.wingOpacityMap ?? null,
-          latitude: null,
-          longitude: null,
         })
         if (this.debugLogging) {
           print("[ButterflyId] storeSighting " + (record ? "OK: " + record.photo_url : "failed"))
@@ -231,8 +229,6 @@ export class ButterflyIdentifier extends BaseScriptComponent {
         photoTexture: this.lastCapturedTexture,
         wingTexture: null,
         wingOpacityMap: null,
-        latitude: null,
-        longitude: null,
       })
       if (this.debugLogging) {
         print("[ButterflyId] storeSighting (no wing textures) " + (record ? "OK" : "failed"))
