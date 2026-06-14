@@ -87,9 +87,6 @@ export class PalmPushToTalk extends BaseScriptComponent {
   private pinchingRight: boolean = false
   private fingersPinched: boolean = false
   private pinchStartTime: number = 0
-  // Gemini sends transcription in fragments; we accumulate them here so the caption builds up
-  // word-by-word during a hold (like the sample), then reset for the next utterance.
-  private captionBuffer: string = ""
 
   onAwake(): void {
     this.handMenu.enabled = false
@@ -97,13 +94,11 @@ export class PalmPushToTalk extends BaseScriptComponent {
     this.setTooltip(false)
     this.hideSubtitle()
     this.bindPinchEvents()
-    // Live subtitles: Gemini sends transcription in fragments while you speak. Accumulate them so
-    // the caption builds up word-by-word, and ignore anything that arrives after you release.
+    // Live subtitles: show Gemini's transcription as it arrives; ignore anything after release.
     this.geminiAssistant.userSpeechEvent.add((e: {text: string; isFinal: boolean}) => {
       if (this.debugLogging) print(`[PalmPushToTalk] userSpeech${e.isFinal ? " (FINAL)" : ""}: "${e.text}"`)
       if (!this.recording) return
-      this.captionBuffer += e.text
-      this.showSubtitle(this.captionBuffer, e.isFinal)
+      this.showSubtitle(e.text, e.isFinal)
     })
     this.createEvent("UpdateEvent").bind(() => this.onUpdate())
   }
@@ -203,7 +198,6 @@ export class PalmPushToTalk extends BaseScriptComponent {
 
   private startRecording(): void {
     this.recording = true
-    this.captionBuffer = "" // fresh utterance
     this.geminiAssistant.streamData(true) // start streaming mic to Gemini Live
     this.setIndicator(true) // light up
     this.setTooltip(false)
@@ -231,7 +225,6 @@ export class PalmPushToTalk extends BaseScriptComponent {
 
   /** Clear + hide the caption so old text doesn't reappear when the hand menu shows again. */
   private hideSubtitle(): void {
-    this.captionBuffer = ""
     if (!this.subtitleText) return
     this.subtitleText.text = ""
     this.subtitleText.getSceneObject().enabled = false
