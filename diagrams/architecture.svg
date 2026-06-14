@@ -1,0 +1,209 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="1056" viewBox="0 0 1440 1056" font-family="'Inter','Helvetica Neue',Arial,sans-serif">
+  <defs>
+    <marker id="arrow" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M0,0 L6,3 L0,6" fill="none" stroke="#B0B0A8" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <marker id="arrowUp" markerWidth="9" markerHeight="9" refX="3" refY="3" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M6,0 L0,3 L6,6" fill="none" stroke="#B0B0A8" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+  </defs>
+
+  <!-- background -->
+  <rect x="0" y="0" width="1440" height="1056" fill="#FBFBF9"/>
+
+  <!-- ===== header ===== -->
+  <text x="60" y="60" font-size="30" font-weight="700" fill="#1C1C1E" letter-spacing="-0.4">Butterfly Spotting &amp; Social Sightings</text>
+  <text x="60" y="88" font-size="14.5" fill="#717179" letter-spacing="0.2">Built on Snap Spectacles &amp; Lens Studio 5.x — platform features highlighted</text>
+
+  <!-- legend -->
+  <rect x="1010" y="55" width="14" height="14" rx="3" fill="#F2C21B" stroke="#E0B000"/>
+  <text x="1031" y="66" font-size="12.5" fill="#48484E">Snap / Spectacles platform feature</text>
+  <rect x="1010" y="80" width="14" height="14" rx="3" fill="#FFFFFF" stroke="#C4C4BC"/>
+  <text x="1031" y="91" font-size="12.5" fill="#48484E">Third-party service (non-Snap)</text>
+
+  <line x1="60" y1="108" x2="1380" y2="108" stroke="#E4E4DE" stroke-width="1"/>
+
+  <!-- ===== Layer A — Spectacles device (Snap native) ===== -->
+  <text x="60" y="135" font-size="11" font-weight="600" fill="#B58A00" letter-spacing="2">SPECTACLES DEVICE · SENSORS &amp; RUNTIME</text>
+  <rect x="60" y="146" width="1320" height="78" rx="16" fill="#FFFBEA" stroke="#EAD89A" stroke-width="1"/>
+  <g font-size="13.5" fill="#33333A" text-anchor="middle">
+    <rect x="87" y="163" width="196" height="44" rx="22" fill="#FFFFFF" stroke="#E9D99C"/><text x="185" y="190">DeviceCamera</text>
+    <rect x="301" y="163" width="196" height="44" rx="22" fill="#FFFFFF" stroke="#E9D99C"/><text x="399" y="190">Microphone</text>
+    <rect x="515" y="163" width="196" height="44" rx="22" fill="#FFFFFF" stroke="#E9D99C"/><text x="613" y="190">Hand Tracking</text>
+    <rect x="729" y="163" width="196" height="44" rx="22" fill="#FFFFFF" stroke="#E9D99C"/><text x="827" y="190">DepthModule</text>
+    <rect x="943" y="163" width="196" height="44" rx="22" fill="#FFFFFF" stroke="#E9D99C"/><text x="1041" y="190">GeoLocation</text>
+    <rect x="1157" y="163" width="196" height="44" rx="22" fill="#FFFFFF" stroke="#E9D99C"/><text x="1255" y="190">Display</text>
+  </g>
+
+  <!-- connector A -> B -->
+  <line x1="720" y1="224" x2="720" y2="259" stroke="#B0B0A8" stroke-width="1.4" marker-end="url(#arrow)"/>
+
+  <!-- ===== Layer B — Lens Studio runtime SDKs (Snap native) ===== -->
+  <text x="60" y="251" font-size="11" font-weight="600" fill="#B58A00" letter-spacing="2">LENS STUDIO RUNTIME · SNAP PLATFORM SDKs</text>
+  <rect x="60" y="262" width="1320" height="366" rx="18" fill="#FFFDF6" stroke="#EEE2BC" stroke-width="1"/>
+
+  <!-- row 1 -->
+  <!-- SIK -->
+  <g>
+    <rect x="84" y="288" width="409" height="150" rx="12" fill="#FFFDF2" stroke="#EBDCA6"/>
+    <rect x="84" y="298" width="4" height="130" rx="2" fill="#F2C21B"/>
+    <text x="106" y="316" font-size="9.5" font-weight="600" fill="#B58A00" letter-spacing="1.5">SNAP SDK</text>
+    <text x="106" y="338" font-size="16.5" font-weight="600" fill="#1C1C1E">Spectacles Interaction Kit</text>
+    <line x1="106" y1="352" x2="475" y2="352" stroke="#EFE6C8"/>
+    <g font-size="12" fill="#48484E">
+      <text x="106" y="376">Interactable · PinchButton · ToggleButton</text>
+      <text x="106" y="398">ContainerFrame · hand / mobile interactors</text>
+      <text x="106" y="420">WorldCameraFinderProvider · OneEuroFilter</text>
+    </g>
+  </g>
+  <!-- UI Kit -->
+  <g>
+    <rect x="515" y="288" width="409" height="150" rx="12" fill="#FFFDF2" stroke="#EBDCA6"/>
+    <rect x="515" y="298" width="4" height="130" rx="2" fill="#F2C21B"/>
+    <text x="537" y="316" font-size="9.5" font-weight="600" fill="#B58A00" letter-spacing="1.5">SNAP SDK</text>
+    <text x="537" y="338" font-size="16.5" font-weight="600" fill="#1C1C1E">Spectacles UI Kit</text>
+    <line x1="537" y1="352" x2="906" y2="352" stroke="#EFE6C8"/>
+    <g font-size="12" fill="#48484E">
+      <text x="537" y="376">Frame info cards</text>
+      <text x="537" y="398">Built-in close button</text>
+      <text x="537" y="420">Designer-rearrangeable prefab</text>
+    </g>
+  </g>
+  <!-- Map Component -->
+  <g>
+    <rect x="946" y="288" width="409" height="150" rx="12" fill="#FFFDF2" stroke="#EBDCA6"/>
+    <rect x="946" y="298" width="4" height="130" rx="2" fill="#F2C21B"/>
+    <text x="968" y="316" font-size="9.5" font-weight="600" fill="#B58A00" letter-spacing="1.5">SNAP SDK</text>
+    <text x="968" y="338" font-size="16.5" font-weight="600" fill="#1C1C1E">Snap Map Component</text>
+    <line x1="968" y1="352" x2="1337" y2="352" stroke="#EFE6C8"/>
+    <g font-size="12" fill="#48484E">
+      <text x="968" y="376">AR world map + user location</text>
+      <text x="968" y="398">Live + runtime map pins</text>
+      <text x="968" y="420">Marker tap → info card</text>
+    </g>
+  </g>
+
+  <!-- row 2 -->
+  <!-- SnapML -->
+  <g>
+    <rect x="84" y="458" width="409" height="150" rx="12" fill="#FFFDF2" stroke="#EBDCA6"/>
+    <rect x="84" y="468" width="4" height="130" rx="2" fill="#F2C21B"/>
+    <text x="106" y="486" font-size="9.5" font-weight="600" fill="#B58A00" letter-spacing="1.5">SNAP SDK</text>
+    <text x="106" y="508" font-size="16.5" font-weight="600" fill="#1C1C1E">SnapML + Depth Spatialization</text>
+    <line x1="106" y1="522" x2="475" y2="522" stroke="#EFE6C8"/>
+    <g font-size="12" fill="#48484E">
+      <text x="106" y="546">YOLO model inference (MLAsset)</text>
+      <text x="106" y="568">DepthModule colour+depth matching</text>
+      <text x="106" y="590">3D bounding boxes from DeviceCamera</text>
+    </g>
+  </g>
+  <!-- Networking & Media -->
+  <g>
+    <rect x="515" y="458" width="409" height="150" rx="12" fill="#FFFDF2" stroke="#EBDCA6"/>
+    <rect x="515" y="468" width="4" height="130" rx="2" fill="#F2C21B"/>
+    <text x="537" y="486" font-size="9.5" font-weight="600" fill="#B58A00" letter-spacing="1.5">SNAP SDK</text>
+    <text x="537" y="508" font-size="16.5" font-weight="600" fill="#1C1C1E">Networking &amp; Media</text>
+    <line x1="537" y1="522" x2="906" y2="522" stroke="#EFE6C8"/>
+    <g font-size="12" fill="#48484E">
+      <text x="537" y="546">InternetModule · RemoteServiceHttpRequest</text>
+      <text x="537" y="568">RemoteMediaModule (image download)</text>
+      <text x="537" y="590">Base64 encode / decode texture</text>
+    </g>
+  </g>
+  <!-- User Context & Tween -->
+  <g>
+    <rect x="946" y="458" width="409" height="150" rx="12" fill="#FFFDF2" stroke="#EBDCA6"/>
+    <rect x="946" y="468" width="4" height="130" rx="2" fill="#F2C21B"/>
+    <text x="968" y="486" font-size="9.5" font-weight="600" fill="#B58A00" letter-spacing="1.5">SNAP SDK</text>
+    <text x="968" y="508" font-size="16.5" font-weight="600" fill="#1C1C1E">User Context &amp; Tweening</text>
+    <line x1="968" y1="522" x2="1337" y2="522" stroke="#EFE6C8"/>
+    <g font-size="12" fill="#48484E">
+      <text x="968" y="546">userContextSystem.requestDisplayName</text>
+      <text x="968" y="568">Weather conditions</text>
+      <text x="968" y="590">LSTween map &amp; minimap animations</text>
+    </g>
+  </g>
+
+  <!-- connector B <-> C -->
+  <line x1="720" y1="628" x2="720" y2="663" stroke="#B0B0A8" stroke-width="1.4" marker-end="url(#arrow)" marker-start="url(#arrowUp)"/>
+  <text x="734" y="650" font-size="11" fill="#9A9A93">store / fetch sightings · GPS-scoped queries</text>
+
+  <!-- ===== Layer C — Snap Cloud ===== -->
+  <text x="60" y="655" font-size="11" font-weight="600" fill="#B58A00" letter-spacing="2">SNAP CLOUD · SUPABASE BACKEND</text>
+  <rect x="60" y="666" width="1320" height="180" rx="18" fill="#FFFDF6" stroke="#EEE2BC" stroke-width="1"/>
+
+  <!-- Auth (Snap native) -->
+  <g>
+    <rect x="84" y="692" width="300" height="120" rx="12" fill="#FFFDF2" stroke="#EBDCA6"/>
+    <rect x="84" y="702" width="4" height="100" rx="2" fill="#F2C21B"/>
+    <text x="106" y="722" font-size="16" font-weight="600" fill="#1C1C1E">Snap OIDC Auth</text>
+    <text x="106" y="744" font-size="12" fill="#B58A00">signInWithIdToken( snapchat )</text>
+    <line x1="106" y1="758" x2="364" y2="758" stroke="#EFE6C8"/>
+    <g font-size="12" fill="#48484E">
+      <text x="106" y="780">stable per-user UUID</text>
+      <text x="106" y="800">identity from auth.uid()</text>
+    </g>
+  </g>
+  <!-- Postgres (Supabase / 3rd-party tech on Snap Cloud) -->
+  <g>
+    <rect x="408" y="692" width="300" height="120" rx="12" fill="#FFFFFF" stroke="#DADAD3"/>
+    <rect x="408" y="702" width="4" height="100" rx="2" fill="#C4C4BC"/>
+    <text x="430" y="722" font-size="16" font-weight="600" fill="#1C1C1E">Postgres</text>
+    <text x="430" y="744" font-size="12" fill="#8A8A82">Supabase · butterfly_sightings</text>
+    <line x1="430" y1="758" x2="688" y2="758" stroke="#ECECE5"/>
+    <g font-size="12" fill="#48484E">
+      <text x="430" y="780">row-level security</text>
+      <text x="430" y="800">bounding-box query</text>
+    </g>
+  </g>
+  <!-- Storage -->
+  <g>
+    <rect x="732" y="692" width="300" height="120" rx="12" fill="#FFFFFF" stroke="#DADAD3"/>
+    <rect x="732" y="702" width="4" height="100" rx="2" fill="#C4C4BC"/>
+    <text x="754" y="722" font-size="16" font-weight="600" fill="#1C1C1E">Storage</text>
+    <text x="754" y="744" font-size="12" fill="#8A8A82">Supabase · media bucket</text>
+    <line x1="754" y1="758" x2="1012" y2="758" stroke="#ECECE5"/>
+    <g font-size="12" fill="#48484E">
+      <text x="754" y="780">captured photos</text>
+      <text x="754" y="800">wing / opacity maps</text>
+    </g>
+  </g>
+  <!-- Edge Functions -->
+  <g>
+    <rect x="1056" y="692" width="300" height="120" rx="12" fill="#FFFFFF" stroke="#DADAD3"/>
+    <rect x="1056" y="702" width="4" height="100" rx="2" fill="#C4C4BC"/>
+    <text x="1078" y="722" font-size="16" font-weight="600" fill="#1C1C1E">Edge Functions</text>
+    <text x="1078" y="744" font-size="12" fill="#8A8A82">Supabase · serverless</text>
+    <line x1="1078" y1="758" x2="1336" y2="758" stroke="#ECECE5"/>
+    <g font-size="12" fill="#48484E">
+      <text x="1078" y="780">species-id (Kindwise)</text>
+      <text x="1078" y="800">generate-wing-texture</text>
+    </g>
+  </g>
+
+  <!-- connectors C -> D -->
+  <line x1="396" y1="846" x2="396" y2="881" stroke="#B0B0A8" stroke-width="1.4" marker-end="url(#arrow)"/>
+  <text x="410" y="868" font-size="11" fill="#9A9A93">species ID</text>
+  <line x1="1044" y1="846" x2="1044" y2="881" stroke="#B0B0A8" stroke-width="1.4" marker-end="url(#arrow)"/>
+  <text x="1058" y="868" font-size="11" fill="#9A9A93">wing generation</text>
+
+  <!-- ===== Layer D — External APIs (non-Snap) ===== -->
+  <text x="60" y="873" font-size="11" font-weight="600" fill="#9A9A93" letter-spacing="2">EXTERNAL APIs · NON-SNAP</text>
+  <rect x="60" y="884" width="1320" height="84" rx="18" fill="#F4F4F1" stroke="#DEDED7" stroke-width="1"/>
+  <g>
+    <rect x="84" y="900" width="624" height="56" rx="12" fill="#FFFFFF" stroke="#DADAD3"/>
+    <rect x="84" y="908" width="4" height="40" rx="2" fill="#C4C4BC"/>
+    <text x="108" y="928" font-size="15.5" font-weight="600" fill="#1C1C1E">Kindwise API</text>
+    <text x="108" y="947" font-size="12.5" fill="#8A8A82">Insect / butterfly identification</text>
+  </g>
+  <g>
+    <rect x="732" y="900" width="624" height="56" rx="12" fill="#FFFFFF" stroke="#DADAD3"/>
+    <rect x="732" y="908" width="4" height="40" rx="2" fill="#C4C4BC"/>
+    <text x="756" y="928" font-size="15.5" font-weight="600" fill="#1C1C1E">Replicate · Nano Banana Pro</text>
+    <text x="756" y="947" font-size="12.5" fill="#8A8A82">AI-generated wing + opacity textures</text>
+  </g>
+
+  <!-- ===== footer ===== -->
+  <line x1="60" y1="996" x2="1380" y2="996" stroke="#E4E4DE" stroke-width="1"/>
+  <text x="60" y="1024" font-size="11.5" fill="#A6A69E" font-style="italic">Heavy generation (Kindwise ID, Replicate wing textures) runs in Snap Cloud Edge Functions — no model inference on the headset.</text>
+</svg>
