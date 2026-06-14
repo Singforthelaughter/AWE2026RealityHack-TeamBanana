@@ -46,7 +46,7 @@ export class NearbySightingManager extends BaseScriptComponent {
       this.locationService = GeoLocation.createLocationService()
       this.locationService.accuracy = GeoLocationAccuracy.Navigation
 
-      // this.openNearbySighting()
+      this.openNearbySighting()
     })
   }
 
@@ -92,8 +92,12 @@ export class NearbySightingManager extends BaseScriptComponent {
               speciesDangerDescription: s.species_danger_description,
               speciesRole: s.species_role,
               speciesTaxonomy: s.species_taxonomy as {
-                kingdom: string | null; phylum: string | null; class: string | null
-                order: string | null; family: string | null; genus: string | null
+                kingdom: string | null
+                phylum: string | null
+                class: string | null
+                order: string | null
+                family: string | null
+                genus: string | null
               } | null,
             },
           }))

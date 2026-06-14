@@ -45,7 +45,7 @@
     -
       {}
   InputLines:
-    - // @input Asset.ObjectPrefab prefab
-    - '// @ui {"hint":"Butterfly Info Display prefab to instantiate when a result arrives", "widget":"label", "label":"Place butterfly info prefab here"}'
+    - '// @ui {"widget":"label", "label":"Place butterfly info prefab here"}'
+    - '// @input Asset.ObjectPrefab prefab {"hint":"Butterfly Info Display prefab to instantiate when a result arrives"}'
     - "// @input SceneObject spawnParent {\"hint\":\"Parent SceneObject for the spawned prefab (leave empty to use this component's object)\"}"
     - '// @input bool debugLogging = true {"hint":"Log field assignments to the Logger panel"}'
