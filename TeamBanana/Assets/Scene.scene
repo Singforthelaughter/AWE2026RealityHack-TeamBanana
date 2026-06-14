@@ -6902,7 +6902,7 @@
 - !<SceneObject/78a9e64c-3b60-4bc5-a82d-8e29ccea1f64>
   PrefabRemaps:
     []
-  Name: kingdom
+  Name: gbif_id
   Enabled: true
   Layers: 1
   LocalTransform: !<TransformEntity>

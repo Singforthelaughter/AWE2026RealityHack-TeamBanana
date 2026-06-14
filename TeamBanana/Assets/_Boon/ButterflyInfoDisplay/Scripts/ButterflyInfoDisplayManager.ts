@@ -12,7 +12,7 @@ const internetModule = require("LensStudio:InternetModule") as InternetModule
  *   textArray           — Text components matched by SceneObject name (case-insensitive):
  *                         name, common_name, common_names, probability, description,
  *                         inaturalist_id, red_list, danger, danger_description, role,
- *                         kingdom, phylum, class, order, family, genus, spotter, identified_at
+ *                         gbif_id, phylum, class, order, family, genus, spotter, identified_at
  *   userPhotoImage      — Image for the user's captured photo
  *   dataPhotoImageArray — Images for species reference photos (index 0 = primary, 1+ = extras)
  */
@@ -123,7 +123,7 @@ export class ButterflyInfoDisplayManager extends BaseScriptComponent {
     danger?: string
     danger_description?: string
     role?: string
-    kingdom?: string
+    gbif_id?: string
     phylum?: string
     class?: string
     order?: string
@@ -143,7 +143,7 @@ export class ButterflyInfoDisplayManager extends BaseScriptComponent {
     this.setField("danger", fields.danger ?? "")
     this.setField("danger_description", fields.danger_description ?? "")
     this.setField("role", fields.role ?? "")
-    this.setField("kingdom", fields.kingdom ?? "")
+    this.setField("gbif_id", fields.gbif_id ?? "")
     this.setField("phylum", fields.phylum ?? "")
     this.setField("class", fields.class ?? "")
     this.setField("order", fields.order ?? "")
@@ -173,7 +173,7 @@ export class ButterflyInfoDisplayManager extends BaseScriptComponent {
       danger: d?.danger?.join(", ") ?? "",
       danger_description: d?.danger_description ?? "",
       role: d?.role?.join(", ") ?? "",
-      kingdom: d?.taxonomy?.kingdom ?? "",
+      gbif_id: d?.gbif_id != null ? String(d.gbif_id) : "",
       phylum: d?.taxonomy?.phylum ?? "",
       class: d?.taxonomy?.class ?? "",
       order: d?.taxonomy?.order ?? "",
@@ -238,7 +238,6 @@ export class ButterflyInfoDisplayManager extends BaseScriptComponent {
       danger: sighting.speciesDanger?.join(", ") ?? "",
       danger_description: sighting.speciesDangerDescription ?? "",
       role: sighting.speciesRole?.join(", ") ?? "",
-      kingdom: tax?.kingdom ?? "",
       phylum: tax?.phylum ?? "",
       class: tax?.class ?? "",
       order: tax?.order ?? "",
