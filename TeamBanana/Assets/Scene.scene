@@ -7486,7 +7486,7 @@
 - !<SceneObject/825f48a9-5a1d-42f6-a0ea-f26d1235d3c1>
   PrefabRemaps:
     []
-  Name: description_gpt
+  Name: inaturalist_id
   Enabled: true
   Layers: 1
   LocalTransform: !<TransformEntity>
