@@ -1,0 +1,59 @@
+- !<AssetImportMetadata/144f4232-4a87-42c1-b590-ef3a3bb83907>
+  ImportedAssetIds:
+    TypeScriptAsset: !<reference> 65cbfd67-fa4a-4409-9ef4-5cf5249ceeb7
+  ImporterName: TypeScriptAssetImporter
+  PrimaryAsset: !<reference> 65cbfd67-fa4a-4409-9ef4-5cf5249ceeb7
+  PackageType: NotAPackage
+  LegacyPackagePolicy: ~
+  ExtraData:
+    {}
+  AssetDataMap:
+    TypeScriptAsset: !<own> 369e206a-1da0-4a1b-87c9-be5b2d3a146b
+  DependentFiles:
+    []
+  ImporterSettings: !<AssetImporterSettings>
+    {}
+  CompressionSettings: !<own> 00000000-0000-0000-0000-000000000000
+- !<TypeScriptAssetData/369e206a-1da0-4a1b-87c9-be5b2d3a146b>
+  SvgIcon: ""
+  SetupScript:
+    code: ""
+  Description: ""
+  VersionMajor: 0
+  VersionMinor: 0
+  VersionPatch: 0
+  ComponentUid: dc03b1fd-4e5a-4880-82db-794ea2b64f56
+  ExportUid: 00000000-0000-0000-0000-000000000000
+  PackagePolicy: CanBeUnpacked
+  ScriptInputsHidden:
+    activityIndicator: false
+    debugLogging: false
+    geminiAssistant: false
+    handMenu: false
+    subtitleText: false
+    tooltip: false
+  ScriptTypesHidden:
+    {}
+  ReadMe: !<reference> 00000000-0000-0000-0000-000000000000
+  DeclarationFile: !<reference> 00000000-0000-0000-0000-000000000000
+  Tags:
+    []
+  Attachments:
+    []
+  DefaultScriptInputs:
+    - geminiAssistant: !<MappingBased.AssignableType> 00000000-0000-0000-0000-000000000000
+      handMenu: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
+      activityIndicator: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
+      tooltip: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
+      subtitleText: !<reference.Text> 00000000-0000-0000-0000-000000000000
+      debugLogging: true
+  ScriptTypes:
+    -
+      {}
+  InputLines:
+    - "// @input AssignableType geminiAssistant {\"hint\":\"Joe's GeminiAssistant component (streamData + userSpeechEvent)\"}"
+    - '// @input SceneObject handMenu {"hint":"Hand-anchored root (e.g. the mic button). Script positions it on your palm. Starts hidden."}'
+    - "// @input SceneObject activityIndicator {\"hint\":\"'Lights up while recording' visual (e.g. the sample's MicActivityIndicator). Best a child of handMenu.\"}"
+    - "// @input SceneObject tooltip {\"hint\":\"Optional 'Pinch to record' tooltip, shown as fingers approach a pinch. Best a child of handMenu.\"}"
+    - '// @input Component.Text subtitleText {"hint":"Text for live subtitles. Make a Text in the editor (a child of HandMenu works well) and assign it."}'
+    - '// @input bool debugLogging = true {"hint":"Log gesture activity to the Logger panel"}'

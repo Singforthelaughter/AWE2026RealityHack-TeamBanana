@@ -1,0 +1,73 @@
+- !<AssetImportMetadata/a9fc5e76-204e-4c8b-a1f8-2113e9b9c11e>
+  ImportedAssetIds:
+    ObjectPrefab: !<reference> 985a1f5f-1d32-4a30-a6dc-29d71488d0ba
+  ImporterName: ObjectPrefabImporter
+  PrimaryAsset: !<reference> 985a1f5f-1d32-4a30-a6dc-29d71488d0ba
+  PackageType: NotAPackage
+  LegacyPackagePolicy: ~
+  ExtraData:
+    {}
+  AssetDataMap:
+    ObjectPrefab: !<own> 44b66880-a1f9-4268-932b-59cb4274a86c
+  DependentFiles:
+    []
+  ImporterSettings: !<AssetImporterSettings>
+    {}
+  CompressionSettings: !<own> 00000000-0000-0000-0000-000000000000
+- !<RenderMeshVisual/144fee77-6a3b-4a7b-780d-be4de3f17a4b>
+  PrefabRemaps:
+    []
+  Name: Render Mesh Visual
+  Enabled: true
+  RenderOrder: 0
+  StretchMode: Stretch
+  VerticalAlignment: Center
+  HorizontalAlignment: Center
+  MeshShadowMode: None
+  ShadowColor: {x: 1.000000, y: 1.000000, z: 1.000000, w: 1.000000}
+  ShadowDensity: 1.000000
+  Materials:
+    - !<reference> 6baa0904-a7fc-4a6d-90c8-a0ce96d21fae
+  Mesh: !<reference> e9cb83a9-fd4e-4802-a24b-b6a1dcde426b
+  Skin: !<reference> 00000000-0000-0000-0000-000000000000
+  BlendShapesEnabled: true
+  BlendNormals: false
+  BlendShapes:
+    {}
+- !<SceneObject/1e10165e-c6db-4e08-4d44-4346c50fdb9e>
+  PrefabRemaps:
+    []
+  Name: MicActivityIndicator
+  Enabled: true
+  Layers: 1
+  LocalTransform: !<TransformEntity>
+    Position: {x: 0.000000, y: 0.000000, z: 100.000000}
+    Rotation: {x: 0.000000, y: 0.000000, z: 0.000000}
+    Scale: {x: 1.000000, y: 1.000000, z: 1.000000}
+    HasSegmentScaleCompensation: false
+  Children:
+    []
+  Components:
+    - !<own> 144fee77-6a3b-4a7b-780d-be4de3f17a4b
+    - !<own> b3a6ca73-19cc-48c7-6b28-d9831615ccdc
+- !<ObjectPrefabAssetData/44b66880-a1f9-4268-932b-59cb4274a86c>
+  Prototype: !<ObjectOwner/1cc03172-5057-4a38-8738-d692e9f9fab4>
+    PackagePath: ""
+    objects:
+      - !<own> 1e10165e-c6db-4e08-4d44-4346c50fdb9e
+- !<ScriptComponent/b3a6ca73-19cc-48c7-6b28-d9831615ccdc>
+  PrefabRemaps:
+    []
+  Name: ActivityIndicatorController
+  Enabled: true
+  ScriptAsset: !<reference> fecd743e-10a2-485e-a867-cd61e869e50e
+  ScriptInputsDefault:
+    transitionDuration: true
+  ScriptTypesDefault:
+    {}
+  ScriptInputs:
+    "":
+      transitionDuration: 0.500000
+  ScriptTypes:
+    "":
+      {}
