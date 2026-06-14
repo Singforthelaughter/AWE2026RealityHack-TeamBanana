@@ -28,6 +28,7 @@
   ScriptInputsHidden:
     hoverColor: false
     image1: false
+    infoDisplay: false
     normalColor: false
     text1: false
     text2: false
@@ -51,6 +52,7 @@
       triggerColor: !<Vec4> {x: 0.500000, y: 0.700000, z: 1.000000, w: 1.000000}
       triggerEndColor: !<Vec4> {x: 0.800000, y: 0.900000, z: 1.000000, w: 1.000000}
       triggerScaleMultiplier: !<Vec3> {x: 1.100000, y: 1.100000, z: 1.100000}
+      infoDisplay: !<MappingBased.AssignableType> 00000000-0000-0000-0000-000000000000
   ScriptTypes:
     -
       {}
@@ -63,3 +65,4 @@
     - '// @input vec4 triggerColor = {0.5,0.7,1,1} {"hint":"Colour while trigger is held", "widget":"color"}'
     - '// @input vec4 triggerEndColor = {0.8,0.9,1,1} {"hint":"Colour immediately after trigger releases (still hovering)", "widget":"color"}'
     - '// @input vec3 triggerScaleMultiplier = {1.1,1.1,1.1} {"hint":"Per-axis scale multiplier applied to the parent on trigger start (e.g. 1.1 = 110%)"}'
+    - '// @input AssignableType infoDisplay {"hint":"ButterflyInfoDisplayManager to populate when this marker is triggered"}'

@@ -197,8 +197,10 @@ export class SupabaseDBManager extends BaseScriptComponent {
   async storeSighting(params: {
     suggestion: Suggestion
     photoTexture: Texture | null
-    wingTexture: Texture | null
-    wingOpacityMap: Texture | null
+    wingTexture?: Texture | null
+    wingOpacityMap?: Texture | null
+    wingTextureBase64?: string
+    wingOpacityMapBase64?: string
     identifiedAt?: Date
   }): Promise<SightingRecord | null> {
     if (!(await this.ensureAuth())) {
@@ -209,18 +211,24 @@ export class SupabaseDBManager extends BaseScriptComponent {
     const ts = (params.identifiedAt ?? new Date()).toISOString()
     const slug = `${this.uid}_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`
 
-    // Fetch GPS and upload all textures in parallel
+    // Fetch GPS and upload all textures in parallel.
+    // Wing textures prefer the raw b64 path to avoid a re-encode round-trip that silently fails
+    // for textures decoded via Base64.decodeTextureAsync.
     const [location, photoUrl, wingUrl, wingOpacityUrl] = await Promise.all([
       this.getLocation(),
       params.photoTexture
         ? this.uploadTexture(params.photoTexture, `photos/${slug}_photo.jpg`)
         : Promise.resolve(null),
-      params.wingTexture
-        ? this.uploadTexture(params.wingTexture, `wings/${slug}_wing.jpg`)
-        : Promise.resolve(null),
-      params.wingOpacityMap
-        ? this.uploadTexture(params.wingOpacityMap, `wings/${slug}_wing_opacity.jpg`)
-        : Promise.resolve(null),
+      params.wingTextureBase64
+        ? this.uploadBase64(params.wingTextureBase64, `wings/${slug}_wing.jpg`)
+        : params.wingTexture
+          ? this.uploadTexture(params.wingTexture, `wings/${slug}_wing.jpg`)
+          : Promise.resolve(null),
+      params.wingOpacityMapBase64
+        ? this.uploadBase64(params.wingOpacityMapBase64, `wings/${slug}_wing_opacity.jpg`)
+        : params.wingOpacityMap
+          ? this.uploadTexture(params.wingOpacityMap, `wings/${slug}_wing_opacity.jpg`)
+          : Promise.resolve(null),
     ])
 
     const d = params.suggestion.details
@@ -307,6 +315,24 @@ export class SupabaseDBManager extends BaseScriptComponent {
         EncodingType.Jpg
       )
     })
+  }
+
+  private async uploadBase64(b64: string, path: string): Promise<string | null> {
+    try {
+      const bytes = this.base64ToUint8Array(b64)
+      const { error } = await this.client.storage
+        .from(this.storageBucket)
+        .upload(path, bytes, { contentType: "image/jpeg", upsert: true })
+      if (error) {
+        print(`[SupabaseDBManager] storage upload error for ${path}: ${JSON.stringify(error)}`)
+        return null
+      }
+      const { data } = this.client.storage.from(this.storageBucket).getPublicUrl(path)
+      return data?.publicUrl ?? null
+    } catch (e) {
+      print(`[SupabaseDBManager] uploadBase64 exception: ${e}`)
+      return null
+    }
   }
 
   private base64ToUint8Array(b64: string): Uint8Array {

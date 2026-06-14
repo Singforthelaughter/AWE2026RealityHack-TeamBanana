@@ -1,0 +1,50 @@
+- !<AssetImportMetadata/5825033e-bdb1-403e-94c2-82a544006dad>
+  ImportedAssetIds:
+    TypeScriptAsset: !<reference> e209d8b3-09e0-4446-903b-85c75b9eb014
+  ImporterName: TypeScriptAssetImporter
+  PrimaryAsset: !<reference> e209d8b3-09e0-4446-903b-85c75b9eb014
+  PackageType: NotAPackage
+  LegacyPackagePolicy: ~
+  ExtraData:
+    {}
+  AssetDataMap:
+    TypeScriptAsset: !<own> d0b75d7c-7792-48cc-9523-9b92cbf3b2e7
+  DependentFiles:
+    []
+  ImporterSettings: !<AssetImporterSettings>
+    {}
+  CompressionSettings: !<own> 00000000-0000-0000-0000-000000000000
+- !<TypeScriptAssetData/d0b75d7c-7792-48cc-9523-9b92cbf3b2e7>
+  SvgIcon: ""
+  SetupScript:
+    code: ""
+  Description: ""
+  VersionMajor: 0
+  VersionMinor: 0
+  VersionPatch: 0
+  ComponentUid: e35f120c-904a-4d17-a14e-3f29ab91654d
+  ExportUid: 00000000-0000-0000-0000-000000000000
+  PackagePolicy: CanBeUnpacked
+  ScriptInputsHidden:
+    debugLogging: false
+    prefab: false
+    spawnParent: false
+  ScriptTypesHidden:
+    {}
+  ReadMe: !<reference> 00000000-0000-0000-0000-000000000000
+  DeclarationFile: !<reference> 00000000-0000-0000-0000-000000000000
+  Tags:
+    []
+  Attachments:
+    []
+  DefaultScriptInputs:
+    - prefab: !<reference.ObjectPrefab> 00000000-0000-0000-0000-000000000000
+      spawnParent: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
+      debugLogging: true
+  ScriptTypes:
+    -
+      {}
+  InputLines:
+    - '// @input Asset.ObjectPrefab prefab {"hint":"Prefab to instantiate when a result arrives"}'
+    - "// @input SceneObject spawnParent {\"hint\":\"Parent SceneObject for the spawned prefab (leave empty to use this component's object)\"}"
+    - '// @input bool debugLogging = true {"hint":"Log field assignments to the Logger panel"}'

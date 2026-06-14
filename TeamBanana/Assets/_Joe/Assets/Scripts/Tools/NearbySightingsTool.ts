@@ -3,7 +3,7 @@ require("LensStudio:RawLocationModule")
 import {setTimeout, clearTimeout} from "SpectaclesInteractionKit.lspkg/Utils/FunctionTimingUtils"
 import { SupabaseDBManager } from "_Boon/SupabaseInfoStoring&Retrieving/Scripts/SupabaseDBManager"
 import { NearbySightingManager } from "_Boon/NearbySighting/Scripts/NearbySightingManager"
-import { CustomLocationsLoader, CustomLocation } from "_Boon/NearbySighting/Scripts/CustomLocationsLoader"
+import { CustomLocationsLoader, CustomLocation, SightingInfo } from "_Boon/NearbySighting/Scripts/CustomLocationsLoader"
 
 /**
  * Cleaned-up sighting result returned to agents.
@@ -22,6 +22,18 @@ export type NearbySighting = {
   longitude: number
   distanceKm: number
   identifiedAt: string
+  speciesRedList: string | null
+  speciesDanger: string[] | null
+  speciesDangerDescription: string | null
+  speciesRole: string[] | null
+  speciesTaxonomy: {
+    kingdom: string | null
+    phylum: string | null
+    class: string | null
+    order: string | null
+    family: string | null
+    genus: string | null
+  } | null
 }
 
 export type NearbySightingsResult = {
@@ -172,6 +184,11 @@ export class NearbySightingsTool {
                 speciesDescription: s.speciesDescription,
                 speciesImageUrl: s.speciesImageUrl,
                 identifiedAt: s.identifiedAt,
+                speciesRedList: s.speciesRedList,
+                speciesDanger: s.speciesDanger,
+                speciesDangerDescription: s.speciesDangerDescription,
+                speciesRole: s.speciesRole,
+                speciesTaxonomy: s.speciesTaxonomy,
               },
             }))
             this.customLocationsLoader.setLocations(locations)
@@ -320,7 +337,12 @@ export class NearbySightingsTool {
           latitude: lat2,
           longitude: lon2,
           distanceKm: Math.round(distKm * 100) / 100,
-          identifiedAt: s.identified_at
+          identifiedAt: s.identified_at,
+          speciesRedList: s.species_red_list,
+          speciesDanger: s.species_danger,
+          speciesDangerDescription: s.species_danger_description,
+          speciesRole: s.species_role,
+          speciesTaxonomy: s.species_taxonomy as SightingInfo["speciesTaxonomy"],
         }
       })
 

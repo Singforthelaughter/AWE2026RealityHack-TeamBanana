@@ -1,0 +1,59 @@
+- !<AssetImportMetadata/afa80cea-d510-4b8e-a7c0-b19fca5223fd>
+  ImportedAssetIds:
+    TypeScriptAsset: !<reference> bceca903-ece4-442c-a905-888de716528c
+  ImporterName: TypeScriptAssetImporter
+  PrimaryAsset: !<reference> bceca903-ece4-442c-a905-888de716528c
+  PackageType: NotAPackage
+  LegacyPackagePolicy: ~
+  ExtraData:
+    {}
+  AssetDataMap:
+    TypeScriptAsset: !<own> a9d31c11-6b61-46df-9ebd-961e7b20298a
+  DependentFiles:
+    []
+  ImporterSettings: !<AssetImporterSettings>
+    {}
+  CompressionSettings: !<own> 00000000-0000-0000-0000-000000000000
+- !<TypeScriptAssetData/a9d31c11-6b61-46df-9ebd-961e7b20298a>
+  SvgIcon: ""
+  SetupScript:
+    code: ""
+  Description: ""
+  VersionMajor: 0
+  VersionMinor: 0
+  VersionPatch: 0
+  ComponentUid: 346a79bf-e632-4409-bbff-1c4b32312cea
+  ExportUid: 00000000-0000-0000-0000-000000000000
+  PackagePolicy: CanBeUnpacked
+  ScriptInputsHidden:
+    dataPhotoImageArray: false
+    textArray: false
+    userPhotoImage: false
+  ScriptTypesHidden:
+    {}
+  ReadMe: !<reference> 00000000-0000-0000-0000-000000000000
+  DeclarationFile: !<reference> 00000000-0000-0000-0000-000000000000
+  Tags:
+    []
+  Attachments:
+    []
+  DefaultScriptInputs:
+    - textArray: !<reference.Text[]>
+        []
+      userPhotoImage: !<reference.Image> 00000000-0000-0000-0000-000000000000
+      dataPhotoImageArray: !<reference.Image[]>
+        []
+  ScriptTypes:
+    -
+      {}
+  InputLines:
+    - '// @ui {"widget":"label", "label":"Text SceneObject names (case-insensitive):"}'
+    - '// @ui {"widget":"label", "label":"name, common_name, common_names, probability,"}'
+    - '// @ui {"widget":"label", "label":"description, description_gpt, red_list, danger,"}'
+    - '// @ui {"widget":"label", "label":"danger_description, role, kingdom, phylum,"}'
+    - '// @ui {"widget":"label", "label":"class, order, family, genus, spotter, last_seen, seen_by"}'
+    - "// @input Component.Text[] textArray"
+    - "// @ui {\"widget\":\"label\", \"label\":\"User's captured / spotter photo\"}"
+    - // @input Component.Image userPhotoImage
+    - '// @ui {"widget":"label", "label":"Species images"}'
+    - "// @input Component.Image[] dataPhotoImageArray"

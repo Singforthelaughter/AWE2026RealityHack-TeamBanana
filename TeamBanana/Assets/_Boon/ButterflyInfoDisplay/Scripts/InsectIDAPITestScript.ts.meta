@@ -1,20 +1,20 @@
-- !<AssetImportMetadata/23015cf2-d0e5-47ac-b364-8372617bb594>
+- !<AssetImportMetadata/77cfe9e9-d67e-4470-81ee-97cd58bd294e>
   ImportedAssetIds:
-    TypeScriptAsset: !<reference> 78d39e17-5828-4d70-bc9d-13331efc6f5d
+    TypeScriptAsset: !<reference> 1f4fe218-b972-413b-8a33-0766729ea5d7
   ImporterName: TypeScriptAssetImporter
-  PrimaryAsset: !<reference> 78d39e17-5828-4d70-bc9d-13331efc6f5d
+  PrimaryAsset: !<reference> 1f4fe218-b972-413b-8a33-0766729ea5d7
   PackageType: NotAPackage
   LegacyPackagePolicy: ~
   ExtraData:
     {}
   AssetDataMap:
-    TypeScriptAsset: !<own> b42d2a41-2815-4770-8781-171fceda1541
+    TypeScriptAsset: !<own> 47262f7a-86d9-4b28-81bb-8cb7a7356746
   DependentFiles:
     []
   ImporterSettings: !<AssetImporterSettings>
     {}
   CompressionSettings: !<own> 00000000-0000-0000-0000-000000000000
-- !<TypeScriptAssetData/b42d2a41-2815-4770-8781-171fceda1541>
+- !<TypeScriptAssetData/47262f7a-86d9-4b28-81bb-8cb7a7356746>
   SvgIcon: ""
   SetupScript:
     code: ""
@@ -22,7 +22,7 @@
   VersionMajor: 0
   VersionMinor: 0
   VersionPatch: 0
-  ComponentUid: fe4639f5-360f-4daa-b5d7-20b61723fa51
+  ComponentUid: c19f4c46-d077-434d-b2e7-3e9c145f3ef1
   ExportUid: 00000000-0000-0000-0000-000000000000
   PackagePolicy: CanBeUnpacked
   ScriptInputsHidden:
@@ -30,10 +30,8 @@
     debugLogging: false
     functionName: false
     infoDisplay: false
-    resultText: false
+    inputTexture: false
     supabaseProject: false
-    triggerWord: false
-    useVoiceCommand: false
     wingGenerator: false
   ScriptTypesHidden:
     {}
@@ -46,9 +44,7 @@
   DefaultScriptInputs:
     - supabaseProject: !<reference.SupabaseProject> 00000000-0000-0000-0000-000000000000
       functionName: identify-butterfly
-      resultText: !<reference.Text> 00000000-0000-0000-0000-000000000000
-      useVoiceCommand: true
-      triggerWord: identify
+      inputTexture: !<reference.Texture> 00000000-0000-0000-0000-000000000000
       debugLogging: true
       dbManager: !<MappingBased.AssignableType> 00000000-0000-0000-0000-000000000000
       wingGenerator: !<MappingBased.AssignableType_1> 00000000-0000-0000-0000-000000000000
@@ -57,11 +53,9 @@
     -
       {}
   InputLines:
-    - "// @input Asset.SupabaseProject supabaseProject {\"hint\":\"Supabase project asset (URL + public token). Created via the Supabase Plugin's 'Import Credentials'.\"}"
+    - '// @input Asset.SupabaseProject supabaseProject {"hint":"Supabase project asset (URL + public token)."}'
     - '// @input string functionName = "identify-butterfly" {"hint":"Name of the Supabase Edge Function that processes the image and calls Kindwise"}'
-    - "// @input Component.Text resultText {\"hint\":\"Optional Text to show the result (e.g. 'Capturing...' then the species)\"}"
-    - '// @input bool useVoiceCommand = true {"hint":"Listen for a spoken trigger word to start identification (device only)"}'
-    - '// @input string triggerWord = "identify" {"hint":"Spoken word that triggers capture"}'
+    - '// @input Asset.Texture inputTexture {"hint":"Texture to use as the butterfly photo input instead of the camera"}'
     - '// @input bool debugLogging = true {"hint":"Log activity to the Logger panel"}'
     - '// @ui {"widget":"separator"}'
     - '// @input AssignableType dbManager {"hint":"SupabaseDBManager component for storing sightings to the database"}'

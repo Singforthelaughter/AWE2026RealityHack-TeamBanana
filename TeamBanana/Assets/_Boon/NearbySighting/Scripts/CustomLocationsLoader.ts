@@ -11,6 +11,18 @@ export type SightingInfo = {
   speciesDescription: string | null
   speciesImageUrl: string | null
   identifiedAt: string
+  speciesRedList: string | null
+  speciesDanger: string[] | null
+  speciesDangerDescription: string | null
+  speciesRole: string[] | null
+  speciesTaxonomy: {
+    kingdom: string | null
+    phylum: string | null
+    class: string | null
+    order: string | null
+    family: string | null
+    genus: string | null
+  } | null
 }
 
 export type CustomLocation = {

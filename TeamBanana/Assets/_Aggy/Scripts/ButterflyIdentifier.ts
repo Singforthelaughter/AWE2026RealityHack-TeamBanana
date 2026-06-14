@@ -2,6 +2,7 @@ import { createClient, type SupabaseClient } from "SupabaseClient.lspkg/supabase
 import { IDResponse, Suggestion } from "./KindwiseTypes"
 import { SupabaseDBManager } from "../../_Boon/SupabaseInfoStoring&Retrieving/Scripts/SupabaseDBManager"
 import { ButterflyWingGenerator } from "../../_Boon/GenerateButterflyWingTexture/Scripts/ButterflyWingTextureGenerator"
+import { ButterflyInfoDisplayManager } from "../../_Boon/ButterflyInfoDisplay/Scripts/ButterflyInfoDisplayManager"
 
 /**
  * ButterflyIdentifier — the identification half of the pipeline.
@@ -53,6 +54,10 @@ export class ButterflyIdentifier extends BaseScriptComponent {
   @input
   @hint("ButterflyWingGenerator component for generating procedural wing textures")
   wingGenerator!: ButterflyWingGenerator
+
+  @input
+  @hint("ButterflyInfoDisplayManager component for displaying identification results in a prefab")
+  infoDisplay: ButterflyInfoDisplayManager | null = null
 
   // Built-in Spectacles modules (resolved at construction).
   private cameraModule = require("LensStudio:CameraModule") // high-res still capture
@@ -176,6 +181,8 @@ export class ButterflyIdentifier extends BaseScriptComponent {
       print("[ButterflyId] " + display + " " + percent + "%")
     }
 
+    this.infoDisplay?.displayResult(top, this.lastCapturedTexture)
+
     //added by boon
     const { wingTexture, wingOpacityMap } = await this.generateWingTexturesAndStoreSighting(top)
     //instantiate 3d butterfly here with generated texture
@@ -189,12 +196,19 @@ export class ButterflyIdentifier extends BaseScriptComponent {
    * Returns the generated textures once the sighting is stored, or null for both if unavailable.
    */
   private async generateWingTexturesAndStoreSighting(top: Suggestion): Promise<{ wingTexture: Texture | null; wingOpacityMap: Texture | null }> {
-    const imageUrl = top.details?.image?.value ?? top.similar_images?.[0]?.url ?? null
+    const isBlockedUrl = (url: string) =>
+      url.indexOf("/knowledge_base/wikidata/") !== -1 ||
+      url.indexOf("/knowledge_base/wikipedia/") !== -1
+    const detailsUrl = top.details?.image?.value
+    const imageUrl =
+      (detailsUrl && !isBlockedUrl(detailsUrl) ? detailsUrl : null) ??
+      top.similar_images?.find((img) => img.url && !isBlockedUrl(img.url))?.url ??
+      null
     if (imageUrl && this.wingGenerator) {
-      const textures = await new Promise<{ wingTexture: Texture; wingOpacityMap: Texture } | null>((resolve) => {
+      const textures = await new Promise<{ wingTexture: Texture; wingOpacityMap: Texture; wingTextureB64: string; wingOpacityMapB64: string } | null>((resolve) => {
         this.wingGenerator.generateWingTextures(
           imageUrl,
-          (wingTexture, wingOpacityMap) => resolve({ wingTexture, wingOpacityMap }),
+          (wingTexture, wingOpacityMap, wingTextureB64, wingOpacityMapB64) => resolve({ wingTexture, wingOpacityMap, wingTextureB64, wingOpacityMapB64 }),
           (err) => {
             if (this.debugLogging) {
               print("[ButterflyId] Wing generation failed: " + err)
@@ -212,8 +226,8 @@ export class ButterflyIdentifier extends BaseScriptComponent {
         const record = await this.dbManager.storeSighting({
           suggestion: top,
           photoTexture: this.lastCapturedTexture,
-          wingTexture: textures?.wingTexture ?? null,
-          wingOpacityMap: textures?.wingOpacityMap ?? null,
+          wingTextureBase64: textures?.wingTextureB64,
+          wingOpacityMapBase64: textures?.wingOpacityMapB64,
         })
         if (this.debugLogging) {
           print("[ButterflyId] storeSighting " + (record ? "OK: " + record.photo_url : "failed"))

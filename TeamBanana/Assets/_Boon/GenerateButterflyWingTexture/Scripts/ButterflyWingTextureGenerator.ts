@@ -92,7 +92,7 @@ export class ButterflyWingGenerator extends BaseScriptComponent {
     print(TAG + " Starting test with URL: " + this.testImageUrl)
     this.generateWingTextures(
       this.testImageUrl,
-      (wingTexture, wingOpacityMap) => {
+      (wingTexture, wingOpacityMap, _wingTextureB64, _wingOpacityMapB64) => {
         print(TAG + " onComplete callback received both textures")
         if (this.testTextureImage) {
           this.testTextureImage.mainPass.baseTex = wingTexture
@@ -131,7 +131,7 @@ export class ButterflyWingGenerator extends BaseScriptComponent {
    */
   public async generateWingTextures(
     imageUrl: string,
-    onComplete: (wingTexture: Texture, wingOpacityMap: Texture) => void,
+    onComplete: (wingTexture: Texture, wingOpacityMap: Texture, wingTextureB64: string, wingOpacityMapB64: string) => void,
     onError?: (error: string) => void,
   ): Promise<void> {
     print(TAG + " generateWingTextures called with: " + imageUrl)
@@ -188,7 +188,7 @@ export class ButterflyWingGenerator extends BaseScriptComponent {
     wingOpacityMapB64: string,
     t0: number,
     tEdge: number,
-    onComplete: (wingTexture: Texture, wingOpacityMap: Texture) => void,
+    onComplete: (wingTexture: Texture, wingOpacityMap: Texture, wingTextureB64: string, wingOpacityMapB64: string) => void,
     onError?: (error: string) => void,
   ): void {
     print(TAG + " Decoding both textures from base64...")
@@ -204,7 +204,7 @@ export class ButterflyWingGenerator extends BaseScriptComponent {
         const summary = "Edge fn: " + (tEdge - t0) + "ms\nDecode: " + decodeMs + "ms\nTotal: " + totalMs + "ms"
         print(TAG + " Done! " + summary.replace(/\n/g, " | "))
         this.setTimerText(summary)
-        onComplete(wingTexture, wingOpacityMap)
+        onComplete(wingTexture, wingOpacityMap, wingTextureB64, wingOpacityMapB64)
       }
     }
 
