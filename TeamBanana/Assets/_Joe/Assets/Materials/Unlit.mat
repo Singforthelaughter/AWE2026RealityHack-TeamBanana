@@ -4,18 +4,7 @@
     - !<own> 92965144-acac-470a-a0f1-42704254a7a2
 - !<PassInfo/92965144-acac-470a-a0f1-42704254a7a2>
   CachedProperties:
-    - Port_Default_N204:
-        typeIdx: 1
-        value: 0.000000
-    - Port_Default_N369:
-        typeIdx: 5
-        value: {x: 1.000000, y: 1.000000, z: 1.000000, w: 1.000000}
-    - PreviewEnabled:
-        typeIdx: 0
-        value: 0
-    - baseColor:
-        typeIdx: 5
-        value: {x: 0.556863, y: 0.501961, z: 0.498039, w: 1.000000}
+    []
   DepthWrite: true
   DepthTest: true
   DepthFunction: LessEqual

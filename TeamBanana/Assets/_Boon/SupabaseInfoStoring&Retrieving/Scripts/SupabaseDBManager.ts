@@ -52,6 +52,7 @@ import { Suggestion } from "../../../_Aggy/Scripts/KindwiseTypes"
 import { createClient, SupabaseClient } from "SupabaseClient.lspkg/supabase-snapcloud"
 import { SIMULATED_SIGHTINGS } from "./SimulatedData"
 require("LensStudio:RawLocationModule")
+const internetModule = require("LensStudio:InternetModule") as { makeResourceFromUrl: (url: string) => any }
 
 // One row from the butterfly_sightings table.
 type SightingRecord = {
@@ -77,6 +78,10 @@ type SightingRecord = {
   species_gbif_id: number | null
   species_inaturalist_id: number | null
   species_suggestion_raw: object | null
+  is_new: boolean
+  // Populated at runtime by getMySightings() — not stored in DB.
+  wing_texture: Texture | null
+  wing_opacity_map: Texture | null
 }
 
 @component
@@ -94,6 +99,7 @@ export class SupabaseDBManager extends BaseScriptComponent {
   private snapDisplayName: string | null = null
   private locationService: LocationService | null = null
   private readonly TABLE = "butterfly_sightings"
+  private readonly remoteMediaModule = require("LensStudio:RemoteMediaModule") as RemoteMediaModule
 
   onAwake() {
     this.createEvent("OnStartEvent").bind(() => this.initSupabase())
@@ -235,6 +241,7 @@ export class SupabaseDBManager extends BaseScriptComponent {
       species_gbif_id:            d.gbif_id ?? null,
       species_inaturalist_id:     d.inaturalist_id ?? null,
       species_suggestion_raw:     params.suggestion,
+      is_new:                     true,
     }
 
     const { data, error } = await this.client.from(this.TABLE).insert(row).select().single()
@@ -329,7 +336,7 @@ export class SupabaseDBManager extends BaseScriptComponent {
       .from(this.TABLE)
       .select(
         "id,user_id,snap_display_name,latitude,longitude,identified_at," +
-        "photo_url,wing_texture_url,species_scientific_name,species_common_names," +
+        "photo_url,species_scientific_name,species_common_names," +
         "species_probability,species_red_list,species_description,species_danger_description," +
         "species_taxonomy,species_danger,species_role,species_image_url," +
         "species_gbif_id,species_inaturalist_id"
@@ -377,7 +384,7 @@ export class SupabaseDBManager extends BaseScriptComponent {
       .from(this.TABLE)
       .select(
         "id,user_id,snap_display_name,latitude,longitude,identified_at," +
-        "photo_url,wing_texture_url,species_scientific_name,species_common_names," +
+        "photo_url,species_scientific_name,species_common_names," +
         "species_probability,species_red_list,species_description,species_danger_description," +
         "species_taxonomy,species_danger,species_role,species_image_url," +
         "species_gbif_id,species_inaturalist_id"
@@ -434,13 +441,49 @@ export class SupabaseDBManager extends BaseScriptComponent {
       print(`[SupabaseDBManager] getMySightings error: ${JSON.stringify(error)}`)
       return []
     }
-    return data as unknown as SightingRecord[]
+
+    const records = data as unknown as SightingRecord[]
+
+    const newIds = records.filter((r) => r.is_new).map((r) => r.id)
+    if (newIds.length > 0) {
+      const { error: updateError } = await this.client
+        .from(this.TABLE)
+        .update({ is_new: false })
+        .in("id", newIds)
+      if (updateError) {
+        print(`[SupabaseDBManager] getMySightings update is_new error: ${JSON.stringify(updateError)}`)
+      }
+    }
+
+    await Promise.all(
+      records.map(async (r) => {
+        r.wing_texture = await this.loadTextureFromUrl(r.wing_texture_url)
+        r.wing_opacity_map = await this.loadTextureFromUrl(r.wing_opacity_map_url)
+      })
+    )
+
+    return records
+  }
+
+  private loadTextureFromUrl(url: string | null): Promise<Texture | null> {
+    if (!url) return Promise.resolve(null)
+    return new Promise((resolve) => {
+      const resource = internetModule.makeResourceFromUrl(url)
+      this.remoteMediaModule.loadResourceAsImageTexture(
+        resource,
+        (texture: Texture) => resolve(texture),
+        (errorMsg: string) => {
+          print(`[SupabaseDBManager] loadTextureFromUrl failed for ${url}: ${errorMsg}`)
+          resolve(null)
+        }
+      )
+    })
   }
 
   // ---------------------------------------------------------------------------
   // DEV — insert the 5 simulated sightings from SimulatedData.ts
-  // Call once to populate the table for map/UI testing. Safe to call multiple
-  // times — rows will just be duplicated (no upsert key on this table).
+  // Idempotent per user: skips insertion if simulated rows already exist for
+  // the current user_id, so each teammate gets their own copy exactly once.
   // ---------------------------------------------------------------------------
 
   async seedTestData(): Promise<void> {
@@ -448,7 +491,20 @@ export class SupabaseDBManager extends BaseScriptComponent {
       print("[SupabaseDBManager] seedTestData: not authenticated")
       return
     }
-    const { error } = await this.client.from(this.TABLE).insert(SIMULATED_SIGHTINGS)
+
+    const { data: existing } = await this.client
+      .from(this.TABLE)
+      .select("id")
+      .eq("user_id", this.uid)
+      .limit(SIMULATED_SIGHTINGS.length)
+
+    if (existing && existing.length >= SIMULATED_SIGHTINGS.length) {
+      print("[SupabaseDBManager] seedTestData: user already has sightings, skipping")
+      return
+    }
+
+    const rows = SIMULATED_SIGHTINGS.map((s) => ({ ...s, snap_display_name: this.snapDisplayName }))
+    const { error } = await this.client.from(this.TABLE).insert(rows)
     if (error) {
       print(`[SupabaseDBManager] seedTestData error: ${JSON.stringify(error)}`)
     } else {
