@@ -10494,8 +10494,6 @@
     useVoiceCommand: true
     triggerWord: true
     debugLogging: true
-    dbManager: true
-    wingGenerator: true
   ScriptTypesDefault:
     {}
   ScriptInputs:
@@ -10506,8 +10504,8 @@
       useVoiceCommand: true
       triggerWord: identify
       debugLogging: true
-      dbManager: !<MappingBased.AssignableType> 00000000-0000-0000-0000-000000000000
-      wingGenerator: !<MappingBased.AssignableType_1> 00000000-0000-0000-0000-000000000000
+      dbManager: !<MappingBased.AssignableType> ec3ec66a-669d-4f10-8729-2385b25c576d
+      wingGenerator: !<MappingBased.AssignableType_1> a6383912-b0e0-4431-bbec-39be9eb75dcb
   ScriptTypes:
     "":
       {}
