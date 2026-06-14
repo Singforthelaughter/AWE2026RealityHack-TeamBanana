@@ -26,6 +26,7 @@
   ExportUid: 00000000-0000-0000-0000-000000000000
   PackagePolicy: CanBeUnpacked
   ScriptInputsHidden:
+    addYourSimulatedData: false
     storageBucket: false
     supabaseProject: false
   ScriptTypesHidden:
@@ -39,9 +40,11 @@
   DefaultScriptInputs:
     - supabaseProject: !<reference.SupabaseProject> 00000000-0000-0000-0000-000000000000
       storageBucket: butterfly-photos
+      addYourSimulatedData: false
   ScriptTypes:
     -
       {}
   InputLines:
     - '// @input Asset.SupabaseProject supabaseProject {"hint":"SupabaseProject asset from Asset Browser (Window > Supabase > Import Credentials)"}'
     - '// @input string storageBucket = "butterfly-photos" {"hint":"Storage bucket name for sighting photos (create in Supabase dashboard)"}'
+    - '// @input bool addYourSimulatedData {"hint":"Insert simulated sightings on start (idempotent — skipped if user already has data)"}'

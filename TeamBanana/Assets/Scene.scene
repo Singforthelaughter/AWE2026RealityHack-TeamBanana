@@ -12060,12 +12060,14 @@
   ScriptAsset: !<reference> 2ed7573f-b12c-45b4-902d-24f44e1817d6
   ScriptInputsDefault:
     storageBucket: true
+    addYourSimulatedData: true
   ScriptTypesDefault:
     {}
   ScriptInputs:
     "":
       supabaseProject: !<reference.SupabaseProject> 08bfc11e-6bac-4674-901f-ed63bcb39f2f
       storageBucket: butterfly-photos
+      addYourSimulatedData: false
   ScriptTypes:
     "":
       {}

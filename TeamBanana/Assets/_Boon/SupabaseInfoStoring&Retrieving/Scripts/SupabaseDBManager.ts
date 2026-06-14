@@ -94,6 +94,10 @@ export class SupabaseDBManager extends BaseScriptComponent {
   @hint("Storage bucket name for sighting photos (create in Supabase dashboard)")
   storageBucket: string = "butterfly-photos"
 
+  @input
+  @hint("Insert simulated sightings on start (idempotent — skipped if user already has data)")
+  addYourSimulatedData: boolean = false
+
   private client!: SupabaseClient
   private uid: string | null = null
   private snapDisplayName: string | null = null
@@ -117,6 +121,7 @@ export class SupabaseDBManager extends BaseScriptComponent {
     this.locationService = GeoLocation.createLocationService()
     this.locationService.accuracy = GeoLocationAccuracy.Navigation
     await this.signIn()
+    if (this.addYourSimulatedData) await this.seedTestData()
   }
 
   private async signIn(retryCount: number = 0): Promise<boolean> {

@@ -46,8 +46,6 @@ export class NearbySightingManager extends BaseScriptComponent {
       this.locationService = GeoLocation.createLocationService()
       this.locationService.accuracy = GeoLocationAccuracy.Navigation
 
-      this.dbManager.seedTestData()
-
       // this.openNearbySighting()
     })
   }
