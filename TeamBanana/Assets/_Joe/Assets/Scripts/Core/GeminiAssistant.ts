@@ -60,6 +60,9 @@ export class GeminiAssistant extends BaseScriptComponent {
   private videoController: VideoController = new VideoController(1500, CompressionQuality.HighQuality, EncodingType.Jpg)
   private GeminiLive!: GeminiLiveWebsocket
 
+  // When true, incoming audio frames are discarded (agent system is speaking instead)
+  private _muteAudio: boolean = false
+
   public updateTextEvent: Event<{text: string; completed: boolean}> = new Event<{text: string; completed: boolean}>()
 
   public userSpeechEvent: Event<{text: string; isFinal: boolean}> = new Event<{text: string; isFinal: boolean}>()
@@ -144,7 +147,9 @@ export class GeminiAssistant extends BaseScriptComponent {
             if (part.inlineData?.mimeType && part.inlineData.mimeType.startsWith("audio/pcm")) {
               const audio = Base64.decode(part.inlineData.data)
               if (this.enableDebugLogging) print(`GeminiAssistant: 🔊 Audio frame received (${part.inlineData.mimeType}, ${audio.length} bytes)`)
-              this.dynamicAudioOutput.addAudioFrame(audio)
+              if (!this._muteAudio) {
+                this.dynamicAudioOutput.addAudioFrame(audio)
+              }
             }
             if (part.text) {
               this.updateTextEvent.invoke({text: part.text, completed: !completedTextDisplay})
@@ -467,6 +472,21 @@ export class GeminiAssistant extends BaseScriptComponent {
       this.dynamicAudioOutput.interruptAudioOutput()
     } else {
       print("DynamicAudioOutput is not initialized.")
+    }
+  }
+
+  /**
+   * Mute/unmute incoming audio frames. When muted, audio frames are discarded
+   * instead of sent to the speaker — used while the agent system is generating
+   * a response so Gemini's auto-response audio doesn't conflict.
+   */
+  public setMuteAudio(mute: boolean): void {
+    this._muteAudio = mute
+    if (mute) {
+      this.dynamicAudioOutput?.interruptAudioOutput()
+    }
+    if (this.enableDebugLogging) {
+      print(`GeminiAssistant: 🔇 Audio ${mute ? "MUTED" : "UNMUTED"}`)
     }
   }
 

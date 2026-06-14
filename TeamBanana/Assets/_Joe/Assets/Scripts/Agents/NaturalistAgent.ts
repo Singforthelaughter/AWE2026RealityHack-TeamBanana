@@ -3,6 +3,8 @@ import {AgentLanguageInterface} from "./AgentLanguageInterface"
 import {Tool} from "./AgentTypes"
 import {GeneralConversationTool} from "../Tools/GeneralConversationTool"
 import {NearbySightingsTool} from "../Tools/NearbySightingsTool"
+import {ButterflyIdentificationTool, ButterflyIdentificationResult} from "../Tools/ButterflyIdentificationTool"
+import {ButterflyIdentifier} from "_Aggy/Scripts/ButterflyIdentifier"
 import {SupabaseDBManager} from "_Boon/SupabaseInfoStoring&Retrieving/Scripts/SupabaseDBManager"
 import {NearbySightingManager} from "_Boon/NearbySighting/Scripts/NearbySightingManager"
 
@@ -60,8 +62,9 @@ export class NaturalistAgent extends OutdoorAgent {
 
   private generalConversationTool: GeneralConversationTool
   private nearbySightingsTool: NearbySightingsTool | null = null
+  private butterflyIdentificationTool: ButterflyIdentificationTool | null = null
 
-  constructor(languageInterface: AgentLanguageInterface, dbManager?: SupabaseDBManager, mapManager?: NearbySightingManager) {
+  constructor(languageInterface: AgentLanguageInterface, dbManager?: SupabaseDBManager, mapManager?: NearbySightingManager, butterflyIdentifier?: ButterflyIdentifier) {
     super(languageInterface)
 
     // Initialize general conversation tool as fallback
@@ -97,6 +100,18 @@ export class NaturalistAgent extends OutdoorAgent {
         execute: (args: Record<string, unknown>) => this.nearbySightingsTool!.execute(args)
       })
       print("NaturalistAgent: 🦋 Nearby sightings tool registered")
+    }
+
+    // Register butterfly identification tool if ButterflyIdentifier is available
+    if (butterflyIdentifier) {
+      this.butterflyIdentificationTool = new ButterflyIdentificationTool(butterflyIdentifier)
+      this.registerTool({
+        name: "butterfly_identification",
+        description: "Take a photo and identify a butterfly species using AI-powered recognition",
+        parameters: this.butterflyIdentificationTool.parameters,
+        execute: (args: Record<string, unknown>) => this.butterflyIdentificationTool!.execute(args)
+      })
+      print("NaturalistAgent: 📸 Butterfly identification tool registered")
     }
 
     print("NaturalistAgent: 🌿 Gentle discovery guide initialized")
@@ -213,9 +228,23 @@ IMPORTANT: You are a guide, not a lecturer. Help the user discover for themselve
       // Update discovery state based on query
       this.updateDiscoveryState(queryStr)
 
-      // Check if nearby sightings tool should be activated
+      // Check if butterfly identification tool should be activated
       let toolContext = ""
-      if (this.shouldUseNearbySightings(queryStr)) {
+      if (this.shouldUseButterflyIdentification(queryStr)) {
+        print("NaturalistAgent: Activating butterfly_identification...")
+        const idResult = await this.executeTool("butterfly_identification", {})
+        if (idResult.success && idResult.result) {
+          const result = idResult.result as ButterflyIdentificationResult
+          const tool = this.butterflyIdentificationTool
+          toolContext = tool
+            ? "\n\n[BUTTERFLY IDENTIFIED: " + tool.formatIdentificationSummary(result) + ". FIRST tell the user what species this is and one fascinating fact about it, THEN ask a Socratic question to deepen their observation.]"
+            : "\n\n[BUTTERFLY IDENTIFIED: " + (result.commonName ?? result.scientificName ?? "Unknown") + ". FIRST tell the user what species this is, THEN ask a question.]"
+          print("NaturalistAgent: Butterfly identification result integrated into response")
+        }
+      }
+
+      // Check if nearby sightings tool should be activated
+      if (!toolContext && this.shouldUseNearbySightings(queryStr)) {
         print("NaturalistAgent: Activating nearby_sightings...")
         const toolResult = await this.executeTool("nearby_sightings", {
           radius: 5,
@@ -236,11 +265,11 @@ IMPORTANT: You are a guide, not a lecturer. Help the user discover for themselve
       // Generate response with Socratic approach, including tool context
       const enhancedQuery = toolContext ? queryStr + toolContext : queryStr
       const messages = this.buildMessages(enhancedQuery, context)
-      // Use textOnly when we have tool context — voice streaming doesn't return content synchronously
+      // Always use voice/audio — tool context is embedded in the enhanced query
+      // and will be spoken naturally by the Realtime API.
       const response = await this.generateLLMResponse(messages, {
         temperature: 0.8,
-        maxTokens: toolContext ? 300 : 200,
-        textOnly: !!toolContext
+        maxTokens: toolContext ? 300 : 200
       })
 
       const message = response.content || "I'm here to help you discover nature. What would you like to explore?"
@@ -284,6 +313,41 @@ IMPORTANT: You are a guide, not a lecturer. Help the user discover for themselve
       this.discoveryState.behaviorObservations.push(query)
       this.discoveryState.currentFocus = "discovery"
     }
+  }
+
+  /**
+   * Determine if the butterfly identification tool should be activated for this query.
+   * Triggers when user asks to identify a specific butterfly they are looking at.
+   */
+  private shouldUseButterflyIdentification(query: string): boolean {
+    if (!this.butterflyIdentificationTool) return false
+    const q = query.toLowerCase()
+
+    // Must be asking for identification of a specific, present butterfly.
+    // Match on word presence rather than exact phrases — handles "what butterfly is this" etc.
+    const idWords = [
+      "identify", "what is this", "what is that", "what kind", "what species",
+      "what type", "which one", "which species", "can you tell", "what's this",
+      "what's that", "name this", "name that"
+    ]
+    const hasIdIntent = idWords.some((w) => q.includes(w))
+    // Match "what/where/which ... butterfly" patterns (ASR often confuses "what" ↔ "where")
+    const hasIdButterfly = (q.includes("what") || q.includes("where") || q.includes("which")) && (q.includes("butterfly") || q.includes("butterfl"))
+
+    const idContext = hasIdIntent || hasIdButterfly
+
+    // And must be about a present/visible subject (this/that/here/I see)
+    const presentWords = [
+      "this", "that", "here", "right now", "in front", "looking at",
+      "i see", "there's", "there is", "spotted", "just saw", "just seen"
+    ]
+    const presentContext = presentWords.some((w) => q.includes(w))
+
+    const matches = idContext && presentContext
+    if (matches) {
+      print(`NaturalistAgent: 📸 butterfly_identification match on: "${q.substring(0, 60)}"`)
+    }
+    return matches
   }
 
   /**

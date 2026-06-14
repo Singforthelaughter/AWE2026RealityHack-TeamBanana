@@ -383,6 +383,9 @@ export class AgentLanguageInterface {
         // Build comprehensive message with full context for Realtime API
         const fullContextMessage = this.buildContextualMessage(messages)
 
+        // Interrupt any in-progress response before sending the agent's message
+        this.openAIAssistant?.interruptAudioOutput()
+
         // Use sendMessageWithAudio for voice output with full context
         this.openAIAssistant?.sendMessageWithAudio(fullContextMessage)
 
@@ -455,9 +458,16 @@ export class AgentLanguageInterface {
 
         // Check if we have image data to send along with the text
         if (lastUserMessage.imageData && lastUserMessage.imageData.length > 100) {
+          // Interrupt any in-progress Gemini auto-VAD response (same race as text-only path)
+          this.geminiAssistant.interruptAudioOutput()
           this.log("AgentLanguageInterface: Sending text + image + context to Gemini Live session")
           this.sendMultimodalMessageToGemini(fullContextMessage, lastUserMessage.imageData)
         } else {
+          // Interrupt any in-progress Gemini auto-VAD response before sending the
+          // agent's message. Without this, Gemini's VAD response to the user's speech
+          // races against the agent's tool execution and can produce stale output
+          // (e.g. "I cannot see any butterflies") while the tool is still running.
+          this.geminiAssistant.interruptAudioOutput()
           this.log("AgentLanguageInterface: Sending contextual message to Gemini Live session")
           this.geminiAssistant.sendTextMessage(fullContextMessage)
         }

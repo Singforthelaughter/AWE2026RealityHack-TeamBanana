@@ -3,6 +3,8 @@ import {ChatStorage} from "../Storage/ChatStorage"
 import {GeneralConversationTool} from "./GeneralConversationTool"
 import {SpatialTool} from "./SpatialTool"
 import {NearbySightingsTool} from "./NearbySightingsTool"
+import {ButterflyIdentificationTool} from "./ButterflyIdentificationTool"
+import {ButterflyIdentifier} from "_Aggy/Scripts/ButterflyIdentifier"
 import {SupabaseDBManager} from "_Boon/SupabaseInfoStoring&Retrieving/Scripts/SupabaseDBManager"
 
 /**
@@ -25,7 +27,7 @@ export class ToolRouter {
   private toolIndex: Map<string, ToolMetadata> = new Map()
   private enableDebugLogging: boolean = true
 
-  constructor(languageInterface: AgentLanguageInterface, _deprecatedStorage?: any, dbManager?: SupabaseDBManager) {
+  constructor(languageInterface: AgentLanguageInterface, _deprecatedStorage?: any, dbManager?: SupabaseDBManager, butterflyIdentifier?: ButterflyIdentifier) {
     this.languageInterface = languageInterface
 
     // Initialize tools
@@ -92,6 +94,29 @@ export class ToolRouter {
       ],
       instance: generalConversation
     })
+
+    // Butterfly identification tool (only if ButterflyIdentifier is available)
+    if (butterflyIdentifier) {
+      const butterflyIdTool = new ButterflyIdentificationTool(butterflyIdentifier)
+      this.indexTool("butterfly_identification", {
+        name: "butterfly_identification",
+        description: "Take a photo and identify a butterfly species using AI-powered insect recognition",
+        capabilities: [
+          "Identify butterfly species from a camera photo",
+          "Return scientific name, common name, and confidence percentage",
+          "Generate procedural wing textures for 3D display",
+          "Store the sighting record with photo and location"
+        ],
+        useWhen: [
+          "User asks to identify a butterfly they are looking at",
+          "User asks 'what is this' or 'what kind of butterfly is that'",
+          "User wants to know the species of a butterfly they spotted",
+          "User asks 'can you identify this butterfly'",
+          "User says 'identify' or 'what species is this'"
+        ],
+        instance: butterflyIdTool
+      })
+    }
 
     if (this.enableDebugLogging) {
       print(`ToolRouter: 🧠 AI-powered intelligent tool router initialized with ${this.toolIndex.size} indexed tools`)
@@ -177,10 +202,11 @@ ${toolDescriptions}
 USER QUERY: "${query}"
 
 ROUTING RULES:
-1. If user asks about current/live environment or "what do you see", use "spatial_tool"
-2. For general questions without specific tool needs, use "general_conversation"
+1. If user asks to identify a butterfly or "what is this" / "what species", use "butterfly_identification"
+2. If user asks about current/live environment or "what do you see", use "spatial_tool"
+3. For general questions without specific tool needs, use "general_conversation"
 
-Respond with ONLY the tool name (e.g., "spatial_tool", "general_conversation").`
+Respond with ONLY the tool name (e.g., "butterfly_identification", "spatial_tool", "general_conversation").`
 
     try {
       // Get routing decision from current language interface

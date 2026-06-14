@@ -53,7 +53,7 @@ Each team member works in their own `Assets/_Name/` folder to minimise conflicts
 |---|---|---|
 | `Assets/_Boon/` | Boon | Active — GPS / nearby sighting feature |
 | `Assets/_Niko/` | Niko | Active — ML object detection pipeline |
-| `Assets/_Agrika/` | Agrika | Reserved (no scripts yet) |
+| `Assets/_Aggy/` | Agrika | Active — butterfly detection + Kindwise identification |
 | `Assets/_Joe/` | Joe | Reserved (no scripts yet) |
 | `Assets/_Marina/` | Marina | Reserved (no scripts yet) |
 | `Assets/_UtilityScripts/` | Shared | Utility components usable by all |
@@ -77,6 +77,16 @@ Only project scripts are listed; third-party package imports are noted inline.
 ── _Boon ──────────────────────────────────────────────────
 NearbyMapManager        (no project imports — standalone)
 NearbyPinManager        (no project imports — standalone)
+
+── _Aggy ──────────────────────────────────────────────────
+ButterflyIdentifier  ──► SupabaseDBManager (_Boon)
+                     ──► ButterflyWingGenerator (_Boon)
+MLSpatializer           (no project imports — standalone)
+YOLODetectionProcessor ──► DetectionHelpers
+BoundingBoxVisualizer  ──► MLSpatializer
+DetectionHelpers        (no project imports — standalone)
+EventModule             (no project imports — standalone)
+KindwiseTypes           (no project imports — standalone)
 
 ── _Niko ──────────────────────────────────────────────────
 DepthCacheSpatializer ──► MLSpatializer
@@ -105,7 +115,10 @@ TimeManager             (no project imports — singleton, global.timeManager)
 TimeManagerExample  ──► TimeManager (via global), external Logger package
 
 ── Cross-team ─────────────────────────────────────────────
-NearbySightingsTool ──► SupabaseDBManager (_Boon)
+NearbySightingsTool     ──► SupabaseDBManager (_Boon)
+ButterflyIdentificationTool ──► ButterflyIdentifier (_Aggy)
+NaturalistAgent         ──► ButterflyIdentifier (_Aggy)
+ArchivistAgent          ──► ButterflyIdentifier (_Aggy)
 ```
 
 ---
@@ -421,8 +434,10 @@ and bounding box vertices overlaid on a camera frame plane.
 ## _Agrika
 
 Owner: **Agrika**  
-Folder: `Assets/_Agrika/`  
-Status: No scripts yet. Add entries here when scripts are created.
+Folder: `Assets/_Aggy/` (note: folder is `_Aggy`, MAP.md section key is `_Agrika`)  
+Feature: Butterfly detection + Kindwise identification pipeline. Self-contained.
+
+**Imported by:** `ButterflyIdentificationTool` (_Joe) reads `KindwiseTypes` from this folder.
 
 <!-- END_SECTION: _Agrika -->
 
@@ -441,32 +456,35 @@ Feature: AI agent system for butterfly outdoor education with tool-based archite
 
 | Script | Purpose |
 |---|---|
-| `AgentOrchestrator.ts` | Top-level component. Wires agents, language interface, routing, and coordination. Inspector input for `dbManager` enables the nearby sightings tool. |
-| `AgentRouter.ts` | Routes user queries to Naturalist (discovery) or Archivist (knowledge) based on confidence scoring. Accepts optional `dbManager` to pass to agents. |
+| `AgentOrchestrator.ts` | Top-level component. Wires agents, language interface, routing, and coordination. Inspector inputs: `dbManager` (enables nearby sightings), `butterflyIdentifier` (enables species identification). |
+| `AgentRouter.ts` | Routes user queries to Naturalist (discovery) or Archivist (knowledge) based on confidence scoring. Passes `dbManager`, `mapManager`, and `butterflyIdentifier` to agents. |
 | `AgentCoordinator.ts` | Manages cross-agent collaboration with priority queue and depth limits. |
-| `AgentLanguageInterface.ts` | Abstraction over OpenAI/Gemini LLM providers. |
+| `AgentLanguageInterface.ts` | Abstraction over OpenAI/Gemini LLM providers. Interrupts in-progress auto-VAD responses before sending agent messages to prevent stale output during tool execution. |
 | `AgentMemorySystem.ts` | In-memory conversation history management. |
 | `AgentToolExecutor.ts` | Executes registered tools with parameter validation, timeout, and events. |
 | `AgentTypes.ts` | Shared TypeScript interfaces: `Tool`, `ToolResult`, `Message`, `LLMResponse`, etc. |
 | `OutdoorAgent.ts` | Abstract base class for agents. Defines `registerTool()`, `execute()`, `canHandleQuery()`. |
-| `NaturalistAgent.ts` | Gentle Socratic discovery guide. Voice-only, no camera. Registers `general_conversation` and optionally `nearby_sightings` tools. |
-| `ArchivistAgent.ts` | Enthusiastic storyteller and knowledge curator. Can use camera for identification. Registers `general_conversation` and optionally `nearby_sightings` tools. |
+| `NaturalistAgent.ts` | Gentle Socratic discovery guide. Voice-only, no camera. Registers `general_conversation`, optionally `nearby_sightings` and `butterfly_identification` tools. Always uses voice/audio (no longer forces text-only when tool context is present). |
+| `ArchivistAgent.ts` | Enthusiastic storyteller and knowledge curator. Can use camera for identification. Registers `general_conversation`, optionally `nearby_sightings` and `butterfly_identification` tools. Always uses voice/audio (no longer forces text-only when tool context is present). |
 
 ### Tools (Tools/)
 
 | Script | Purpose |
 |---|---|
-| `NearbySightingsTool.ts` | **NEW** — Queries Supabase (via `SupabaseDBManager`) for butterfly sightings near the user's GPS location. Returns species, distances, photos. Cached for 30s. |
+| `NearbySightingsTool.ts` | Queries Supabase (via `SupabaseDBManager`) for butterfly sightings near the user's GPS location. Returns species, distances, photos. Cached for 30s. |
+| `ButterflyIdentificationTool.ts` | **NEW** — Wraps Agrika's `ButterflyIdentifier` as an agent-callable tool. Triggers camera capture → Kindwise API identification. Returns species name, common name, probability. |
 | `GeneralConversationTool.ts` | LLM fallback for general conversation. |
 | `SpatialTool.ts` | Camera-based spatial analysis of the environment. |
 | `LocationTool.ts` | Gets current GPS coordinates from Spectacles `LocationService`. |
 | `WeatherTool.ts` | Gets weather conditions from Spectacles `UserContextSystem`. |
-| `ToolRouter.ts` | AI-powered tool selection. Indexes `spatial_tool`, `general_conversation`, and `nearby_sightings` (when `dbManager` is available). |
-| `index.ts` | Tool exports and `createTools()` factory. |
+| `ToolRouter.ts` | AI-powered tool selection. Indexes `spatial_tool`, `general_conversation`, `nearby_sightings` (when `dbManager` is available), and `butterfly_identification` (when `butterflyIdentifier` is available). |
+| `index.ts` | Tool exports and `createTools()` factory. Accepts optional `butterflyIdentifier` for `ButterflyIdentificationTool`. |
 
 ### Cross-team imports
 
-`NearbySightingsTool` imports `SupabaseDBManager` from `_Boon/SupabaseInfoStoring&Retrieving/Scripts/`.
+`NearbySightingsTool` imports `SupabaseDBManager` from `_Boon/SupabaseInfoStoring&Retrieving/Scripts/`.  
+`ButterflyIdentificationTool` imports `ButterflyIdentifier` from `_Aggy/Scripts/`.  
+`AgentRouter`, `NaturalistAgent`, `ArchivistAgent` accept optional `ButterflyIdentifier` from `_Aggy/Scripts/`.
 
 <!-- END_SECTION: _Joe -->
 

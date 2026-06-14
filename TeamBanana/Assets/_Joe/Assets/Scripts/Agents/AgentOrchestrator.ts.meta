@@ -27,6 +27,7 @@
   PackagePolicy: CanBeUnpacked
   ScriptInputsHidden:
     agentDisplayText: false
+    butterflyIdentifier: false
     chatComponent: false
     conversationContextMessages: false
     coordinationDepthLimit: false
@@ -60,6 +61,7 @@
       agentDisplayText: !<reference.Text> 00000000-0000-0000-0000-000000000000
       dbManager: !<MappingBased.AssignableType_4> 00000000-0000-0000-0000-000000000000
       nearbySightingManager: !<MappingBased.AssignableType_5> 00000000-0000-0000-0000-000000000000
+      butterflyIdentifier: !<MappingBased.AssignableType_6> 00000000-0000-0000-0000-000000000000
       enableSystem: true
       enableAgentSystem: true
       enableDebugLogging: true
@@ -81,6 +83,7 @@
     - '// @input Component.Text agentDisplayText {"hint":"Text display component for current agent indicator"}'
     - '// @input AssignableType_4 dbManager {"hint":"SupabaseDBManager — enables nearby sightings tool for agents"}'
     - '// @input AssignableType_5 nearbySightingManager {"hint":"NearbySightingManager — triggers AR map display when nearby sightings are queried"}'
+    - '// @input AssignableType_6 butterflyIdentifier {"hint":"ButterflyIdentifier — enables butterfly species identification tool for agents"}'
     - '// @ui {"widget":"group_start", "label":"System Configuration"}'
     - // @input bool enableSystem = true
     - '// @input bool enableAgentSystem = true {"hint":"Enable butterfly agent system vs. legacy tool router"}'

@@ -4,6 +4,7 @@ import {NaturalistAgent} from "./NaturalistAgent"
 import {ArchivistAgent} from "./ArchivistAgent"
 import {Message} from "./AgentTypes"
 import Event from "SpectaclesInteractionKit.lspkg/Utils/Event"
+import {ButterflyIdentifier} from "_Aggy/Scripts/ButterflyIdentifier"
 import {SupabaseDBManager} from "_Boon/SupabaseInfoStoring&Retrieving/Scripts/SupabaseDBManager"
 import {NearbySightingManager} from "_Boon/NearbySighting/Scripts/NearbySightingManager"
 
@@ -49,30 +50,30 @@ export class AgentRouter {
   public onRoutingDecision: Event<RoutingDecision> = new Event()
   public onCoordinationRequested: Event<{fromAgent: string; toAgent: string; context: string; priority: number}> = new Event()
 
-  constructor(languageInterface: AgentLanguageInterface, config?: Partial<RoutingConfig>, dbManager?: SupabaseDBManager, mapManager?: NearbySightingManager) {
+  constructor(languageInterface: AgentLanguageInterface, config?: Partial<RoutingConfig>, dbManager?: SupabaseDBManager, mapManager?: NearbySightingManager, butterflyIdentifier?: ButterflyIdentifier) {
     this.languageInterface = languageInterface
     this.config = {
-      confidenceThreshold: 0.6,
+      confidenceThreshold: 0.4,
       fallbackAgent: "naturalist",
       enableCoordination: true,
       debugRouting: true,
       ...config
     }
 
-    this.initializeAgents(dbManager, mapManager)
+    this.initializeAgents(dbManager, mapManager, butterflyIdentifier)
     print(`AgentRouter: 🧠 Intelligent router initialized with ${this.agents.size} agents`)
   }
 
   /**
    * Initialize outdoor education agents
    */
-  private initializeAgents(dbManager?: SupabaseDBManager, mapManager?: NearbySightingManager): void {
+  private initializeAgents(dbManager?: SupabaseDBManager, mapManager?: NearbySightingManager, butterflyIdentifier?: ButterflyIdentifier): void {
     // Create Naturalist agent
-    const naturalist = new NaturalistAgent(this.languageInterface, dbManager, mapManager)
+    const naturalist = new NaturalistAgent(this.languageInterface, dbManager, mapManager, butterflyIdentifier)
     this.registerAgent(naturalist)
 
     // Create Archivist agent
-    const archivist = new ArchivistAgent(this.languageInterface, dbManager, mapManager)
+    const archivist = new ArchivistAgent(this.languageInterface, dbManager, mapManager, butterflyIdentifier)
     this.registerAgent(archivist)
   }
 

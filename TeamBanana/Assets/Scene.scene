@@ -442,7 +442,7 @@
   PrefabRemaps:
     []
   Name: ChatParent
-  Enabled: true
+  Enabled: false
   Layers: 1
   LocalTransform: !<TransformEntity>
     Position: {x: 0.000000, y: -20.000000, z: -100.000000}
@@ -1180,7 +1180,7 @@
   PrefabRemaps:
     []
   Name: ToolParent
-  Enabled: true
+  Enabled: false
   Layers: 1
   LocalTransform: !<TransformEntity>
     Position: {x: 0.000000, y: -0.000000, z: -190.000000}
@@ -1818,9 +1818,9 @@
     {}
   ScriptInputs:
     "":
-      openAIToken: e5b34a04-03e9-4a2b-8888-31620863947c
-      googleToken: 4863b430-9603-46aa-898c-ae6668a648a6
-      snapToken: 1d732a34-565c-4b6c-b25c-3ea0e92f18c6
+      openAIToken: token
+      googleToken: token
+      snapToken: token
       enableLogging: false
       enableLoggingLifecycle: false
   ScriptTypes:
@@ -5473,7 +5473,6 @@
     defaultAgent: true
     enableCoordination: true
     coordinationDepthLimit: true
-    defaultProvider: true
     enableVoiceOutput: true
   ScriptTypesDefault:
     {}
@@ -5487,6 +5486,7 @@
       agentDisplayText: !<reference.Text> b1aafeca-47a0-4704-92e1-af3c583a2c52
       dbManager: !<MappingBased.AssignableType_4> ec3ec66a-669d-4f10-8729-2385b25c576d
       nearbySightingManager: !<MappingBased.AssignableType_5> 27b7c243-0743-4e0f-b1a6-89533a5ae96b
+      butterflyIdentifier: !<MappingBased.AssignableType_6> d53ff48f-898b-4f6a-80f4-9834b2903674
       enableSystem: true
       enableAgentSystem: true
       enableDebugLogging: true
@@ -5494,7 +5494,7 @@
       defaultAgent: naturalist
       enableCoordination: true
       coordinationDepthLimit: !<float> 3.000000
-      defaultProvider: openai
+      defaultProvider: Gemini
       enableVoiceOutput: true
   ScriptTypes:
     "":

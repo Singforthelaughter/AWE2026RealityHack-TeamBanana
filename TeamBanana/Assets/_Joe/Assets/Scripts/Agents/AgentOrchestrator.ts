@@ -9,6 +9,7 @@ import {AgentMemorySystem} from "./AgentMemorySystem"
 import {ChatMessage, SystemState} from "./AgentTypes"
 import {AgentRouter} from "./AgentRouter"
 import {AgentCoordinator} from "./AgentCoordinator"
+import {ButterflyIdentifier} from "_Aggy/Scripts/ButterflyIdentifier"
 import {SupabaseDBManager} from "_Boon/SupabaseInfoStoring&Retrieving/Scripts/SupabaseDBManager"
 import {NearbySightingManager} from "_Boon/NearbySighting/Scripts/NearbySightingManager"
 
@@ -65,6 +66,10 @@ export class AgentOrchestrator extends BaseScriptComponent {
   @input
   @hint("NearbySightingManager — triggers AR map display when nearby sightings are queried")
   nearbySightingManager: NearbySightingManager | null = null
+
+  @input
+  @hint("ButterflyIdentifier — enables butterfly species identification tool for agents")
+  butterflyIdentifier: ButterflyIdentifier | null = null
 
   // ================================
   // Configuration
@@ -260,7 +265,7 @@ export class AgentOrchestrator extends BaseScriptComponent {
         fallbackAgent: this.defaultAgent,
         enableCoordination: this.enableCoordination,
         debugRouting: this.enableDebugLogging
-      }, this.dbManager ?? undefined, this.nearbySightingManager ?? undefined)
+      }, this.dbManager ?? undefined, this.nearbySightingManager ?? undefined, this.butterflyIdentifier ?? undefined)
 
       // Initialize agent coordinator
       this.agentCoordinator = new AgentCoordinator(this.agentRouter, {
@@ -429,8 +434,11 @@ export class AgentOrchestrator extends BaseScriptComponent {
         agent: this.currentAgentTone
       })
 
-      // Note: do NOT reset suppressNextAutoResponse here — Gemini's auto-response
-      // may arrive after the agent response. The flag self-resets in handleTextUpdate.
+      // Agent has finished — safe to release Gemini suppression now
+      this.suppressNextAutoResponse = false
+      if (this.geminiAssistant) {
+        this.geminiAssistant.setMuteAudio(false)
+      }
 
       if (this.enableDebugLogging) {
         print(`AgentOrchestrator: Query processed successfully`)
@@ -438,7 +446,10 @@ export class AgentOrchestrator extends BaseScriptComponent {
 
       return response
     } catch (error) {
-      this.suppressNextAutoResponse = false // error path — agent won't respond, let Gemini talk
+      this.suppressNextAutoResponse = false
+      if (this.geminiAssistant) {
+        this.geminiAssistant.setMuteAudio(false)
+      }
       const errorMessage = `Query processing failed: ${error}`
       this.handleError(errorMessage)
       return errorMessage
@@ -600,13 +611,10 @@ export class AgentOrchestrator extends BaseScriptComponent {
         data.text.includes("Session initialized") ||
         data.text.toLowerCase().includes("websocket")
 
-      // Skip Gemini's auto-response — agent system will provide the real response
+      // Skip Gemini's auto-response — agent system will provide the real response.
+      // Don't reset the flag here — it gets cleared when the agent finishes in processUserQuery.
       if (this.suppressNextAutoResponse) {
         this.accumulatedTranscription = "" // discard any partial text already gathered
-        if (data.completed) {
-          this.suppressNextAutoResponse = false
-          if (this.enableDebugLogging) print("AgentOrchestrator: 🚫 Suppressed auto-response — agent response incoming")
-        }
         return
       }
 
@@ -670,7 +678,7 @@ export class AgentOrchestrator extends BaseScriptComponent {
     // response (potentially with tool context) instead.
     this.suppressNextAutoResponse = true
     if (this.geminiAssistant) {
-      this.geminiAssistant.interruptAudioOutput()
+      this.geminiAssistant.setMuteAudio(true)
     }
     if (this.openAIAssistant) {
       this.openAIAssistant.interruptAudioOutput()
