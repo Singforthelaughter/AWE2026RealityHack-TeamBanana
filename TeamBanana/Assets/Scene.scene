@@ -7289,6 +7289,22 @@
     - !<own> cca13a50-a590-4864-94ca-c7b3aa5951ed
   Components:
     []
+- !<ScriptComponent/81061a47-44a7-4f8c-8977-4a708181137b>
+  PrefabRemaps:
+    []
+  Name: CloseFrameParent
+  Enabled: true
+  ScriptAsset: !<reference> 925f2033-81fd-47a6-b36f-cbfb27dadc47
+  ScriptInputsDefault:
+    {}
+  ScriptTypesDefault:
+    {}
+  ScriptInputs:
+    "":
+      {}
+  ScriptTypes:
+    "":
+      {}
 - !<ScriptComponent/8119a3da-2d37-4fe3-91dd-9d96c34eb2fa>
   PrefabRemaps:
     []
@@ -9311,6 +9327,7 @@
     - 744c803c-75b2-4536-8c92-65e9fc15b982: 99db6dcd-8ef7-4b25-9797-5d69d3fe1d33
     - 78a9e64c-3b60-4bc5-a82d-8e29ccea1f64: fbdd3fa8-1e08-407c-ac57-090096c023da
     - 7a67c4dc-4b1d-42fd-adef-37364e26a07c: 1097cadb-f283-4b5c-9ad9-7e1f6302c5c1
+    - 81061a47-44a7-4f8c-8977-4a708181137b: 5c2e7133-8bcb-4889-a606-8924dc108e17
     - 825f48a9-5a1d-42f6-a0ea-f26d1235d3c1: 94bdb2b0-89de-462f-b7c4-74c13769ce18
     - 82ba1164-f9e0-4ae6-aad6-e392cb2160de: 4fac89a4-849e-44fa-8732-ade351431f46
     - 84f91708-13b9-4e0e-9a8a-b7367a54c531: 885be143-9034-4da6-9a6e-7f059f21cfc6
@@ -9353,6 +9370,7 @@
   Components:
     - !<own> ef6ad773-55e8-472b-bbed-e80c0cfcc62e
     - !<own> 253edfc2-f867-48bc-b9b6-803a2b7fed64
+    - !<own> 81061a47-44a7-4f8c-8977-4a708181137b
 - !<ScriptComponent/a00611c5-f292-4959-90f6-fdb09a1085cb>
   PrefabRemaps:
     []

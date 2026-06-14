@@ -23,7 +23,6 @@
   ScriptInputsDefault:
     normalColor: true
     triggerScaleMultiplier: true
-    infoDisplay: true
   ScriptTypesDefault:
     {}
   ScriptInputs:
@@ -36,7 +35,7 @@
       triggerColor: !<Vec4> {x: 0.476844, y: 0.504814, z: 1.000000, w: 1.000000}
       triggerEndColor: !<Vec4> {x: 1.000000, y: 1.000000, z: 1.000000, w: 1.000000}
       triggerScaleMultiplier: !<Vec3> {x: 1.100000, y: 1.100000, z: 1.100000}
-      infoDisplay: !<MappingBased.AssignableType> 00000000-0000-0000-0000-000000000000
+      infoDisplay: !<MappingBased.AssignableType> 166a472a-ecc1-4182-ac00-883da97170d3
   ScriptTypes:
     "":
       {}

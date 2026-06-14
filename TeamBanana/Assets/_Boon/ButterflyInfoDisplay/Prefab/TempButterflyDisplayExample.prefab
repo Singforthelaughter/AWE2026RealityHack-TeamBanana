@@ -628,6 +628,22 @@
     CapitalizationOverride: None
   DepthTest: false
   TwoSided: false
+- !<ScriptComponent/408accce-bc07-4d95-b8d4-4793a64ae24d>
+  PrefabRemaps:
+    []
+  Name: CloseFrameParent
+  Enabled: true
+  ScriptAsset: !<reference> 925f2033-81fd-47a6-b36f-cbfb27dadc47
+  ScriptInputsDefault:
+    {}
+  ScriptTypesDefault:
+    {}
+  ScriptInputs:
+    "":
+      {}
+  ScriptTypes:
+    "":
+      {}
 - !<SceneObject/4541373d-7bd3-4c7b-804a-45e21b9d04d2>
   PrefabRemaps:
     []
@@ -2184,6 +2200,7 @@
     - 399f6e06-41e6-4d45-b2ab-307c2656327e: 94bdb2b0-89de-462f-b7c4-74c13769ce18
     - 3a5c9e13-c04e-42df-968c-9fb763ccfab7: 7469268f-f270-41d9-8ab5-6387ff656b21
     - 3b532798-346b-433d-8c8b-d368360437f9: 10b6f6a4-1234-46cd-b593-2efb43ecc054
+    - 408accce-bc07-4d95-b8d4-4793a64ae24d: 5c2e7133-8bcb-4889-a606-8924dc108e17
     - 4541373d-7bd3-4c7b-804a-45e21b9d04d2: fbdd3fa8-1e08-407c-ac57-090096c023da
     - 4a93ffdb-05ea-4fc1-8f63-5f7ddd34352d: afbd6abb-eab6-40a2-9294-32217e7e3614
     - 537dd851-800a-467f-87d8-7dee39e38f54: a12ec15c-4796-44d2-8636-18e40adb996c
@@ -2235,3 +2252,4 @@
   Components:
     - !<own> 92b0b213-c04f-408c-88c0-2b9f17e3cf41
     - !<own> 2ad2e30f-b671-4d4e-b830-bdd7cdb6dab6
+    - !<own> 408accce-bc07-4d95-b8d4-4793a64ae24d
