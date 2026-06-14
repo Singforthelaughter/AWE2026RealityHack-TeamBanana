@@ -67,6 +67,9 @@ export class PalmPushToTalk extends BaseScriptComponent {
   private readonly PARTIAL_COLOR = new vec4(0.6, 0.6, 0.6, 1) // gray while you're still speaking
   private readonly FINAL_COLOR = new vec4(1, 1, 1, 1) // white once the phrase is finalized
   private readonly LISTENING_PLACEHOLDER = "Listening..."
+  // Matches ActivityIndicatorController.transitionDuration — used to delay the tooltip's
+  // return until the glow has finished animating out after release.
+  private readonly GLOW_FADE_S = 0.5
 
   private handProvider: HandInputData = SIK.HandInputData
   private leftHand: TrackedHand = this.handProvider.getHand("left")
@@ -77,6 +80,8 @@ export class PalmPushToTalk extends BaseScriptComponent {
   private activeHand: TrackedHand | null = null
   private recording: boolean = false
   private tooltipShown: boolean = false
+  // Don't re-show the tooltip until this time — lets the glow animate out first after release.
+  private tooltipReadyAt: number = 0
   // GestureModule pinch flags per hand (combined with skeleton distance for reliability, like the sample).
   private pinchingLeft: boolean = false
   private pinchingRight: boolean = false
@@ -178,7 +183,8 @@ export class PalmPushToTalk extends BaseScriptComponent {
 
   /** Show the "Pinch to record" hint whenever the palm is up and we're not recording. */
   private updateTooltip(): void {
-    const shouldShow = !this.recording
+    // Hidden while recording, and held back until the glow has animated out after release.
+    const shouldShow = !this.recording && getTime() >= this.tooltipReadyAt
     if (shouldShow === this.tooltipShown) return
     this.tooltipShown = shouldShow
     this.setTooltip(shouldShow)
@@ -209,7 +215,8 @@ export class PalmPushToTalk extends BaseScriptComponent {
   private stopRecording(): void {
     this.recording = false
     this.geminiAssistant.streamData(false) // stop the mic stream; Gemini answers
-    this.setIndicator(false) // dim
+    this.setIndicator(false) // dim (glow animates out over GLOW_FADE_S)
+    this.tooltipReadyAt = getTime() + this.GLOW_FADE_S // bring the tooltip back as the glow finishes
     this.hideSubtitle() // clear the caption immediately on release — don't let it linger
     if (this.debugLogging) print("[PalmPushToTalk] recording stopped")
   }
