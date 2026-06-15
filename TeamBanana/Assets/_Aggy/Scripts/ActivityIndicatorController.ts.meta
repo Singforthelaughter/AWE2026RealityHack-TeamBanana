@@ -1,0 +1,44 @@
+- !<AssetImportMetadata/0dfd9414-3968-435a-a2fb-d84e040704b6>
+  ImportedAssetIds:
+    TypeScriptAsset: !<reference> fecd743e-10a2-485e-a867-cd61e869e50e
+  ImporterName: TypeScriptAssetImporter
+  PrimaryAsset: !<reference> fecd743e-10a2-485e-a867-cd61e869e50e
+  PackageType: NotAPackage
+  LegacyPackagePolicy: ~
+  ExtraData:
+    {}
+  AssetDataMap:
+    TypeScriptAsset: !<own> 57de7da2-601e-4d3f-be74-5f1b6d679d89
+  DependentFiles:
+    []
+  ImporterSettings: !<AssetImporterSettings>
+    {}
+  CompressionSettings: !<own> 00000000-0000-0000-0000-000000000000
+- !<TypeScriptAssetData/57de7da2-601e-4d3f-be74-5f1b6d679d89>
+  SvgIcon: ""
+  SetupScript:
+    code: ""
+  Description: ""
+  VersionMajor: 0
+  VersionMinor: 0
+  VersionPatch: 0
+  ComponentUid: 9d77c642-9bf3-4584-bf06-e9dc20dc11e9
+  ExportUid: 00000000-0000-0000-0000-000000000000
+  PackagePolicy: CanBeUnpacked
+  ScriptInputsHidden:
+    transitionDuration: false
+  ScriptTypesHidden:
+    {}
+  ReadMe: !<reference> 00000000-0000-0000-0000-000000000000
+  DeclarationFile: !<reference> 00000000-0000-0000-0000-000000000000
+  Tags:
+    []
+  Attachments:
+    []
+  DefaultScriptInputs:
+    - transitionDuration: 0.500000
+  ScriptTypes:
+    -
+      {}
+  InputLines:
+    - // @input float transitionDuration = 0.5

@@ -8,7 +8,7 @@
 //   supabase functions deploy identify-butterfly
 
 const KINDWISE_URL =
-  "https://insect.kindwise.com/api/v1/identification?details=common_names,url,description,description_gpt,description_all,taxonomy,rank,gbif_id,inaturalist_id,image,images,red_list,synonyms,danger,danger_description,role"
+  "https://insect.kindwise.com/api/v1/identification?details=common_names,description,description_gpt,taxonomy,gbif_id,inaturalist_id,image,images,red_list,synonyms,danger,danger_description,role"
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",

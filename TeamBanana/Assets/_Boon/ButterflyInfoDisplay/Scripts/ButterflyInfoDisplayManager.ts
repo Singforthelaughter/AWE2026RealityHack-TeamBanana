@@ -11,8 +11,8 @@ const internetModule = require("LensStudio:InternetModule") as InternetModule
  * The prefab root must have a ButterflyInfoPrefabComponentsManager component wired up with:
  *   textArray           — Text components matched by SceneObject name (case-insensitive):
  *                         name, common_name, common_names, probability, description,
- *                         description_gpt, red_list, danger, danger_description, role,
- *                         kingdom, phylum, class, order, family, genus, spotter, identified_at
+ *                         inaturalist_id, red_list, danger, danger_description, role,
+ *                         gbif_id, phylum, class, order, family, genus, spotter, identified_at
  *   userPhotoImage      — Image for the user's captured photo
  *   dataPhotoImageArray — Images for species reference photos (index 0 = primary, 1+ = extras)
  */
@@ -118,12 +118,12 @@ export class ButterflyInfoDisplayManager extends BaseScriptComponent {
     common_names?: string
     probability?: string
     description?: string
-    description_gpt?: string
+    inaturalist_id?: string
     red_list?: string
     danger?: string
     danger_description?: string
     role?: string
-    kingdom?: string
+    gbif_id?: string
     phylum?: string
     class?: string
     order?: string
@@ -138,12 +138,12 @@ export class ButterflyInfoDisplayManager extends BaseScriptComponent {
     this.setField("common_names", fields.common_names ?? "")
     this.setField("probability", fields.probability ?? "")
     this.setField("description", fields.description ?? "")
-    this.setField("description_gpt", fields.description_gpt ?? "")
+    this.setField("inaturalist_id", fields.inaturalist_id ?? "")
     this.setField("red_list", fields.red_list ?? "")
     this.setField("danger", fields.danger ?? "")
     this.setField("danger_description", fields.danger_description ?? "")
     this.setField("role", fields.role ?? "")
-    this.setField("kingdom", fields.kingdom ?? "")
+    this.setField("gbif_id", fields.gbif_id ?? "")
     this.setField("phylum", fields.phylum ?? "")
     this.setField("class", fields.class ?? "")
     this.setField("order", fields.order ?? "")
@@ -168,12 +168,12 @@ export class ButterflyInfoDisplayManager extends BaseScriptComponent {
       common_names: d?.common_names?.join(", ") ?? "",
       probability: Math.round(suggestion.probability * 100) + "%",
       description: d?.description?.value ?? d?.description_gpt ?? "",
-      description_gpt: d?.description_gpt ?? "",
+      inaturalist_id: d?.inaturalist_id != null ? String(d.inaturalist_id) : "",
       red_list: d?.red_list ?? "",
       danger: d?.danger?.join(", ") ?? "",
       danger_description: d?.danger_description ?? "",
       role: d?.role?.join(", ") ?? "",
-      kingdom: d?.taxonomy?.kingdom ?? "",
+      gbif_id: d?.gbif_id != null ? String(d.gbif_id) : "",
       phylum: d?.taxonomy?.phylum ?? "",
       class: d?.taxonomy?.class ?? "",
       order: d?.taxonomy?.order ?? "",
@@ -238,7 +238,6 @@ export class ButterflyInfoDisplayManager extends BaseScriptComponent {
       danger: sighting.speciesDanger?.join(", ") ?? "",
       danger_description: sighting.speciesDangerDescription ?? "",
       role: sighting.speciesRole?.join(", ") ?? "",
-      kingdom: tax?.kingdom ?? "",
       phylum: tax?.phylum ?? "",
       class: tax?.class ?? "",
       order: tax?.order ?? "",
