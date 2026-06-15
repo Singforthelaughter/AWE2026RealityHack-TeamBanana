@@ -1917,7 +1917,7 @@
   Enabled: true
   ScriptAsset: !<reference> e209d8b3-09e0-4446-903b-85c75b9eb014
   ScriptInputsDefault:
-    {}
+    debugLogging: true
   ScriptTypesDefault:
     {}
   ScriptInputs:
@@ -1981,7 +1981,6 @@
   Enabled: true
   ScriptAsset: !<reference> b69e19ca-5a74-4540-884b-9b52addd4b50
   ScriptInputsDefault:
-    customLocationLoader: true
     translationYTime: true
     translationZTime: true
     rotationTime: true
@@ -1990,7 +1989,7 @@
   ScriptInputs:
     "":
       mapComponent: !<MappingBased.AssignableType> ed77c629-d5d8-406a-8e7e-f2fd31e5b354
-      customLocationLoader: !<MappingBased.AssignableType_1> 00000000-0000-0000-0000-000000000000
+      customLocationLoader: !<MappingBased.AssignableType_1> 63db7d74-f6f0-4bc5-919d-4736a6ca964f
       translationXTime: 0.350000
       translationYTime: 0.350000
       translationZTime: 0.350000
@@ -8770,14 +8769,14 @@
   Enabled: true
   ScriptAsset: !<reference> 439a16a1-c0f0-4d94-8b20-77f5a2ccb08d
   ScriptInputsDefault:
-    {}
+    onboardingVisual: true
   ScriptTypesDefault:
     {}
   ScriptInputs:
     "":
       text: !<reference.Text> f7a369e0-e509-458e-9bce-f04cc0cdc7d3
       handHint: !<MappingBased.AssignableType> 34688ce3-1daa-4969-abcf-994674378865
-      onboardingVisual: !<reference.SceneObject> cd9335a9-7e99-4a97-aa55-a4c36dac482f
+      onboardingVisual: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
   ScriptTypes:
     "":
       {}
