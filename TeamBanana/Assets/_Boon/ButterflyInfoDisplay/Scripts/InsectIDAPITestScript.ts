@@ -103,7 +103,7 @@ export class InsectIDAPITestScript extends BaseScriptComponent {
 
     this.infoDisplay?.displayResult(top, this.inputTexture)
 
-    // await this.generateWingTexturesAndStoreSighting(top)
+    await this.generateWingTexturesAndStoreSighting(top)
   }
 
   private async generateWingTexturesAndStoreSighting(top: Suggestion): Promise<{ wingTexture: Texture | null; wingOpacityMap: Texture | null }> {

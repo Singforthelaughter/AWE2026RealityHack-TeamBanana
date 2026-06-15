@@ -121,6 +121,7 @@ export class SupabaseDBManager extends BaseScriptComponent {
     this.locationService = GeoLocation.createLocationService()
     this.locationService.accuracy = GeoLocationAccuracy.Navigation
     await this.signIn()
+    print(`>>>>> UID START [${this.uid}] UID END <<<<<`)
     if (this.addYourSimulatedData) await this.seedTestData()
   }
 
@@ -281,8 +282,11 @@ export class SupabaseDBManager extends BaseScriptComponent {
     })
   }
 
-  // Texture → base64 → Uint8Array → Storage upload → public URL
+  // Texture → PNG base64 → Uint8Array → Storage upload → public URL.
+  // Encodes and stores PNG so every upload path produces a consistent format whose
+  // content-type and extension match the real bytes — a mismatch makes Lens's loader hang.
   private uploadTexture(texture: Texture, path: string): Promise<string | null> {
+    const finalPath = path.replace(/\.[^./]+$/, "") + ".png"
     return new Promise((resolve) => {
       Base64.encodeTextureAsync(
         texture,
@@ -292,15 +296,15 @@ export class SupabaseDBManager extends BaseScriptComponent {
 
             const { error } = await this.client.storage
               .from(this.storageBucket)
-              .upload(path, bytes, { contentType: "image/jpeg", upsert: true })
+              .upload(finalPath, bytes, { contentType: "image/png", upsert: true })
 
             if (error) {
-              print(`[SupabaseDBManager] storage upload error for ${path}: ${JSON.stringify(error)}`)
+              print(`[SupabaseDBManager] storage upload error for ${finalPath}: ${JSON.stringify(error)}`)
               resolve(null)
               return
             }
 
-            const { data } = this.client.storage.from(this.storageBucket).getPublicUrl(path)
+            const { data } = this.client.storage.from(this.storageBucket).getPublicUrl(finalPath)
             resolve(data?.publicUrl ?? null)
           } catch (e) {
             print(`[SupabaseDBManager] uploadTexture exception: ${e}`)
@@ -308,11 +312,11 @@ export class SupabaseDBManager extends BaseScriptComponent {
           }
         },
         () => {
-          print(`[SupabaseDBManager] Base64.encodeTextureAsync failed for ${path}`)
+          print(`[SupabaseDBManager] Base64.encodeTextureAsync failed for ${finalPath}`)
           resolve(null)
         },
         CompressionQuality.HighQuality,
-        EncodingType.Jpg
+        EncodingType.Png
       )
     })
   }
@@ -320,14 +324,18 @@ export class SupabaseDBManager extends BaseScriptComponent {
   private async uploadBase64(b64: string, path: string): Promise<string | null> {
     try {
       const bytes = this.base64ToUint8Array(b64)
+      // The wing edge function returns PNG bytes, so store them as PNG. Callers pass a ".jpg"
+      // path out of habit; rewrite it to ".png" so the extension and content-type both match
+      // the real data. Serving PNG bytes as image/jpeg makes Lens's loader stall at decode time.
+      const finalPath = path.replace(/\.[^./]+$/, "") + ".png"
       const { error } = await this.client.storage
         .from(this.storageBucket)
-        .upload(path, bytes, { contentType: "image/jpeg", upsert: true })
+        .upload(finalPath, bytes, { contentType: "image/png", upsert: true })
       if (error) {
-        print(`[SupabaseDBManager] storage upload error for ${path}: ${JSON.stringify(error)}`)
+        print(`[SupabaseDBManager] storage upload error for ${finalPath}: ${JSON.stringify(error)}`)
         return null
       }
-      const { data } = this.client.storage.from(this.storageBucket).getPublicUrl(path)
+      const { data } = this.client.storage.from(this.storageBucket).getPublicUrl(finalPath)
       return data?.publicUrl ?? null
     } catch (e) {
       print(`[SupabaseDBManager] uploadBase64 exception: ${e}`)
@@ -337,6 +345,19 @@ export class SupabaseDBManager extends BaseScriptComponent {
 
   private base64ToUint8Array(b64: string): Uint8Array {
     const data = b64.includes(",") ? b64.split(",")[1] : b64
+
+    // Prefer Lens Studio's native decoder — the hand-rolled fallback below can mangle
+    // padding/whitespace and silently produce a corrupt JPEG that later fails to load.
+    const nativeBase64 = (global as any).Base64
+    if (nativeBase64 && typeof nativeBase64.decode === "function") {
+      try {
+        const decoded = nativeBase64.decode(data)
+        if (decoded && decoded.length > 0) return decoded
+      } catch (e) {
+        print(`[SupabaseDBManager] native Base64.decode failed, using fallback: ${e}`)
+      }
+    }
+
     const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
     const clean = data.replace(/[^A-Za-z0-9+/]/g, "")
     let binary = ""
@@ -486,24 +507,35 @@ export class SupabaseDBManager extends BaseScriptComponent {
       }
     }
 
-    await Promise.all(
-      records.map(async (r) => {
-        r.wing_texture = await this.loadTextureFromUrl(r.wing_texture_url)
-        r.wing_opacity_map = await this.loadTextureFromUrl(r.wing_opacity_map_url)
-      })
-    )
+    // Load wing textures in small batches rather than all at once. Firing 20+ large remote
+    // image loads simultaneously contends the engine's remote_assets_cache and produces a
+    // transient "Cannot read file: .../remote_assets_cache/<hash>" error on a random asset.
+    const BATCH_SIZE = 3
+    for (let i = 0; i < records.length; i += BATCH_SIZE) {
+      const batch = records.slice(i, i + BATCH_SIZE)
+      await Promise.all(
+        batch.map(async (r) => {
+          r.wing_texture = await this.loadTextureFromUrl(r.wing_texture_url)
+          r.wing_opacity_map = await this.loadTextureFromUrl(r.wing_opacity_map_url)
+        })
+      )
+    }
 
     return records
   }
 
   private loadTextureFromUrl(url: string | null): Promise<Texture | null> {
     if (!url) return Promise.resolve(null)
+    print(`[SupabaseDBManager] loadTextureFromUrl loading: ${url}`)
     return new Promise((resolve) => {
       const resource = internetModule.makeResourceFromUrl(url)
       this.remoteMediaModule.loadResourceAsImageTexture(
         resource,
         (texture: Texture) => resolve(texture),
         (errorMsg: string) => {
+          // "Cannot read file: .../remote_assets_cache/<hash>" means the URL was reached but the
+          // body was not a decodable image — usually a private-bucket 403/JSON body or a corrupt
+          // upload. The card still renders without its wing texture; we just skip it.
           print(`[SupabaseDBManager] loadTextureFromUrl failed for ${url}: ${errorMsg}`)
           resolve(null)
         }

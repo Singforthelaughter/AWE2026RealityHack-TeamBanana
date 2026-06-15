@@ -2415,7 +2415,7 @@
     "":
       supabaseProject: !<reference.SupabaseProject> 08bfc11e-6bac-4674-901f-ed63bcb39f2f
       functionName: identify-butterfly
-      inputTexture: !<reference.Texture> ce877455-cee0-4d67-8539-0c5307f0d8f1
+      inputTexture: !<reference.Texture> a493c944-e645-4fb4-961a-adb9e772cd2c
       debugLogging: true
       dbManager: !<MappingBased.AssignableType> ec3ec66a-669d-4f10-8729-2385b25c576d
       wingGenerator: !<MappingBased.AssignableType_1> a6383912-b0e0-4431-bbec-39be9eb75dcb
@@ -8416,7 +8416,6 @@
     handViewAngleLimit: true
     scale: true
     spawnRotation: true
-    flyingAnimationSpeed: true
     debugFreezeHeading: true
   ScriptTypesDefault:
     {}
@@ -8427,7 +8426,7 @@
       handViewAngleLimit: !<float> 30.000000
       landingSmoothing: !<float> 1.000000
       landPositionOffset: !<Vec3> {x: 0.000000, y: 1.000000, z: 0.000000}
-      speed: !<float> 10.000000
+      speed: !<float> 5.000000
       scale: !<float> 1.000000
       spawnPositionOffset: !<Vec3> {x: 0.000000, y: -5.000000, z: 70.000000}
       spawnRotation: !<Vec3> {x: 0.000000, y: 0.000000, z: 0.000000}
@@ -8445,7 +8444,7 @@
       flyingRotationOffset: !<Vec3> {x: 0.000000, y: 0.000000, z: 40.000000}
       landedRotationOffset: !<Vec3> {x: 45.000000, y: 45.000000, z: 50.000000}
       fingerRotationFollow: !<float> 1.000000
-      flyingAnimationSpeed: !<float> 4.000000
+      flyingAnimationSpeed: !<float> 1.000000
       landedAnimationSpeed: 0.500000
       debugFreezeHeading: false
   ScriptTypes:
@@ -9587,7 +9586,7 @@
     - fd754416-53db-418c-b263-4885b15c561a: a25e3a36-1876-4c51-83be-780f1abb63d3
     - fe0e3eee-0d6a-4269-adda-c8de215221ff: 10b6f6a4-1234-46cd-b593-2efb43ecc054
   Name: TempButterflyDisplayExample
-  Enabled: true
+  Enabled: false
   Layers: 1
   LocalTransform: !<TransformEntity>
     Position: {x: 0.000000, y: 0.000000, z: -100.000000}
@@ -9941,7 +9940,7 @@
   PrefabRemaps:
     []
   Name: Agrika
-  Enabled: true
+  Enabled: false
   Layers: 1
   LocalTransform: !<TransformEntity>
     Position: {x: 0.000000, y: 0.000000, z: 0.000000}
@@ -11340,7 +11339,7 @@
   PrefabRemaps:
     []
   Name: ButterflyInfoDisplayManager
-  Enabled: false
+  Enabled: true
   Layers: 1
   LocalTransform: !<TransformEntity>
     Position: {x: 0.000000, y: 0.000000, z: 0.000000}
@@ -13648,7 +13647,7 @@
   PrefabRemaps:
     []
   Name: Joe
-  Enabled: true
+  Enabled: false
   Layers: 1
   LocalTransform: !<TransformEntity>
     Position: {x: 0.000000, y: 0.000000, z: 0.000000}

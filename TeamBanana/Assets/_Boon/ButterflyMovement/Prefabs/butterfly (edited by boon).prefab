@@ -278,7 +278,6 @@
     handViewAngleLimit: true
     scale: true
     spawnRotation: true
-    flyingAnimationSpeed: true
     debugFreezeHeading: true
   ScriptTypesDefault:
     {}
@@ -289,7 +288,7 @@
       handViewAngleLimit: !<float> 30.000000
       landingSmoothing: !<float> 1.000000
       landPositionOffset: !<Vec3> {x: 0.000000, y: 1.000000, z: 0.000000}
-      speed: !<float> 10.000000
+      speed: !<float> 5.000000
       scale: !<float> 1.000000
       spawnPositionOffset: !<Vec3> {x: 0.000000, y: -5.000000, z: 70.000000}
       spawnRotation: !<Vec3> {x: 0.000000, y: 0.000000, z: 0.000000}
@@ -307,7 +306,7 @@
       flyingRotationOffset: !<Vec3> {x: 0.000000, y: 0.000000, z: 40.000000}
       landedRotationOffset: !<Vec3> {x: 45.000000, y: 45.000000, z: 50.000000}
       fingerRotationFollow: !<float> 1.000000
-      flyingAnimationSpeed: !<float> 4.000000
+      flyingAnimationSpeed: !<float> 1.000000
       landedAnimationSpeed: 0.500000
       debugFreezeHeading: false
   ScriptTypes:
