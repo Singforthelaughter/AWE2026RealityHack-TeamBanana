@@ -594,6 +594,40 @@ Attach this directly to the butterfly SceneObject (it moves the object it is on)
 
 ---
 
+### Instruction/Scripts/CustomHandHintAnimation.ts
+
+**Purpose:** Custom hand hint animation controller, forked from `InteractionHintController` in
+`Spectacles3DHandHints.lspkg`. Drives animated hand hint models with left/right/both modes,
+pinch glow effects, fade transitions, and animation sequencing — but with the cursor permanently
+hidden. Call `play()` to start the animation from code at any time.
+
+**Inspector inputs:**
+
+| Input | Type | Description |
+|---|---|---|
+| `autoPlay` | boolean | Start playing automatically on awake |
+| `animationSpeed` | float (0.5–3) | Playback speed multiplier |
+| `numberOfLoops` | int (1–10) | Number of times to repeat the sequence |
+| `hintAnimations` | HintAnimation[] | Sequence of animations with Hand Type, animation, and position |
+
+**Public API:**
+
+| Method | Description |
+|---|---|
+| `play()` | Reset and start playing the configured animation sequence |
+| `animationEndEvent` | `DelayedCallbackEvent` fired when the full sequence finishes |
+
+**Key differences from `InteractionHintController`:**
+- Cursor (`HandHints_Cursor`) is permanently hidden — no cursor logic
+- No Logger dependency
+- `play()` method for manual start control (in addition to `autoPlay`)
+
+**Imports from project:** none  
+**Imports (packages):** `LSTween`, `Easing` (LSTween.lspkg); `LSTween`, `Tween`, `mainGroup` (Spectacles3DHandHints.lspkg)  
+**Imported by:** any instruction/onboarding script that needs to trigger hand hints programmatically
+
+---
+
 ### ButterflyMovement/Scripts/FlyingButterflyManager.ts
 
 **Purpose:** Spawns butterfly prefabs, skins their wings with supplied textures, and coordinates
