@@ -434,7 +434,7 @@
   PrefabRemaps:
     []
   Name: spotter
-  Enabled: true
+  Enabled: false
   Layers: 1
   LocalTransform: !<TransformEntity>
     Position: {x: 0.000000, y: -17.294622, z: 0.000000}

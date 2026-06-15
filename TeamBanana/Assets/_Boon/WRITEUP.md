@@ -33,6 +33,10 @@ where φ is latitude, λ is longitude, and R ≈ 6371 km.
 
 **Readable AR markers.** When several sightings cluster, their floating labels overlap into an unreadable pile. We wrote a **sweep-line collision solver** that spreads overlapping markers apart in 1D (along screen edges) and 2D (in-view), so off-screen quest markers and labels stay legible.
 
+**Wing generation from Spectacles photos.** Photos captured directly from Spectacles are often insufficient quality for AI wing generation — lighting, angle, and resolution can all degrade results. We fell back to reference images from the Kindwise insect.id database instead. The trade-off is that the generated wing pattern and colours reflect the canonical species appearance rather than the specific individual the user spotted in real life.
+
+**Wing generation latency.** Running the wing texture through Replicate takes roughly a minute end-to-end. This is a meaningful UX cost, but the quality of the resulting wing texture and opacity map is substantially better than faster alternatives, so we accepted the wait rather than compromise the visual output.
+
 ## Accomplishments that we're proud of
 
 - A **fully shared, persistent sighting world**: sightings logged by one player show up as real-world AR pins for everyone else, with photos, species data, and attribution intact.
