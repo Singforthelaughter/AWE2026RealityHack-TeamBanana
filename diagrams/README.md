@@ -3,8 +3,9 @@
 Minimalist architecture diagram for **Butterfly Spotting & Social Sightings** (Team Banana).
 
 ## Files
-- `architecture.svg` — source (hand-authored, editable, scales infinitely)
-- `architecture.png` — exported raster (2× scale)
+- `architecture-slide.svg` / `.png` — **simplified, presentation-ready** (1920×1080, large type, read-at-a-glance). Use this on slides.
+- `architecture.svg` / `.png` — detailed technical wall-chart (every Snap API named).
+All are hand-authored SVG + 2× PNG export.
 
 ## Edit
 Open `architecture.svg` in any editor or browser. Text, colours, and layout are plain SVG.

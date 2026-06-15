@@ -1,0 +1,155 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080" viewBox="0 0 1920 1080" font-family="'Inter','Helvetica Neue',Arial,sans-serif">
+  <defs>
+    <marker id="arrow" markerWidth="11" markerHeight="11" refX="7" refY="4" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M0,0 L8,4 L0,8" fill="none" stroke="#AEAEA6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+    <marker id="arrowY" markerWidth="12" markerHeight="12" refX="7" refY="4" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M0,0 L8,4 L0,8" fill="none" stroke="#E0A800" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+  </defs>
+
+  <rect x="0" y="0" width="1920" height="1080" fill="#FBFBF9"/>
+
+  <!-- ===== header ===== -->
+  <text x="70" y="74" font-size="44" font-weight="700" fill="#1C1C1E" letter-spacing="-0.6">Butterfly Spotting &amp; Social Sightings</text>
+  <text x="70" y="110" font-size="21" fill="#6E6E74">AR butterfly discovery &amp; a shared sighting world on Snap Spectacles</text>
+
+  <!-- legend -->
+  <rect x="1452" y="58" width="20" height="20" rx="4" fill="#FFD400" stroke="#E0B000"/>
+  <text x="1482" y="74" font-size="18" font-weight="600" fill="#48484E">Snap / Spectacles platform</text>
+  <rect x="1452" y="90" width="20" height="20" rx="4" fill="#FFFFFF" stroke="#C4C4BC"/>
+  <text x="1482" y="106" font-size="18" fill="#48484E">Cloud / AI service</text>
+
+  <line x1="70" y1="130" x2="1850" y2="130" stroke="#E4E4DE" stroke-width="1.5"/>
+
+  <!-- ============ BAND 1 — Spectacles experiences (Snap hero) ============ -->
+  <text x="70" y="162" font-size="16" font-weight="700" fill="#B58A00" letter-spacing="2.5">ON THE SPECTACLES — WHAT YOU DO</text>
+  <rect x="70" y="172" width="1780" height="300" rx="20" fill="#FFFDF6" stroke="#EEE2BC" stroke-width="1.5"/>
+
+  <!-- Tile 1 — Spot & Identify -->
+  <g>
+    <rect x="90" y="194" width="414" height="260" rx="16" fill="#FFFDF2" stroke="#EBDCA6"/>
+    <circle cx="297" cy="252" r="30" fill="#FFD400" stroke="#E8BC00" stroke-width="2"/>
+    <circle cx="293" cy="248" r="11" fill="none" stroke="#1C1C1E" stroke-width="2.6"/>
+    <line x1="301.8" y1="256.8" x2="310" y2="265" stroke="#1C1C1E" stroke-width="2.6" stroke-linecap="round"/>
+    <text x="297" y="324" font-size="25" font-weight="700" fill="#1C1C1E" text-anchor="middle">Spot &amp; Identify</text>
+    <text x="297" y="360" font-size="17" fill="#6E6E74" text-anchor="middle">Look at a butterfly to ID it instantly</text>
+    <rect x="169" y="394" width="256" height="34" rx="17" fill="#FFD400" stroke="#E8BC00"/>
+    <text x="297" y="416" font-size="15" font-weight="700" fill="#1C1C1E" text-anchor="middle">Camera · SnapML</text>
+  </g>
+
+  <!-- Tile 2 — Ask Your Guide -->
+  <g>
+    <rect x="532" y="194" width="414" height="260" rx="16" fill="#FFFDF2" stroke="#EBDCA6"/>
+    <circle cx="739" cy="252" r="30" fill="#FFD400" stroke="#E8BC00" stroke-width="2"/>
+    <rect x="725" y="240" width="28" height="20" rx="6" fill="none" stroke="#1C1C1E" stroke-width="2.6"/>
+    <polyline points="733,260 730,267 740,260" fill="none" stroke="#1C1C1E" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"/>
+    <text x="739" y="324" font-size="25" font-weight="700" fill="#1C1C1E" text-anchor="middle">Ask Your Guide</text>
+    <text x="739" y="360" font-size="17" fill="#6E6E74" text-anchor="middle">Chat hands-free with an AI naturalist</text>
+    <rect x="611" y="394" width="256" height="34" rx="17" fill="#FFD400" stroke="#E8BC00"/>
+    <text x="739" y="416" font-size="15" font-weight="700" fill="#1C1C1E" text-anchor="middle">Hand Tracking · Snap Gateway</text>
+  </g>
+
+  <!-- Tile 3 — Collect & Watch -->
+  <g>
+    <rect x="974" y="194" width="414" height="260" rx="16" fill="#FFFDF2" stroke="#EBDCA6"/>
+    <circle cx="1181" cy="252" r="30" fill="#FFD400" stroke="#E8BC00" stroke-width="2"/>
+    <path d="M1181,239 L1184.5,248.5 L1194,252 L1184.5,255.5 L1181,265 L1177.5,255.5 L1168,252 L1177.5,248.5 Z" fill="none" stroke="#1C1C1E" stroke-width="2.6" stroke-linejoin="round"/>
+    <text x="1181" y="324" font-size="25" font-weight="700" fill="#1C1C1E" text-anchor="middle">Collect &amp; Watch</text>
+    <text x="1181" y="360" font-size="17" fill="#6E6E74" text-anchor="middle">A custom AI butterfly flies to your hand</text>
+    <rect x="1053" y="394" width="256" height="34" rx="17" fill="#FFD400" stroke="#E8BC00"/>
+    <text x="1181" y="416" font-size="15" font-weight="700" fill="#1C1C1E" text-anchor="middle">Hand Tracking · Display</text>
+  </g>
+
+  <!-- Tile 4 — Explore Nearby -->
+  <g>
+    <rect x="1416" y="194" width="414" height="260" rx="16" fill="#FFFDF2" stroke="#EBDCA6"/>
+    <circle cx="1623" cy="252" r="30" fill="#FFD400" stroke="#E8BC00" stroke-width="2"/>
+    <path d="M1623,266 C1613,254 1614,239 1623,239 C1632,239 1633,254 1623,266 Z" fill="none" stroke="#1C1C1E" stroke-width="2.6" stroke-linejoin="round"/>
+    <circle cx="1623" cy="248" r="4" fill="#1C1C1E"/>
+    <text x="1623" y="324" font-size="25" font-weight="700" fill="#1C1C1E" text-anchor="middle">Explore Nearby</text>
+    <text x="1623" y="360" font-size="17" fill="#6E6E74" text-anchor="middle">Find others' sightings on a live AR map</text>
+    <rect x="1495" y="394" width="256" height="34" rx="17" fill="#FFD400" stroke="#E8BC00"/>
+    <text x="1623" y="416" font-size="15" font-weight="700" fill="#1C1C1E" text-anchor="middle">Snap Map · GPS</text>
+  </g>
+
+  <!-- arrow band1 -> band2 -->
+  <line x1="960" y1="474" x2="960" y2="534" stroke="#AEAEA6" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="982" y="510" font-size="16" fill="#8A8A82">store &amp; sync every sighting</text>
+
+  <!-- ============ BAND 2 — Snap Cloud / Supabase ============ -->
+  <text x="70" y="526" font-size="16" font-weight="700" fill="#B58A00" letter-spacing="2.5">SNAP CLOUD · SUPABASE BACKEND — shared &amp; persistent</text>
+  <rect x="70" y="536" width="1780" height="190" rx="20" fill="#F8F8F5" stroke="#E2E2DB" stroke-width="1.5"/>
+
+  <!-- Sign In (Snap native) -->
+  <g>
+    <rect x="90" y="558" width="414" height="146" rx="16" fill="#FFFDF2" stroke="#EBDCA6"/>
+    <rect x="90" y="572" width="8" height="118" rx="4" fill="#FFD400"/>
+    <text x="118" y="612" font-size="22" font-weight="700" fill="#1C1C1E">Sign In</text>
+    <text x="118" y="646" font-size="16.5" fill="#6E6E74">Logged in with your Snap account</text>
+    <rect x="118" y="663" width="116" height="28" rx="14" fill="#FFD400" stroke="#E8BC00"/>
+    <text x="176" y="682" font-size="14.5" font-weight="700" fill="#1C1C1E" text-anchor="middle">Snap OIDC</text>
+  </g>
+  <!-- Sightings DB -->
+  <g>
+    <rect x="532" y="558" width="414" height="146" rx="16" fill="#FFFFFF" stroke="#DDDDD6"/>
+    <rect x="532" y="572" width="6" height="118" rx="3" fill="#C4C4BC"/>
+    <text x="560" y="612" font-size="22" font-weight="700" fill="#1C1C1E">Sightings Database</text>
+    <text x="560" y="646" font-size="16.5" fill="#6E6E74">Every spot, shared with everyone</text>
+    <text x="560" y="680" font-size="14.5" font-weight="600" fill="#8A8A82">Postgres</text>
+  </g>
+  <!-- Storage -->
+  <g>
+    <rect x="974" y="558" width="414" height="146" rx="16" fill="#FFFFFF" stroke="#DDDDD6"/>
+    <rect x="974" y="572" width="6" height="118" rx="3" fill="#C4C4BC"/>
+    <text x="1002" y="612" font-size="22" font-weight="700" fill="#1C1C1E">Media Storage</text>
+    <text x="1002" y="646" font-size="16.5" fill="#6E6E74">Photos &amp; AI wing textures</text>
+    <text x="1002" y="680" font-size="14.5" font-weight="600" fill="#8A8A82">Supabase Storage</text>
+  </g>
+  <!-- Edge Functions -->
+  <g>
+    <rect x="1416" y="558" width="414" height="146" rx="16" fill="#FFFFFF" stroke="#DDDDD6"/>
+    <rect x="1416" y="572" width="6" height="118" rx="3" fill="#C4C4BC"/>
+    <text x="1444" y="612" font-size="22" font-weight="700" fill="#1C1C1E">Edge Functions</text>
+    <text x="1444" y="646" font-size="16.5" fill="#6E6E74">Run the heavy AI off-device</text>
+    <text x="1444" y="680" font-size="14.5" font-weight="600" fill="#8A8A82">Serverless</text>
+  </g>
+
+  <!-- edge functions -> Kindwise + Nano Banana only -->
+  <line x1="665" y1="726" x2="665" y2="784" stroke="#AEAEA6" stroke-width="2"/>
+  <line x1="370" y1="784" x2="959" y2="784" stroke="#AEAEA6" stroke-width="2"/>
+  <line x1="370" y1="784" x2="370" y2="806" stroke="#AEAEA6" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="959" y1="784" x2="959" y2="806" stroke="#AEAEA6" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="687" y="762" font-size="16" fill="#8A8A82">Edge Functions call species ID &amp; wing-art APIs</text>
+
+  <!-- direct Gemini Live path: device -> RemoteServiceGateway (WebSocket), bypasses the cloud -->
+  <path d="M1850,330 H1892 V880 H1834" fill="none" stroke="#E0A800" stroke-width="2.6" marker-end="url(#arrowY)"/>
+
+  <!-- ============ BAND 3 — AI services (non-Snap) ============ -->
+  <text x="70" y="778" font-size="16" font-weight="700" fill="#9A9A93" letter-spacing="2.5">AI SERVICES — off the headset</text>
+  <rect x="70" y="788" width="1780" height="184" rx="20" fill="#F4F4F1" stroke="#DEDED7" stroke-width="1.5"/>
+
+  <g>
+    <rect x="90" y="810" width="561" height="140" rx="16" fill="#FFFFFF" stroke="#DDDDD6"/>
+    <rect x="90" y="824" width="6" height="112" rx="3" fill="#C4C4BC"/>
+    <text x="120" y="868" font-size="24" font-weight="700" fill="#1C1C1E">Kindwise</text>
+    <text x="120" y="906" font-size="17" fill="#6E6E74">Identifies the butterfly species</text>
+  </g>
+  <g>
+    <rect x="679" y="810" width="561" height="140" rx="16" fill="#FFFFFF" stroke="#DDDDD6"/>
+    <rect x="679" y="824" width="6" height="112" rx="3" fill="#C4C4BC"/>
+    <text x="709" y="868" font-size="24" font-weight="700" fill="#1C1C1E">Nano Banana Pro</text>
+    <text x="709" y="906" font-size="17" fill="#6E6E74">Generates each butterfly's wing art · via Replicate</text>
+  </g>
+  <g>
+    <rect x="1268" y="810" width="561" height="140" rx="16" fill="#FFFFFF" stroke="#DDDDD6"/>
+    <rect x="1268" y="824" width="6" height="112" rx="3" fill="#C4C4BC"/>
+    <text x="1298" y="864" font-size="24" font-weight="700" fill="#1C1C1E">Gemini Live</text>
+    <text x="1298" y="900" font-size="17" fill="#6E6E74">Powers the voice conversation</text>
+    <rect x="1298" y="914" width="372" height="28" rx="14" fill="#FFD400" stroke="#E8BC00"/>
+    <text x="1484" y="933" font-size="14" font-weight="700" fill="#1C1C1E" text-anchor="middle">direct via Snap RemoteServiceGateway · WebSocket</text>
+  </g>
+
+  <!-- footer -->
+  <text x="70" y="1018" font-size="16" fill="#A6A69E" font-style="italic">Built with Snap Spectacles &amp; Lens Studio 5.x — SnapML, Snap Map, Interaction Kit, Gemini Live &amp; Snap Cloud. Heavy AI stays off the glasses.</text>
+</svg>
