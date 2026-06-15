@@ -31,7 +31,8 @@ export class ButterflyIdentifier extends BaseScriptComponent {
   functionName: string = "identify-butterfly"
 
   @input
-  @hint("Optional Text to show the result (e.g. 'Capturing...' then the species)")
+  @allowUndefined
+  @hint("Optional Text to show the result (e.g. 'Capturing...' then the species). Can be left empty.")
   resultText: Text | null = null
 
   @input
@@ -57,7 +58,7 @@ export class ButterflyIdentifier extends BaseScriptComponent {
 
   @input
   @hint("ButterflyInfoDisplayManager component for displaying identification results in a prefab")
-  infoDisplay: ButterflyInfoDisplayManager | null = null
+  infoDisplay!: ButterflyInfoDisplayManager
 
   // Built-in Spectacles modules (resolved at construction).
   private cameraModule = require("LensStudio:CameraModule") // high-res still capture
