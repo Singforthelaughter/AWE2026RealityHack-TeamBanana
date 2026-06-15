@@ -50,11 +50,13 @@
   ScriptAsset: !<reference> fecd743e-10a2-485e-a867-cd61e869e50e
   ScriptInputsDefault:
     transitionDuration: true
+    micImage: true
   ScriptTypesDefault:
     {}
   ScriptInputs:
     "":
       transitionDuration: 0.500000
+      micImage: !<reference.Image> 00000000-0000-0000-0000-000000000000
   ScriptTypes:
     "":
       {}

@@ -26,6 +26,7 @@
   ExportUid: 00000000-0000-0000-0000-000000000000
   PackagePolicy: CanBeUnpacked
   ScriptInputsHidden:
+    micImage: false
     transitionDuration: false
   ScriptTypesHidden:
     {}
@@ -37,8 +38,10 @@
     []
   DefaultScriptInputs:
     - transitionDuration: 0.500000
+      micImage: !<reference.Image> 00000000-0000-0000-0000-000000000000
   ScriptTypes:
     -
       {}
   InputLines:
     - // @input float transitionDuration = 0.5
+    - // @input Component.Image micImage

@@ -674,6 +674,7 @@
   ScriptInputs:
     "":
       transitionDuration: 0.500000
+      micImage: !<reference.Image> 475a647b-5b1d-4ec0-9210-bb7eab455649
   ScriptTypes:
     "":
       {}
@@ -741,9 +742,6 @@
     useSnapping: true
     itemSnapping: true
     worldSnapping: true
-    _showFollowButton: true
-    useFollowBehavior: true
-    _following: true
     _enableInteractionPlane: true
     _interactionPlaneOffset: true
     _interactionPlanePadding: true
@@ -775,9 +773,9 @@
       useSnapping: false
       itemSnapping: false
       worldSnapping: false
-      _showFollowButton: false
-      useFollowBehavior: false
-      _following: false
+      _showFollowButton: true
+      useFollowBehavior: true
+      _following: true
       _showCloseButton: true
       _enableInteractionPlane: true
       _interactionPlaneOffset: !<Vec3> {x: 0.000000, y: 0.000000, z: 0.000000}
@@ -2978,6 +2976,21 @@
     - !<own> b6967747-d54d-4fdf-b8cc-652d7e6080ba
   Components:
     []
+- !<SceneObject/30f3119d-e2aa-4f84-9dde-3acdbd81caa5>
+  PrefabRemaps:
+    []
+  Name: MicrophoneIcon
+  Enabled: true
+  Layers: 1
+  LocalTransform: !<TransformEntity>
+    Position: {x: 0.000000, y: 0.000000, z: 0.000000}
+    Rotation: {x: -180.000000, y: -89.980217, z: -180.000000}
+    Scale: {x: 2.000000, y: 2.000000, z: 2.000000}
+    HasSegmentScaleCompensation: false
+  Children:
+    []
+  Components:
+    - !<own> 475a647b-5b1d-4ec0-9210-bb7eab455649
 - !<SceneObject/31380ad9-38fb-4bb5-a255-02b87dcb0311>
   PrefabRemaps:
     []
@@ -4411,6 +4424,25 @@
   ScriptTypes:
     "":
       {}
+- !<Image/475a647b-5b1d-4ec0-9210-bb7eab455649>
+  PrefabRemaps:
+    []
+  Name: Image
+  Enabled: true
+  RenderOrder: 1
+  StretchMode: Fit
+  VerticalAlignment: Center
+  HorizontalAlignment: Center
+  MeshShadowMode: None
+  ShadowColor: {x: 1.000000, y: 1.000000, z: 1.000000, w: 1.000000}
+  ShadowDensity: 1.000000
+  Materials:
+    - !<reference> ed4ae878-6586-4785-95d1-ffad771ea2ee
+  FlipX: false
+  FlipY: false
+  RotationAngle: 0
+  Pivot: {x: 0.000000, y: 0.000000}
+  ExtentsTarget: !<reference> 00000000-0000-0000-0000-000000000000
 - !<ScriptComponent/4837452f-db52-47b2-b6be-b8f57a3144d6>
   PrefabRemaps:
     []
@@ -10805,11 +10837,11 @@
   Layers: 1
   LocalTransform: !<TransformEntity>
     Position: {x: 0.000000, y: 0.000000, z: 0.000000}
-    Rotation: {x: 0.000000, y: 0.000000, z: 0.000000}
+    Rotation: {x: 0.000000, y: 90.000000, z: 0.000000}
     Scale: {x: 1.000000, y: 1.000000, z: 1.000000}
     HasSegmentScaleCompensation: false
   Children:
-    []
+    - !<own> 30f3119d-e2aa-4f84-9dde-3acdbd81caa5
   Components:
     - !<own> c64aef4f-3991-4561-a8ad-0618646293cd
     - !<own> 072dcbc8-3076-4e56-9d7a-7f6c451fe3e8
@@ -10916,7 +10948,7 @@
   Enabled: true
   Layers: 1
   LocalTransform: !<TransformEntity>
-    Position: {x: 0.000000, y: 0.000000, z: 0.000000}
+    Position: {x: 0.000000, y: 0.000000, z: -100.000000}
     Rotation: {x: 0.000000, y: 0.000000, z: 0.000000}
     Scale: {x: 1.000000, y: 1.000000, z: 1.000000}
     HasSegmentScaleCompensation: false
