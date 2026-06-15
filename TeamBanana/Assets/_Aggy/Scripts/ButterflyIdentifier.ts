@@ -7,16 +7,16 @@ import { ButterflyInfoDisplayManager } from "../../_Boon/ButterflyInfoDisplay/Sc
 /**
  * ButterflyIdentifier — the identification half of the pipeline.
  *
- * FLOW: say "identify" -> take a high-res photo -> send it to a Supabase Edge Function -> the
- * function calls Kindwise and returns the species -> show it in `resultText`.
+ * FLOW: call identify() -> take a high-res photo -> send it to a Supabase Edge Function -> the
+ * function calls Kindwise and returns the species -> show it in `resultText` + the info card.
  *
- *   voice "identify"  ->  CameraModule.requestImage()  ->  Base64  ->
+ *   identify()  ->  CameraModule.requestImage()  ->  Base64  ->
  *   supabase.functions.invoke("identify-butterfly", { image })  ->  IDResponse  ->  show name
  *
- * ⚠️ DEVICE ONLY: `CameraModule.requestImage` (high-res capture) and `AsrModule` (voice) do NOT
- * work in Lens Studio Preview - you'll see "Image request not supported" / "Login to My Lenses".
- * Disable this component (or `useVoiceCommand`) when testing detection in Preview; test this on the
- * real Spectacles.
+ * Trigger identify() however you like — auto-detection, a button, or an agentic Gemini route.
+ *
+ * ⚠️ DEVICE ONLY: `CameraModule.requestImage` (high-res capture) does NOT work in Lens Studio
+ * Preview - you'll see "Image request not supported" / "Login to My Lenses". Test on real Spectacles.
  *
  * The Kindwise API key lives in Supabase secrets (server-side), never in this lens.
  */
@@ -31,16 +31,9 @@ export class ButterflyIdentifier extends BaseScriptComponent {
   functionName: string = "identify-butterfly"
 
   @input
-  @hint("Optional Text to show the result (e.g. 'Capturing...' then the species)")
+  @allowUndefined
+  @hint("Optional Text to show the result (e.g. 'Capturing...' then the species). Can be left empty.")
   resultText: Text | null = null
-
-  @input
-  @hint("Listen for a spoken trigger word to start identification (device only)")
-  useVoiceCommand: boolean = true
-
-  @input
-  @hint("Spoken word that triggers capture")
-  triggerWord: string = "identify"
 
   @input
   @hint("Log activity to the Logger panel")
@@ -57,11 +50,10 @@ export class ButterflyIdentifier extends BaseScriptComponent {
 
   @input
   @hint("ButterflyInfoDisplayManager component for displaying identification results in a prefab")
-  infoDisplay: ButterflyInfoDisplayManager | null = null
+  infoDisplay!: ButterflyInfoDisplayManager
 
   // Built-in Spectacles modules (resolved at construction).
   private cameraModule = require("LensStudio:CameraModule") // high-res still capture
-  private asrModule = require("LensStudio:AsrModule") // speech-to-text for the voice trigger
 
   private supabase: SupabaseClient | null = null
   private busy: boolean = false // guard so we don't fire a second identification mid-flight
@@ -71,44 +63,14 @@ export class ButterflyIdentifier extends BaseScriptComponent {
     this.createEvent("OnStartEvent").bind(() => this.start())
   }
 
-  /** Create the Supabase client and (optionally) start listening for the voice trigger. */
+  /** Create the Supabase client. */
   private start(): void {
     this.supabase = createClient(this.supabaseProject.url, this.supabaseProject.publicToken)
-    if (this.useVoiceCommand) {
-      this.startVoice()
-    }
-  }
-
-  /** Begin continuous speech transcription; each finalized phrase is checked for the trigger word. */
-  private startVoice(): void {
-    const options = AsrModule.AsrTranscriptionOptions.create()
-    options.mode = AsrModule.AsrMode.HighAccuracy
-    options.onTranscriptionUpdateEvent.add((eventArgs) => this.onTranscription(eventArgs))
-    options.onTranscriptionErrorEvent.add((code) => {
-      if (this.debugLogging) {
-        print("[ButterflyId] ASR error: " + code)
-      }
-    })
-    this.asrModule.startTranscribing(options)
-    if (this.debugLogging) {
-      print("[ButterflyId] Listening for '" + this.triggerWord + "'")
-    }
-  }
-
-  /** When a finalized phrase contains the trigger word, start an identification. */
-  private onTranscription(eventArgs: AsrModule.TranscriptionUpdateEvent): void {
-    if (!eventArgs || !eventArgs.isFinal || !eventArgs.text) {
-      return
-    }
-    const heard = ("" + eventArgs.text).toLowerCase()
-    if (heard.indexOf(this.triggerWord.toLowerCase()) !== -1) {
-      this.identify()
-    }
   }
 
   /**
    * Public entry point - kicks off capture -> send -> show.
-   * Call this from a button too (e.g. Interactable onTrigger) if you don't want to rely on voice.
+   * Call this from auto-detection, a button (Interactable onTrigger), or an agentic Gemini route.
    */
   public identify(): void {
     if (this.busy) {
