@@ -32,7 +32,58 @@
   Children:
     - !<own> 2246cc25-f58f-4f89-a27f-4492efd94528
   Components:
+    - !<own> 3e9bb9a1-c83c-43e2-b94f-1fb73b6cef16
+- !<ScriptComponent/3e9bb9a1-c83c-43e2-b94f-1fb73b6cef16>
+  PrefabRemaps:
     []
+  Name: VisualPromptCheatsheetController
+  Enabled: true
+  ScriptAsset: !<reference> c8b43117-4dd1-4c1c-a4a1-8aa78ab2b8ce
+  ScriptInputsDefault:
+    panelRoot: true
+    titleText: true
+    summaryText: true
+    statusText: true
+    promptTextSlots: true
+    autoCreateLayout: true
+    startMode: true
+    autoDetectContext: true
+    autoRotatePrompts: true
+    rotateSeconds: true
+    contextPollSeconds: true
+    debugLogging: true
+    mapRoot: true
+    identificationRoot: true
+    infoCardRoot: true
+    collectionRoot: true
+    chatRoot: true
+    palmTalkRoot: true
+  ScriptTypesDefault:
+    {}
+  ScriptInputs:
+    "":
+      panelRoot: !<reference> 0ab3b68c-6ec8-4224-a905-659ee0685ede
+      titleText: !<reference> 3679379c-b1fd-4ccc-b50c-cbe051c13f58
+      summaryText: !<reference> f3df16f1-0872-4eb2-889c-da4adbb93bee
+      statusText: !<reference> 00000000-0000-0000-0000-000000000000
+      promptTextSlots:
+        []
+      autoCreateLayout: true
+      startMode: idle
+      autoDetectContext: true
+      autoRotatePrompts: false
+      rotateSeconds: !<float> 8.000000
+      contextPollSeconds: !<float> 0.350000
+      debugLogging: false
+      mapRoot: !<reference> 00000000-0000-0000-0000-000000000000
+      identificationRoot: !<reference> 00000000-0000-0000-0000-000000000000
+      infoCardRoot: !<reference> 00000000-0000-0000-0000-000000000000
+      collectionRoot: !<reference> 00000000-0000-0000-0000-000000000000
+      chatRoot: !<reference> 00000000-0000-0000-0000-000000000000
+      palmTalkRoot: !<reference> 00000000-0000-0000-0000-000000000000
+  ScriptTypes:
+    "":
+      {}
 - !<ScriptComponent/0d9093f4-a04c-4471-bcab-d02d0b267316>
   PrefabRemaps:
     []

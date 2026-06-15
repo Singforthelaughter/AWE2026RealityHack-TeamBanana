@@ -146,6 +146,8 @@ ButterflyCollectionLiteManager (no project imports — standalone)
 ButterflyHoverAnimationController (no project imports — standalone)
 ConservationStatusBar   (no project imports — standalone)
 SeasonCalendar          (no project imports — standalone)
+PromptCheatsheetCatalog (no project imports — standalone data file)
+VisualPromptCheatsheetController ──► PromptCheatsheetCatalog (_Niko)
 
 DetectionHelpers (_Niko) (no project imports — standalone)
 SpatializerUtils         (no project imports — standalone)
@@ -927,6 +929,41 @@ Shows a tooltip on hover.
 
 **Imports:** SpectaclesUIKit: `VisualElement`, `Tooltip`, `RoundedRectangleVisual`, `RoundedRectangle`  
 **Imported by:** nothing — attach to the info card prefab's season calendar object.
+
+---
+
+### PromptCheatsheetCatalog.ts
+
+**Purpose:** Static prompt-card data for the in-lens visual cheatsheet. Groups demo prompts
+by mode (`idle`, `voice`, `identification`, `detection`, `map`, `collection`, `spatial`,
+`generation`, `palmTalk`) with expected outcome, runtime support, and component notes.
+
+**Imports:** nothing  
+**Imported by:** `VisualPromptCheatsheetController`
+
+---
+
+### VisualPromptCheatsheetController.ts
+
+**Purpose:** Visual controller for rendering the prompt catalog into an existing Lens
+Studio panel or a generated fallback text layout. Supports title/summary/status text,
+multiple prompt card text slots, public mode-switching methods for buttons, optional
+prompt-page rotation, and optional context watching via assigned SceneObject roots
+(map, info card, collection, chat, palm talk).
+
+**Inspector inputs:** `panelRoot`, `titleText`, `summaryText`, `statusText`,
+`promptTextSlots`, `autoCreateLayout`, `startMode`, `autoDetectContext`,
+`autoRotatePrompts`, `rotateSeconds`, `contextPollSeconds`, and optional context roots (`mapRoot`, `identificationRoot`,
+`infoCardRoot`, `collectionRoot`, `chatRoot`, `palmTalkRoot`).
+
+**Public API:** `showPanel()`, `hidePanel()`, `togglePanel()`, `setMode(mode)`,
+`showIdle()`, `showVoice()`, `showIdentification()`, `showDetection()`, `showMap()`,
+`showCollection()`, `showSpatial()`, `showGeneration()`, `showPalmTalk()`, `nextMode()`,
+`previousMode()`, `nextPromptPage()`, `previousPromptPage()`, `getCurrentPromptText()`.
+
+**Imports:** `PromptCheatsheetCatalog`  
+**Imported by:** `Intro Screen` prefab — can also be attached to other help panels and
+optionally wired to buttons or other scripts through its public methods.
 
 <!-- END_SECTION: _Niko -->
 

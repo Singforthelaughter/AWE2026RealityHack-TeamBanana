@@ -1,0 +1,102 @@
+- !<AssetImportMetadata/a1a7193b-3eed-44b8-89b1-30b03d857fa0>
+  ImportedAssetIds:
+    TypeScriptAsset: !<reference> c8b43117-4dd1-4c1c-a4a1-8aa78ab2b8ce
+  ImporterName: TypeScriptAssetImporter
+  PrimaryAsset: !<reference> c8b43117-4dd1-4c1c-a4a1-8aa78ab2b8ce
+  PackageType: NotAPackage
+  LegacyPackagePolicy: ~
+  ExtraData:
+    {}
+  AssetDataMap:
+    TypeScriptAsset: !<own> 769291ba-408e-455d-897a-b6ea5fdbecb0
+  DependentFiles:
+    []
+  ImporterSettings: !<AssetImporterSettings>
+    {}
+  CompressionSettings: !<own> 00000000-0000-0000-0000-000000000000
+- !<TypeScriptAssetData/769291ba-408e-455d-897a-b6ea5fdbecb0>
+  SvgIcon: ""
+  SetupScript:
+    code: ""
+  Description: ""
+  VersionMajor: 0
+  VersionMinor: 0
+  VersionPatch: 0
+  ComponentUid: d3d7bbb7-16f5-4380-9fec-5d030ba4f7a4
+  ExportUid: 00000000-0000-0000-0000-000000000000
+  PackagePolicy: CanBeUnpacked
+  ScriptInputsHidden:
+    autoCreateLayout: false
+    autoDetectContext: false
+    autoRotatePrompts: false
+    chatRoot: false
+    collectionRoot: false
+    contextPollSeconds: false
+    debugLogging: false
+    identificationRoot: false
+    infoCardRoot: false
+    mapRoot: false
+    palmTalkRoot: false
+    panelRoot: false
+    promptTextSlots: false
+    rotateSeconds: false
+    startMode: false
+    statusText: false
+    summaryText: false
+    titleText: false
+  ScriptTypesHidden:
+    {}
+  ReadMe: !<reference> 00000000-0000-0000-0000-000000000000
+  DeclarationFile: !<reference> 00000000-0000-0000-0000-000000000000
+  Tags:
+    []
+  Attachments:
+    []
+  DefaultScriptInputs:
+    - panelRoot: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
+      titleText: !<reference.Text> 00000000-0000-0000-0000-000000000000
+      summaryText: !<reference.Text> 00000000-0000-0000-0000-000000000000
+      statusText: !<reference.Text> 00000000-0000-0000-0000-000000000000
+      promptTextSlots: !<reference.Text[]>
+        []
+      autoCreateLayout: true
+      startMode: idle
+      autoDetectContext: true
+      autoRotatePrompts: false
+      rotateSeconds: !<float> 8.000000
+      contextPollSeconds: !<float> 0.350000
+      debugLogging: false
+      mapRoot: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
+      identificationRoot: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
+      infoCardRoot: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
+      collectionRoot: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
+      chatRoot: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
+      palmTalkRoot: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
+  ScriptTypes:
+    -
+      {}
+  InputLines:
+    - '// @ui {"widget":"label", "label":"Visual Prompt Cheatsheet"}'
+    - '// @ui {"widget":"separator"}'
+    - '// @input SceneObject panelRoot {"hint":"Optional root object for the visual cheatsheet panel. showPanel/hidePanel toggle this object."}'
+    - '// @input Component.Text titleText {"hint":"Title text for the current cheatsheet mode."}'
+    - '// @input Component.Text summaryText {"hint":"Summary text under the title. If no prompt slots are assigned, prompts are rendered here."}'
+    - '// @input Component.Text statusText {"hint":"Optional status text for page and runtime notes."}'
+    - '// @input Component.Text[] promptTextSlots = {} {"hint":"Text slots used as visual prompt cards."}'
+    - '// @ui {"widget":"separator"}'
+    - '// @ui {"widget":"label", "label":"Behavior"}'
+    - '// @input bool autoCreateLayout = true {"hint":"Create a simple runtime text layout when no Text references are assigned."}'
+    - '// @input string startMode = "idle" {"hint":"Mode shown on start if auto context detection has no active watched object.", "widget":"combobox", "values":[{"label":"Field Guide", "value":"idle"}, {"label":"Voice Assistant", "value":"voice"}, {"label":"Identify Butterflies", "value":"identification"}, {"label":"Scan For Butterflies", "value":"detection"}, {"label":"Nearby Sightings", "value":"map"}, {"label":"Collection", "value":"collection"}, {"label":"Spatial Awareness", "value":"spatial"}, {"label":"Generate Assets", "value":"generation"}, {"label":"Palm Push To Talk", "value":"palmTalk"}]}'
+    - '// @input bool autoDetectContext = true {"hint":"Automatically switch prompt groups based on watched SceneObjects."}'
+    - '// @input bool autoRotatePrompts {"hint":"Rotate prompt pages within the current mode."}'
+    - '// @input float rotateSeconds = 8 {"hint":"Seconds between automatic prompt page changes."}'
+    - '// @input float contextPollSeconds = 0.35 {"hint":"Seconds between context checks."}'
+    - '// @input bool debugLogging {"hint":"Enable debug logging."}'
+    - '// @ui {"widget":"separator"}'
+    - '// @ui {"widget":"label", "label":"Context Watchers"}'
+    - '// @input SceneObject mapRoot {"hint":"When enabled, switches to Nearby Sightings prompts."}'
+    - '// @input SceneObject identificationRoot {"hint":"When enabled, switches to Identify Butterflies prompts."}'
+    - '// @input SceneObject infoCardRoot {"hint":"When enabled, switches to Identify Butterflies prompts after an info card appears."}'
+    - '// @input SceneObject collectionRoot {"hint":"When enabled, switches to Collection prompts."}'
+    - '// @input SceneObject chatRoot {"hint":"When enabled, switches to Voice Assistant prompts."}'
+    - '// @input SceneObject palmTalkRoot {"hint":"When enabled, switches to Palm Push To Talk prompts."}'
