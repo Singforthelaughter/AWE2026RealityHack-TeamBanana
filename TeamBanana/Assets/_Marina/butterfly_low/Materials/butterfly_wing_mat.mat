@@ -86,6 +86,7 @@
     - ENABLE_DIRECT_LIGHTS
     - ENABLE_ENVIRONMENT_MAP
     - ENABLE_LIGHTING
+    - ENABLE_OPACITY_TEX
     - ENABLE_SPECULAR_LIGHTING
     - ENABLE_TONE_MAPPING
     - ENABLE_VERTEX_COLOR_NONE
@@ -106,12 +107,14 @@
     - normalTexUV 0
     - opacityTexUV 0
     - rimColorTexUV 0
-    - ENABLE_OPACITY_TEX
-  BlendMode: PremultipliedAlpha
+  BlendMode: AlphaTest
   Properties:
     PreviewEnabled:
       typeIdx: 0
       value: 0
+    alphaTestThreshold:
+      typeIdx: 1
+      value: 0.020000
     baseColor:
       typeIdx: 5
       value: {x: 1.000000, y: 1.000000, z: 1.000000, w: 1.000000}

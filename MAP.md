@@ -283,6 +283,60 @@ up by a configurable multiplier; on trigger end it restores the original parent 
 **Imports from project:** `Interactable`, `InteractorEvent` (SpectaclesInteractionKit)  
 **Imported by:** none — attach directly in the Inspector.
 
+---
+
+### ButterflyMovement/Scripts/ButterflyMovementController.ts
+
+**Purpose:** Drives a single butterfly's flight. Spawns it in front of the camera (with a  
+scale-in tween), wanders lifelike inside the user's field of view, and lands on a hand  
+finger joint when a hand is tracked — taking off again when tracking is lost.  
+Attach this directly to the butterfly SceneObject (it moves the object it is on).
+
+**Inspector inputs:**
+
+| Input | Type | Required | Description |
+|---|---|---|---|
+| `camera` | SceneObject | Yes | Main Spectacles camera. Origin/orientation for flight and spawning. |
+| `fingerJointName` | string | — | SIK hand-joint to land on (default `indexTip`; e.g. `thumbTip`, `middleTip`, `wrist`). |
+| `handViewAngleLimit` | number | — | Only land when the finger is within this angle (deg) of the camera view center (default 30). |
+| `landingSmoothing` | number | — | Exponential ease rate onto the finger (default 3). Lower = slower/gentler landing. |
+| `landPositionOffset` | vec3 | — | Perch offset from the joint, camera-relative cm: x=right, y=up, z=forward (default 0,0,0). |
+| `speed` | number | — | Base flight speed in cm/s (default 25). |
+| `scale` | number | — | Final scale; spawns at 0 and tweens up (default 1). |
+| `spawnPositionOffset` | vec3 | — | Camera-local spawn offset in cm: x=right, y=up, z=forward (default 0,−5,60). |
+| `spawnRotation` | vec3 | — | Camera-local spawn rotation in degrees (default 0,0,0). |
+| `minDistance` / `maxDistance` | number | — | Wander distance band from camera in cm (default 40 / 90). |
+| `horizontalAngle` / `verticalAngle` | number | — | Half-FOV bounds in degrees the butterfly stays within (default 22 / 16). |
+| `spawnScaleDuration` | number | — | Scale-in tween duration in ms (default 700). |
+| `flutterAmount` | number | — | Wobble size as a fraction of speed (default 0.55). 0 = straight glide. |
+| `flutterFrequency` | number | — | Baseline wing-wobble rate in Hz (default 11). |
+| `flutterNoise` | number | — | Randomness in the flutter rate (default 0.4). 0 = steady, 1 = erratic. |
+| `headPitchFollow` | number | — | How much the head pitches toward vertical motion (default 0.25). 0 = body stays level. |
+| `modelForwardAxis` | vec3 | — | Local axis that is the nose/front (default 0,1,0). Tune if the head points wrong. |
+| `modelUpAxis` | vec3 | — | Local axis pointing up out of the back (default 0,0,−1). Tune if it flies upside-down. |
+| `flyingRotationOffset` | vec3 | — | Extra local-degree rotation on top of the heading while flying (default 0,0,0). |
+| `landedRotationOffset` | vec3 | — | Local-degree rotation while perched on a finger (default 0,0,0). |
+| `fingerRotationFollow` | number | — | How much the perched butterfly rotates with the finger (default 0.4). 0 = face user, 1 = match finger. |
+| `flyingAnimationSpeed` | number | — | AnimationPlayer playback speed while flying (default 4). |
+| `landedAnimationSpeed` | number | — | AnimationPlayer playback speed while perched (default 0.25). |
+| `debugFreezeHeading` | boolean | — | Hover in place facing straight ahead to read off head direction; off for normal flight. |
+
+**Key behaviours / gotchas:**
+- Free flight picks wander targets in camera-relative spherical coords, so it stays in view as the user looks around.
+- Movement is velocity-steered with high-frequency perpendicular "wing wobble" for a fluttery, erratic path.
+- Orientation aligns `modelForwardAxis` → heading and `modelUpAxis` → camera-up via `alignRotation()` (R = T·Sᵀ), not `quat.lookAt`. If the head points wrong, the mesh's real forward axis differs from the assumed one — set `debugFreezeHeading` and try the six axis options for `modelForwardAxis`.
+- Hand tracking via SIK (`SIK.HandInputData`); right hand wins if both are tracked. Lands only when the finger is within `handViewAngleLimit` of the camera view (not merely when a hand is tracked).
+- Landing approach is a frame-rate-independent exponential ease (`1 − e^(−landingSmoothing·dt)`) toward the joint — glides in and slows as it arrives. Once landed it tracks the joint exactly (no smoothing) plus a small idle bob. Free flight is still velocity-steered.
+- Joint resolved dynamically by name off `TrackedHand` (e.g. `indexTip`), reading `Keypoint.position`/`.forward`/`.up`.
+- Perched orientation (`facePerched`) slerps between facing the user and the finger's basis (mapped through model axes) by `fingerRotationFollow`.
+- Camera view direction uses `transform.back` (camera looks along −Z), same convention as the Nearby managers.
+- Optional `AnimationPlayer` on the same SceneObject: sets every clip's `playbackSpeed` to `flyingAnimationSpeed` while airborne and `landedAnimationSpeed` while perched (no-op if absent).
+- Landing requires a real device (hand tracking does not run in Preview).
+
+**Imports from project:** none  
+**Imports (packages):** `SIK`, `HandInputData`, `TrackedHand` (SpectaclesInteractionKit); `LSTween`, `Easing` (LSTween)  
+**Imported by:** none — attach directly in the Inspector.
+
 <!-- END_SECTION: _Boon -->
 
 ---

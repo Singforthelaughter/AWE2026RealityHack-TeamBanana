@@ -520,7 +520,7 @@
 - !<SceneObject/399f6e06-41e6-4d45-b2ab-307c2656327e>
   PrefabRemaps:
     []
-  Name: description_gpt
+  Name: inaturalist_id
   Enabled: true
   Layers: 1
   LocalTransform: !<TransformEntity>
@@ -647,7 +647,7 @@
 - !<SceneObject/4541373d-7bd3-4c7b-804a-45e21b9d04d2>
   PrefabRemaps:
     []
-  Name: kingdom
+  Name: gbif_id
   Enabled: true
   Layers: 1
   LocalTransform: !<TransformEntity>
@@ -2251,5 +2251,5 @@
     - !<own> 3a5c9e13-c04e-42df-968c-9fb763ccfab7
   Components:
     - !<own> 92b0b213-c04f-408c-88c0-2b9f17e3cf41
-    - !<own> 2ad2e30f-b671-4d4e-b830-bdd7cdb6dab6
     - !<own> 408accce-bc07-4d95-b8d4-4793a64ae24d
+    - !<own> 2ad2e30f-b671-4d4e-b830-bdd7cdb6dab6

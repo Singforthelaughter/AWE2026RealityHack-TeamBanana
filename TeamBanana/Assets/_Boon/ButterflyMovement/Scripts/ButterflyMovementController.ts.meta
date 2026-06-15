@@ -1,0 +1,119 @@
+- !<AssetImportMetadata/30896ce7-3eca-4c86-b0d7-254557d286db>
+  ImportedAssetIds:
+    TypeScriptAsset: !<reference> 18cf8ffa-a09e-4907-949d-375a6cc0b67d
+  ImporterName: TypeScriptAssetImporter
+  PrimaryAsset: !<reference> 18cf8ffa-a09e-4907-949d-375a6cc0b67d
+  PackageType: NotAPackage
+  LegacyPackagePolicy: ~
+  ExtraData:
+    {}
+  AssetDataMap:
+    TypeScriptAsset: !<own> 70a18bb4-b0b5-44e5-8268-4d81d99c3309
+  DependentFiles:
+    []
+  ImporterSettings: !<AssetImporterSettings>
+    {}
+  CompressionSettings: !<own> 00000000-0000-0000-0000-000000000000
+- !<TypeScriptAssetData/70a18bb4-b0b5-44e5-8268-4d81d99c3309>
+  SvgIcon: ""
+  SetupScript:
+    code: ""
+  Description: ""
+  VersionMajor: 0
+  VersionMinor: 0
+  VersionPatch: 0
+  ComponentUid: 52753920-777b-42ce-9699-1c9b8d79e4ad
+  ExportUid: 00000000-0000-0000-0000-000000000000
+  PackagePolicy: CanBeUnpacked
+  ScriptInputsHidden:
+    camera: false
+    debugFreezeHeading: false
+    fingerJointName: false
+    fingerRotationFollow: false
+    flutterAmount: false
+    flutterFrequency: false
+    flutterNoise: false
+    flyingAnimationSpeed: false
+    flyingRotationOffset: false
+    handViewAngleLimit: false
+    headPitchFollow: false
+    horizontalAngle: false
+    landPositionOffset: false
+    landedAnimationSpeed: false
+    landedRotationOffset: false
+    landingSmoothing: false
+    maxDistance: false
+    minDistance: false
+    modelForwardAxis: false
+    modelUpAxis: false
+    scale: false
+    spawnPositionOffset: false
+    spawnRotation: false
+    spawnScaleDuration: false
+    speed: false
+    verticalAngle: false
+  ScriptTypesHidden:
+    {}
+  ReadMe: !<reference> 00000000-0000-0000-0000-000000000000
+  DeclarationFile: !<reference> 00000000-0000-0000-0000-000000000000
+  Tags:
+    []
+  Attachments:
+    []
+  DefaultScriptInputs:
+    - camera: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
+      fingerJointName: indexTip
+      handViewAngleLimit: !<float> 30.000000
+      landingSmoothing: !<float> 3.000000
+      landPositionOffset: !<Vec3> {x: 0.000000, y: 0.000000, z: 0.000000}
+      speed: !<float> 25.000000
+      scale: !<float> 1.000000
+      spawnPositionOffset: !<Vec3> {x: 0.000000, y: -5.000000, z: 60.000000}
+      spawnRotation: !<Vec3> {x: 0.000000, y: 0.000000, z: 0.000000}
+      minDistance: !<float> 40.000000
+      maxDistance: !<float> 90.000000
+      horizontalAngle: !<float> 22.000000
+      verticalAngle: !<float> 16.000000
+      spawnScaleDuration: !<float> 700.000000
+      flutterAmount: 0.550000
+      flutterFrequency: !<float> 11.000000
+      flutterNoise: 0.400000
+      headPitchFollow: 0.250000
+      modelForwardAxis: !<Vec3> {x: 0.000000, y: 1.000000, z: 0.000000}
+      modelUpAxis: !<Vec3> {x: 0.000000, y: 0.000000, z: -1.000000}
+      flyingRotationOffset: !<Vec3> {x: 0.000000, y: 0.000000, z: 0.000000}
+      landedRotationOffset: !<Vec3> {x: 0.000000, y: 0.000000, z: 0.000000}
+      fingerRotationFollow: 0.400000
+      flyingAnimationSpeed: !<float> 4.000000
+      landedAnimationSpeed: 0.250000
+      debugFreezeHeading: false
+  ScriptTypes:
+    -
+      {}
+  InputLines:
+    - '// @input SceneObject camera {"hint":"Main Spectacles camera SceneObject. Used as the origin/orientation for flight and spawning."}'
+    - '// @input string fingerJointName = "indexTip" {"hint":"SIK hand-joint property to land on, e.g. indexTip, thumbTip, middleTip, ringTip, pinkyTip, wrist."}'
+    - "// @input float handViewAngleLimit = 30 {\"hint\":\"Only land when the finger is within this angle (degrees) of the camera's view center. Larger = lands even when the hand is near the edge of view.\"}"
+    - '// @input float landingSmoothing = 3 {"hint":"How smoothly/slowly the butterfly eases onto the finger (per second). Lower = slower, gentler landing; higher = snappier."}'
+    - '// @input vec3 landPositionOffset = {0,0,0} {"hint":"Perch offset from the finger joint, camera-relative in cm: x = right, y = up, z = forward. e.g. (0,1,0) sits 1cm above the fingertip."}'
+    - '// @input float speed = 25 {"hint":"Base flight speed in cm/s."}'
+    - '// @input float scale = 1 {"hint":"Final butterfly scale. Spawns at 0 and tweens up to this."}'
+    - '// @input vec3 spawnPositionOffset = {0,-5,60} {"hint":"Spawn offset relative to the camera, in cm. x = right, y = up, z = forward (in front)."}'
+    - '// @input vec3 spawnRotation = {0,0,0} {"hint":"Spawn rotation offset relative to the camera, in degrees (x, y, z)."}'
+    - '// @input float minDistance = 40 {"hint":"Nearest distance from the camera the butterfly will wander to, in cm."}'
+    - '// @input float maxDistance = 90 {"hint":"Farthest distance from the camera the butterfly will wander to, in cm."}'
+    - '// @input float horizontalAngle = 22 {"hint":"Half horizontal field of view the butterfly stays within, in degrees."}'
+    - '// @input float verticalAngle = 16 {"hint":"Half vertical field of view the butterfly stays within, in degrees."}'
+    - '// @input float spawnScaleDuration = 700 {"hint":"Scale-in tween duration on spawn, in milliseconds."}'
+    - '// @input float flutterAmount = 0.55 {"hint":"How much the butterfly flutters off its path, as a fraction of speed. 0 = straight glide, ~0.5 = lively, >1 = frantic."}'
+    - '// @input float flutterFrequency = 11 {"hint":"How fast the wings wobble, in Hz. Higher = quicker, twitchier fluttering."}'
+    - '// @input float flutterNoise = 0.4 {"hint":"Randomness in the flutter rate. 0 = steady mechanical wobble, ~0.4 = natural, 1 = very erratic."}'
+    - '// @input float headPitchFollow = 0.25 {"hint":"How much the head pitches up/down toward the flight direction. 0 = body stays level when climbing/diving (most butterfly-like), 1 = nose fully follows the direction."}'
+    - "// @input vec3 modelForwardAxis = {0,1,0} {\"hint\":\"Local axis that is the butterfly's nose/front (default 0,1,0). If the head points wrong, try (0,0,1), (1,0,0), or their negatives until the head leads.\"}"
+    - "// @input vec3 modelUpAxis = {0,0,-1} {\"hint\":\"Local axis pointing UP out of the butterfly's back (default 0,0,-1, since down=+Z). Adjust if it flies upside-down or banked once the head is correct.\"}"
+    - '// @input vec3 flyingRotationOffset = {0,0,0} {"hint":"Extra rotation applied on top of the heading while flying, in local degrees (x, y, z). Use to nose-down/bank the model to taste."}'
+    - '// @input vec3 landedRotationOffset = {0,0,0} {"hint":"Rotation applied while perched on the finger, in local degrees (x, y, z), on top of facing the user."}'
+    - "// @input float fingerRotationFollow = 0.4 {\"hint\":\"How much the perched butterfly rotates with the finger. 0 = always face the user, 1 = fully match the finger's orientation. ~0.4 = leans with the finger but stays comfy.\"}"
+    - '// @input float flyingAnimationSpeed = 4 {"hint":"AnimationPlayer playback speed while flying (fast wing flapping)."}'
+    - '// @input float landedAnimationSpeed = 0.25 {"hint":"AnimationPlayer playback speed while perched on a finger (slow)."}'
+    - '// @input bool debugFreezeHeading {"hint":"DEBUG: hover in place facing straight ahead (no flutter/wander/landing) so you can read off the head direction and fix the model axes. Turn off for normal flight."}'

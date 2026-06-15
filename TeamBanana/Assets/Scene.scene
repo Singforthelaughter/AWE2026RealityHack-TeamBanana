@@ -14233,17 +14233,34 @@
   Enabled: true
   ScriptAsset: !<reference> 88f521c8-549a-46a4-8567-dc7f0bff3664
   ScriptInputsDefault:
+    boxObjects: true
+    labelTexts: true
+    smoothing: true
+    boxScaleX: true
+    boxScaleY: true
+    flipX: true
+    flipY: true
+    showBox: true
     debugLogging: true
   ScriptTypesDefault:
     {}
   ScriptInputs:
     "":
       mlSpatializer: !<MappingBased.AssignableType> a63639b8-4db0-4a5f-90b4-59504b619f3b
-      statusObject: !<reference.SceneObject> da71f75e-2a66-43fd-8abb-24b7c6f034a0
+      boxObjects: !<reference.SceneObject[]>
+        []
+      labelTexts: !<reference.Text[]>
+        []
       minScore: 0.590000
+      smoothing: 0.600000
       holdSeconds: !<float> 1.000000
-      startActive: false
+      boxScaleX: !<float> 1.000000
+      boxScaleY: !<float> 1.000000
+      flipX: false
+      flipY: false
+      showBox: false
       debugLogging: true
+      statusObject: !<reference.SceneObject> da71f75e-2a66-43fd-8abb-24b7c6f034a0
   ScriptTypes:
     "":
       {}
