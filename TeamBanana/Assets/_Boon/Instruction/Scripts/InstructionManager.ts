@@ -18,11 +18,8 @@ export class InstructionManager extends BaseScriptComponent {
       timeManager.setTimeout(() => {
         this.handHint.play()
         timeManager.setTimeout(() => {
-          this.text.text = 'Try saying \n"Show me a map of all nearby sightings"'
-          timeManager.setTimeout(() => {
-            this.text.text = ""
-          }, 3000)
-        }, 4000)
+          this.text.text = ""
+        }, 6000)
       }, 1000)
     })
   }

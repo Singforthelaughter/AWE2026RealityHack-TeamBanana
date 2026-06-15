@@ -11,7 +11,6 @@
     - !<own> c6963417-9dcb-4231-a99d-db3b29350dee
     - !<own> 8cccaff3-695a-4e2c-8b7b-f8091d13bb65
     - !<own> 3fad3283-dbb8-4a5f-80f7-6f4358f1645c
-    - !<own> cd9335a9-7e99-4a97-aa55-a4c36dac482f
   layers: !<Layers/267ee9a7-aff2-4f9d-9a49-f71214747d03>
     userLayers:
       - |
@@ -4488,13 +4487,13 @@
     "":
       autoPlay: false
       animationSpeed: !<float> 1.000000
-      numberOfLoops: 4
+      numberOfLoops: 3
       hintAnimations:
         - handType: 1
           oneHandedAnimation_l: pinch_near
           oneHandedAnimation_r: pinch_far
           twoHandedAnimation: two_hands_pinch_scale
-          position: !<Vec3> {x: 20.000000, y: -22.000000, z: 0.000000}
+          position: !<Vec3> {x: 14.000000, y: -22.000000, z: 0.000000}
   ScriptTypes:
     "":
       {}
@@ -5333,6 +5332,7 @@
   Children:
     - !<own> d9626e23-2bf7-40f0-b268-ca61017d121d
     - !<own> e1b5de4b-2c45-496e-8499-ee319c1b4367
+    - !<own> cd9335a9-7e99-4a97-aa55-a4c36dac482f
   Components:
     - !<own> 76e545a0-c2d6-4ccf-aefc-affc7fad2f28
     - !<own> 8348a955-1c63-4962-b0fe-e8128a129789
@@ -10146,7 +10146,6 @@
     _showFollowButton: true
     useFollowBehavior: true
     _following: true
-    _showCloseButton: true
     _enableInteractionPlane: true
     _interactionPlaneOffset: true
     _interactionPlanePadding: true
@@ -10181,7 +10180,7 @@
       _showFollowButton: false
       useFollowBehavior: false
       _following: false
-      _showCloseButton: false
+      _showCloseButton: true
       _enableInteractionPlane: true
       _interactionPlaneOffset: !<Vec3> {x: 0.000000, y: 0.000000, z: 0.000000}
       _interactionPlanePadding: !<Vec2> {x: 0.000000, y: 0.000000}
@@ -10616,6 +10615,22 @@
     CapitalizationOverride: None
   DepthTest: false
   TwoSided: false
+- !<ScriptComponent/917f8b15-79ad-4ab0-bb22-6371ffe0fb86>
+  PrefabRemaps:
+    []
+  Name: CloseFrameParent
+  Enabled: true
+  ScriptAsset: !<reference> 925f2033-81fd-47a6-b36f-cbfb27dadc47
+  ScriptInputsDefault:
+    {}
+  ScriptTypesDefault:
+    {}
+  ScriptInputs:
+    "":
+      {}
+  ScriptTypes:
+    "":
+      {}
 - !<SceneObject/91a0ea31-0718-4950-bd00-a0b2dc64f3be>
   PrefabRemaps:
     []
@@ -14836,9 +14851,9 @@
   Enabled: true
   Layers: 1
   LocalTransform: !<TransformEntity>
-    Position: {x: 0.000000, y: 18.961548, z: -149.002686}
+    Position: {x: 0.000000, y: 10.000000, z: 0.000000}
     Rotation: {x: 0.000000, y: 0.000000, z: 0.000000}
-    Scale: {x: 1.000000, y: 1.000000, z: 1.000000}
+    Scale: {x: 0.400000, y: 0.400000, z: 0.400000}
     HasSegmentScaleCompensation: false
   Children:
     - !<own> 3893b035-fd32-421a-bf07-b34dc0899924
@@ -14850,6 +14865,7 @@
     - !<own> 5d8bac60-6d0c-4178-a503-57a7eb4dd140
   Components:
     - !<own> 8ba57b9f-3eb2-4873-8d58-94a82c7236da
+    - !<own> 917f8b15-79ad-4ab0-bb22-6371ffe0fb86
 - !<SceneObject/ce2ba819-c23a-4c5f-b1c8-3a2e82dfcd6a>
   PrefabRemaps:
     []
@@ -15705,7 +15721,7 @@
   Enabled: true
   Layers: 1
   LocalTransform: !<TransformEntity>
-    Position: {x: -0.000006, y: -10.000000, z: 0.000000}
+    Position: {x: -0.000006, y: -15.000000, z: 0.000000}
     Rotation: {x: 0.000000, y: 0.000000, z: 0.000000}
     Scale: {x: 1.000000, y: 1.000000, z: 1.000000}
     HasSegmentScaleCompensation: false
@@ -16183,7 +16199,7 @@
   LocalTransform: !<TransformEntity>
     Position: {x: 0.000000, y: 0.000000, z: 0.000000}
     Rotation: {x: -79.999977, y: -10.000000, z: -160.000000}
-    Scale: {x: 1.000000, y: 1.000000, z: 1.000000}
+    Scale: {x: 0.700000, y: 0.700000, z: 0.700000}
     HasSegmentScaleCompensation: false
   Children:
     - !<own> c85ae883-e704-486d-8996-c273c2ee008a
