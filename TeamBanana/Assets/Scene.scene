@@ -8769,14 +8769,14 @@
   Enabled: true
   ScriptAsset: !<reference> 439a16a1-c0f0-4d94-8b20-77f5a2ccb08d
   ScriptInputsDefault:
-    onboardingVisual: true
+    {}
   ScriptTypesDefault:
     {}
   ScriptInputs:
     "":
       text: !<reference.Text> f7a369e0-e509-458e-9bce-f04cc0cdc7d3
       handHint: !<MappingBased.AssignableType> 34688ce3-1daa-4969-abcf-994674378865
-      onboardingVisual: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
+      onboardingVisual: !<reference.SceneObject> cd9335a9-7e99-4a97-aa55-a4c36dac482f
   ScriptTypes:
     "":
       {}
