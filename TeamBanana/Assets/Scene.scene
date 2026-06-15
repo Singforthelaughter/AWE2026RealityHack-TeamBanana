@@ -10,6 +10,7 @@
     - !<own> e2e35a4e-6348-4e5d-8a2d-9d27c7d96515
     - !<own> c6963417-9dcb-4231-a99d-db3b29350dee
     - !<own> 8cccaff3-695a-4e2c-8b7b-f8091d13bb65
+    - !<own> cd9335a9-7e99-4a97-aa55-a4c36dac482f
     - !<own> 3fad3283-dbb8-4a5f-80f7-6f4358f1645c
   layers: !<Layers/267ee9a7-aff2-4f9d-9a49-f71214747d03>
     userLayers:
@@ -4493,7 +4494,7 @@
           oneHandedAnimation_l: pinch_near
           oneHandedAnimation_r: pinch_far
           twoHandedAnimation: two_hands_pinch_scale
-          position: !<Vec3> {x: 14.000000, y: -22.000000, z: 0.000000}
+          position: !<Vec3> {x: 14.000000, y: -24.000000, z: 0.000000}
   ScriptTypes:
     "":
       {}
@@ -5332,7 +5333,6 @@
   Children:
     - !<own> d9626e23-2bf7-40f0-b268-ca61017d121d
     - !<own> e1b5de4b-2c45-496e-8499-ee319c1b4367
-    - !<own> cd9335a9-7e99-4a97-aa55-a4c36dac482f
   Components:
     - !<own> 76e545a0-c2d6-4ccf-aefc-affc7fad2f28
     - !<own> 8348a955-1c63-4962-b0fe-e8128a129789
@@ -8760,6 +8760,7 @@
     "":
       text: !<reference.Text> f7a369e0-e509-458e-9bce-f04cc0cdc7d3
       handHint: !<MappingBased.AssignableType> 34688ce3-1daa-4969-abcf-994674378865
+      onboardingVisual: !<reference.SceneObject> cd9335a9-7e99-4a97-aa55-a4c36dac482f
   ScriptTypes:
     "":
       {}
@@ -14851,9 +14852,9 @@
   Enabled: true
   Layers: 1
   LocalTransform: !<TransformEntity>
-    Position: {x: 0.000000, y: 10.000000, z: 0.000000}
+    Position: {x: 0.000000, y: 10.000000, z: -70.000000}
     Rotation: {x: 0.000000, y: 0.000000, z: 0.000000}
-    Scale: {x: 0.400000, y: 0.400000, z: 0.400000}
+    Scale: {x: 0.500000, y: 0.500000, z: 0.500000}
     HasSegmentScaleCompensation: false
   Children:
     - !<own> 3893b035-fd32-421a-bf07-b34dc0899924
