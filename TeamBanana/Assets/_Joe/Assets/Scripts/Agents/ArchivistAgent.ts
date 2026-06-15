@@ -123,12 +123,14 @@ export class ArchivistAgent extends OutdoorAgent {
       print("ArchivistAgent: 📸 Butterfly identification tool registered")
     }
 
-    // Register butterfly detection tool if MLSpatializer is available
+    // Register butterfly detection tool if MLSpatializer is available.
+    // Pass the identification tool so detection can auto-trigger ID when butterflies are found.
+    print(`ArchivistAgent: 🔧 mlSpatializer param = ${mlSpatializer ? "TRUTHY (type: " + typeof mlSpatializer + ")" : "FALSY (value: " + mlSpatializer + ")"}`)
     if (mlSpatializer) {
-      this.butterflyDetectionTool = new ButterflyDetectionTool(mlSpatializer)
+      this.butterflyDetectionTool = new ButterflyDetectionTool(mlSpatializer, this.butterflyIdentificationTool)
       this.registerTool({
         name: "butterfly_detection",
-        description: "Use the camera to look for butterflies right now and report what's visible",
+        description: "Scan for butterflies using the camera for 10 seconds. If butterflies are found, automatically identify the species.",
         parameters: this.butterflyDetectionTool.parameters,
         execute: (args: Record<string, unknown>) => this.butterflyDetectionTool!.execute(args)
       })
@@ -317,18 +319,22 @@ IMPORTANT: You're a storyteller who brings observations to life. Every butterfly
 
       // Check if butterfly detection tool should be activated
       if (!toolContext && this.shouldUseButterflyDetection(queryStr)) {
-        print("ArchivistAgent: Activating butterfly_detection...")
+        print("ArchivistAgent: Activating butterfly_detection (10s scan + auto-ID)...")
         const detResult = await this.executeTool("butterfly_detection", {
-          captureCrops: true,
-          maxDetections: 5
+          scanDurationMs: 10000,
+          maxDetections: 5,
+          autoIdentify: true
         })
         if (detResult.success && detResult.result) {
           const result = detResult.result as ButterflyDetectionResult
           const tool = this.butterflyDetectionTool
-          toolContext = tool
-            ? "\n\n[BUTTERFLY DETECTION: " + tool.formatDetectionSummary(result) + "]"
-            : "\n\n[BUTTERFLY DETECTION: " + result.message + "]"
-          print("ArchivistAgent: Butterfly detection result integrated into response")
+          // Auto-ID runs inside the detection tool — include both detection + ID in context.
+          const summary = tool
+            ? tool.formatDetectionSummary(result)
+            : result.message
+          toolContext = "\n\n[BUTTERFLY DETECTION: " + summary + "]"
+          print("ArchivistAgent: Butterfly detection result integrated into response" +
+            (result.identification?.scientificName ? " (with ID: " + (result.identification.commonName ?? result.identification.scientificName) + ")" : ""))
         }
       }
 
@@ -535,10 +541,11 @@ IMPORTANT: You're a storyteller who brings observations to life. Every butterfly
     const detectionPhrases = [
       "do you see", "can you see", "can you spot", "do you spot",
       "help me find", "help me spot", "help find", "help spot",
+      "help me scan", "scan for butterflies", "scan for",
       "spot any", "see any", "find any", "look for",
       "any butterflies", "any butterfly", "what do you see",
       "what's visible", "what is visible",
-      "looking for", "scan for",
+      "looking for", "scan the area",
       "in my view", "in view"
     ]
     const hasDetectionPhrase = detectionPhrases.some((w) => q.includes(w))

@@ -99,8 +99,9 @@ export class ToolRouter {
     })
 
     // Butterfly identification tool (only if ButterflyIdentifier is available)
+    let butterflyIdTool: ButterflyIdentificationTool | null = null
     if (butterflyIdentifier) {
-      const butterflyIdTool = new ButterflyIdentificationTool(butterflyIdentifier)
+      butterflyIdTool = new ButterflyIdentificationTool(butterflyIdentifier)
       this.indexTool("butterfly_identification", {
         name: "butterfly_identification",
         description: "Take a photo and identify a butterfly species using AI-powered insect recognition",
@@ -121,23 +122,24 @@ export class ToolRouter {
       })
     }
 
-    // Butterfly detection tool (only if MLSpatializer is available)
+    // Butterfly detection tool (only if MLSpatializer is available).
+    // Receives the ID tool so detection auto-triggers identification when butterflies are found.
     if (mlSpatializer) {
-      const butterflyDetectionTool = new ButterflyDetectionTool(mlSpatializer)
+      const butterflyDetectionTool = new ButterflyDetectionTool(mlSpatializer, butterflyIdTool ?? undefined)
       this.indexTool("butterfly_detection", {
         name: "butterfly_detection",
-        description: "Use the camera to look for butterflies right now and report what's visible",
+        description: "Scan for butterflies using the camera for 10 seconds. If butterflies are found, automatically identify the species.",
         capabilities: [
-          "Scan the camera feed for butterflies using on-device ML detection",
-          "Report what butterflies are visible, their positions, and confidence scores",
-          "Optionally capture close-up cropped photos for later identification",
-          "Help users spot and locate butterflies in their immediate surroundings"
+          "Scan the camera feed for butterflies using on-device ML detection for 10 seconds",
+          "Report what butterflies are visible with confidence scores",
+          "Automatically identify detected butterflies via AI-powered species recognition",
+          "Help users spot, locate, and identify butterflies in their immediate surroundings"
         ],
         useWhen: [
-          "User asks to spot or find butterflies nearby",
+          "User asks 'help me scan for butterflies'",
+          "User asks to spot, find, or scan for butterflies through the camera",
           "User asks 'do you see any butterflies' or 'can you help me find butterflies'",
-          "User asks 'what's around me right now' in the context of looking for butterflies",
-          "User wants help visually locating butterflies through the camera",
+          "User wants to look for and identify butterflies in their surroundings",
           "User asks 'can you see any butterflies' or 'is there a butterfly here'"
         ],
         instance: butterflyDetectionTool
@@ -228,10 +230,11 @@ ${toolDescriptions}
 USER QUERY: "${query}"
 
 ROUTING RULES:
-1. If user asks to spot, find, or look for butterflies through the camera, use "butterfly_detection"
+1. If user asks to scan, spot, find, or look for butterflies through the camera (e.g., "help me scan for butterflies"), use "butterfly_detection"
 2. If user asks to identify a butterfly or "what is this" / "what species", use "butterfly_identification"
-3. If user asks about current/live environment or "what do you see", use "spatial_tool"
-4. For general questions without specific tool needs, use "general_conversation"
+3. If user asks about nearby sightings, local butterflies, or "what butterflies are near me", use "nearby_sightings"
+4. If user asks about current/live environment or "what do you see" (without mentioning butterflies), use "spatial_tool"
+5. For general questions without specific tool needs, use "general_conversation"
 
 Respond with ONLY the tool name (e.g., "butterfly_identification", "butterfly_detection", "spatial_tool", "general_conversation").`
 

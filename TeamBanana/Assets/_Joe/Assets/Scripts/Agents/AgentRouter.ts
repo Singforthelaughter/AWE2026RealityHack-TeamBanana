@@ -75,7 +75,7 @@ export class AgentRouter {
     this.registerAgent(naturalist)
 
     // Create Archivist agent
-    const archivist = new ArchivistAgent(this.languageInterface, dbManager, mapManager, butterflyIdentifier)
+    const archivist = new ArchivistAgent(this.languageInterface, dbManager, mapManager, butterflyIdentifier, mlSpatializer, flyingButterflyManager)
     this.registerAgent(archivist)
   }
 
