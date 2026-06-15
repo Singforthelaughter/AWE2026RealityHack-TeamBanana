@@ -1,5 +1,7 @@
 # 🦋 The Butterfly Path
 
+![The Butterfly Path](thumbnail.png)
+
 **An AI-guided butterfly discovery experience for Snap Spectacles.** Spot a butterfly in the wild and Spectacles identifies it, teaches you about it through an AI naturalist, and grows it into your own AR collection, completely hands-free.
 
 🍌 Built by Team Banana for the AWE 2026 Reality Hack.
