@@ -14,15 +14,17 @@ That stuck with us: close observation plus a story that piques your curiosity is
 
 ## What it does
 
-The experience follows a natural discovery loop (**Noticing → Identifying → Recording → Sharing**), all driven by voice and your gaze.
+The experience follows a natural discovery loop (**Noticing → Identifying → Recording → Sharing → Collecting**), all driven by voice and your gaze.
 
-**1. Noticing.** A **Gemini Live** voice agent runs the whole experience hands-free, so you just talk and look. A **Naturalist** agent guides you to slow down and observe through Socratic questions ("what do you notice about its wings?"), turning a passing glance into real attention.
+**1. Noticing.** A **Gemini Live** voice agent runs the whole experience hands-free: raise an open **palm** toward your face and pinch to talk, and you are speaking to the system. A **Naturalist** agent guides you to slow down and observe through Socratic questions ("what do you notice about its wings?"), turning a passing glance into real attention. You can also ask the agent to **scan for butterflies**, which sweeps the camera view for a few seconds and flags any it finds.
 
-**2. Identifying.** When you point your gaze at a butterfly, the agent kicks off species **identification**, then spawns a **3D info card** filled with species data + photos. **AI wing generation** turns the identified species into a bespoke wing texture + opacity map applied to a live 3D butterfly that flutters into your space, while an **Archivist** agent shares facts, migration stories, and context.
+**2. Identifying.** Once a butterfly is found, the agent kicks off species **identification**, then spawns a **3D info card** filled with species data + photos, including its **conservation status** (a Secure-to-Critical gradient) so you understand how threatened it is. **AI wing generation** turns the identified species into a bespoke wing texture + opacity map applied to a live 3D butterfly that flutters into your space, while an **Archivist** agent shares facts, migration stories, and context.
 
-**3. Recording.** Identified butterflies fly in and **perch on your index finger**, and each one is added to your **personal collection**, where you can revisit every species you've found, each rendered as its own AI-generated 3D butterfly. Sightings (species data, photos, and GPS) are persisted to the cloud via **Supabase**, gated by your Snap identity.
+**3. Recording.** Every sighting (species data, photos, and GPS) is persisted to the cloud via **Supabase**, gated by your Snap identity, so what you find is documented and attributed to you.
 
 **4. Sharing.** A floating AR **minimap** pins real-world sightings around you (including ones logged by other players) and opens a detail card on tap, turning every identification into part of a shared, persistent sighting world.
+
+**5. Collecting.** Identified butterflies fly in and **perch on your index finger**, and each one joins your **personal collection**, where you can revisit every species you've found, each rendered as its own AI-generated 3D butterfly. Discovery becomes a gamified, growing gallery you build over time.
 
 ## How we built it
 
@@ -40,11 +42,13 @@ where φ is latitude, λ is longitude, and R ≈ 6371 km.
 
 **AI-generated wing textures of the species you found.** Heavy generation runs off-device on a **Snap Cloud (Supabase) Edge Function**: `ButterflyWingGenerator` POSTs a reference image of the **just-identified species** to our `generate-wing-texture` function, which uses **Replicate** to run **Nano Banana Pro** and produce both a clean **wing texture** and a matching **opacity map**. The function returns both as base64; the lens decodes them in parallel and applies them (`baseTex` / `opacityTex`) to a live 3D butterfly mesh, so the butterfly that flutters in front of you is the _same species you just identified_, with bespoke AI-generated wings, and none of the model inference runs on the headset.
 
-**Voice-driven AI guide that teaches you about butterflies.** The whole experience is fronted by a **Gemini Live** agent (`gemini-2.0-flash-live-preview-04-09`) handling real-time speech-to-text, text-to-speech, and camera vision over a WebSocket, so the user just talks and looks. On top of it we built a **multi-agent education system**: an `AgentOrchestrator` runs **LLM-based routing** (no hard-coded `if/else`) to pick the right agent and tool per utterance, and two agents with distinct teaching styles collaborate mid-conversation: a **Naturalist** that guides discovery through Socratic questioning ("what do you notice about its wings?") and an **Archivist** that follows up with species facts, migration stories, and context. The same agent layer activates every feature hands-free through a `ToolRouter`: the `ButterflyIdentificationTool` kicks off species ID, while `SpatialTool` (camera → Gemini vision), `LocationTool` (GPS), and `WeatherTool` give the agents real-world context to teach from. A priority queue with a depth limiter keeps the two agents from ping-ponging forever.
+**Voice-driven AI guide that teaches you about butterflies.** The whole experience is fronted by a **Gemini Live** agent (`gemini-2.0-flash-live-preview-04-09`) handling real-time speech-to-text, text-to-speech, and camera vision over a WebSocket, so the user just talks and looks. On top of it we built a **multi-agent education system**: an `AgentOrchestrator` runs **LLM-based routing** (no hard-coded `if/else`) to pick the right agent and tool per utterance, and two agents with distinct teaching styles collaborate mid-conversation: a **Naturalist** that guides discovery through Socratic questioning ("what do you notice about its wings?") and an **Archivist** that follows up with species facts, migration stories, and context. The same agent layer activates every feature hands-free through a `ToolRouter`: the `ButterflyDetectionTool` runs a short on-device YOLO scan (deduplicating frame-to-frame hits by IoU overlap) and auto-chains into the `ButterflyIdentificationTool` for species ID, while `SpatialTool` (camera → Gemini vision), `LocationTool` (GPS), and `WeatherTool` give the agents real-world context to teach from. A priority queue with a depth limiter keeps the two agents from ping-ponging forever. The provider layer is pluggable: Gemini Live is primary, with **OpenAI Realtime** wired up as a fallback voice provider.
+
+**Palm-up push-to-talk.** Voice input is gated by a deliberate gesture rather than always-on listening. `PalmPushToTalk` watches for the user raising an open hand toward their face, pops a hand-anchored mic menu, and streams audio to Gemini only while a pinch is held, releasing to let the agent reply. A small activity indicator lights up the mic while recording, so it's always clear when the system is listening.
 
 **The AR map.** Built on Snap's Map Component. `NearbySightingManager` reads GPS once and drops live pins; `CustomLocationsLoader` manages runtime pins (queuing any added before the map finishes initializing). Marker taps run through the Spectacles Interaction Kit to rehydrate the full info card from the stored record.
 
-**Info cards.** The card binds data by **SceneObject name** (case-insensitive), so designers can rearrange the prefab without touching code, and it's dismissable via a UI Kit `Frame` close button.
+**Info cards.** The card binds data by **SceneObject name** (case-insensitive), so designers can rearrange the prefab without touching code, and it's dismissable via a UI Kit `Frame` close button. Beyond raw text, the card renders a **conservation status bar** that maps a species' IUCN/red-list rating onto a Secure-to-Critical colour gradient (with a hover tooltip explaining the rating), turning a data field into an at-a-glance read on how threatened the butterfly is.
 
 ## Challenges we ran into
 
@@ -67,6 +71,7 @@ where φ is latitude, λ is longitude, and R ≈ 6371 km.
 - **3D butterflies that land on the user's index finger**, managed by a butterfly lifecycle system that tracks, animates, and retains every species the user has collected.
 - A **personal butterfly gallery**: users can revisit all the butterflies they have identified, with each one rendered as its AI-generated 3D model.
 - **Gemini Live-controlled workflow** that activates tools and features entirely through voice, delivering a true hands-free AR experience.
+- **Custom butterfly SnapML detection**: we trained and shipped an on-device SnapML model that detects butterflies in the camera view and locates them with a bounding box, running entirely on the headset.
 - **Cross-continental team collaboration**: half the team was in Singapore, half in the US, and we shipped a cohesive, integrated experience across a 13-hour time difference with no in-person overlap.
 
 ## What we learned
@@ -77,6 +82,7 @@ where φ is latitude, λ is longitude, and R ≈ 6371 km.
 - **Real-world data is messy.** CDN images that 200 but fail to decode, Spectacles photos too low-quality for wing generation, and clustered GPS pins all forced us to build defensive fallbacks rather than trust the happy path.
 - **How to use Snap Cloud Supabase end-to-end.** We learned to wire up Supabase on Snap Cloud across all three layers: a Postgres **table** with row-level security for sightings, **Storage** buckets for photos and generated textures, and **Edge Functions** for the serverless species-ID and wing-generation backend.
 - **How to build multi-agent AI for XR on Snap Spectacles.** Wiring a real-time voice agent, LLM-based routing, and collaborating Naturalist/Archivist agents into a Lens taught us how to structure an agent system (orchestrator, router, tool contract) that runs within Spectacles' constraints.
+- **Clear onboarding makes or breaks first-time AR.** New users don't know what gestures exist or what they can say, so we built guided onboarding in: an instruction panel that animates in, plays a hand-hint animation, and shows a starter prompt to get people talking to the agent right away.
 - **Remote teams can ship tight AR.** Coordinating across a 13-hour Singapore/US gap pushed us toward clear module boundaries (see `MAP.md`) so people could work in parallel without stepping on each other.
 
 ## What's next for Butterfly Spotting & Social Sightings
@@ -95,8 +101,11 @@ where φ is latitude, λ is longitude, and R ≈ 6371 km.
 - **Supabase Postgres table** (`butterfly_sightings`): stores each sighting's species data, GPS, attribution, and image URLs, with row-level security
 - **Supabase Storage**: hosts captured photos and generated wing/opacity textures (public URLs stored in the DB)
 - **Supabase Edge Functions**: serverless backend for species ID (Kindwise) and wing-texture generation (Replicate + Nano Banana Pro)
-- **Gemini Live** (`gemini-2.0-flash-live-preview-04-09`, via Remote Service Gateway): real-time voice (speech-to-text + text-to-speech), camera vision, and transcription over WebSocket
-- **Multi-agent education system**: `AgentOrchestrator` with LLM-based routing, collaborating Naturalist (Socratic) + Archivist (storyteller) agents, and a `ToolRouter` driving the butterfly ID, spatial/vision, location, and weather tools for hands-free activation
+- **Gemini Live** (`gemini-2.0-flash-live-preview-04-09`, via Remote Service Gateway): real-time voice (speech-to-text + text-to-speech), camera vision, and transcription over WebSocket, with **OpenAI Realtime** as a fallback voice provider
+- **Multi-agent education system**: `AgentOrchestrator` with LLM-based routing, collaborating Naturalist (Socratic) + Archivist (storyteller) agents, and a `ToolRouter` driving the butterfly detection/ID, spatial/vision, location, and weather tools for hands-free activation
+- **Palm-up push-to-talk**: SIK hand tracking detects an open palm raised toward the face, then streams mic audio to the agent on pinch-and-hold
+- **On-device YOLO butterfly detection**: a short camera scan that dedupes detections by IoU and auto-triggers identification
+- **Conservation status bar**: SpectaclesUIKit visual that maps IUCN/red-list status onto a Secure-to-Critical gradient with a hover tooltip
 - **Spectacles ASR / TTS + Camera Module**: voice input and camera frames feeding the Gemini Live agent
 - **`userContextSystem.requestDisplayName`**: Snap display name for attribution
 - **RawLocationModule / `GeoLocation` LocationService**: real-world GPS
