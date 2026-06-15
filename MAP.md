@@ -106,6 +106,8 @@ UICollisionSolver       (no project imports — standalone)
 MarkerInteractableTrigger (no project imports — standalone)
 ButterflyMovementController (no project imports — standalone)
 FlyingButterflyManager  ──► ButterflyMovementController (_Boon)
+CustomHandHintAnimation (no project imports — standalone)
+InstructionManager      ──► CustomHandHintAnimation (_Boon)
 
 ── _Aggy ──────────────────────────────────────────────────
 ButterflyIdentifier     ──► KindwiseTypes (_Aggy)
@@ -176,8 +178,14 @@ ModelGen            (standalone — 3D model generation)
 ModelGenBridge      ──► ModelGen
 ChatStorage         ──► AgentTypes
 StorageManager      (no project imports — standalone)
-NearbySightingsTool ──► SupabaseDBManager (_Boon)
+NearbySightingsTool    ──► SupabaseDBManager (_Boon)
 ButterflyIdentificationTool ──► ButterflyIdentifier (_Aggy)
+ButterflyCollectionTool ──► SupabaseDBManager (_Boon)
+                        ──► FlyingButterflyManager (_Boon)
+ButterflyDetectionTool  ──► MLSpatializer (_Aggy)
+                        ──► DetectionHelpers (_Aggy)
+                        ──► ButterflyIdentificationTool
+DetectionCameraSetup    ──► MLSpatializer (_Aggy)
 ToolRouter          ──► all registered tools
 MockButterflyKnowledge (no project imports — standalone data)
 ModelGenerationScheduler (no project imports — standalone)
@@ -187,17 +195,22 @@ TimeManager             (no project imports — singleton, global.timeManager)
 TimeManagerExample  ──► TimeManager (via global), external Logger package
 
 ── Cross-team ─────────────────────────────────────────────
-NearbySightingsTool     ──► SupabaseDBManager (_Boon)
-ButterflyIdentificationTool ──► ButterflyIdentifier (_Aggy)
-NaturalistAgent         ──► ButterflyIdentifier (_Aggy)
-ArchivistAgent          ──► ButterflyIdentifier (_Aggy)
-ButterflyIdentifier (_Aggy) ──► SupabaseDBManager (_Boon)
-ButterflyIdentifier (_Aggy) ──► ButterflyWingTextureGenerator (_Boon)
-ButterflyIdentifier (_Aggy) ──► ButterflyInfoDisplayManager (_Boon)
-ButterflyIdentifier (_Aggy) ──► FlyingButterflyManager (_Boon)
+NearbySightingsTool (_Joe)      ──► SupabaseDBManager (_Boon)
+ButterflyIdentificationTool (_Joe) ──► ButterflyIdentifier (_Aggy)
+ButterflyCollectionTool (_Joe)  ──► SupabaseDBManager (_Boon)
+                                ──► FlyingButterflyManager (_Boon)
+ButterflyDetectionTool (_Joe)   ──► MLSpatializer (_Aggy)
+                                ──► DetectionHelpers (_Aggy)
+DetectionCameraSetup (_Joe)     ──► MLSpatializer (_Aggy)
+NaturalistAgent (_Joe)          ──► ButterflyIdentifier (_Aggy)
+ArchivistAgent (_Joe)           ──► ButterflyIdentifier (_Aggy)
+ButterflyIdentifier (_Aggy)     ──► SupabaseDBManager (_Boon)
+                                ──► ButterflyWingTextureGenerator (_Boon)
+                                ──► ButterflyInfoDisplayManager (_Boon)
+                                ──► FlyingButterflyManager (_Boon)
 ButterflyCollectionDynamicTestManagerNew (_Niko) ──► SupabaseDBManager (_Boon)
-ButterflyCollectionDynamicTestManagerNew (_Niko) ──► FlyingButterflyManager (_Boon)
-PalmPushToTalk (_Aggy)  ──► GeminiAssistant (_Joe)
+                                                 ──► FlyingButterflyManager (_Boon)
+PalmPushToTalk (_Aggy)          ──► GeminiAssistant (_Joe)
 ```
 
 ---
@@ -387,6 +400,7 @@ then pin them via `CustomLocationsLoader`.
 | Method | Description |
 |---|---|
 | `openNearbySighting()` | Enables + scale-tweens the map in, then fetches + pins nearby sightings. |
+| `closeNearbySighting()` | Clears all pins, scale-tweens the map out, then disables it. |
 | `getNearbySighting()` | Fetch-and-pin only (no animation). Called internally by `openNearbySighting()`. |
 
 **Imports from project:** `CustomLocationsLoader`, `SupabaseDBManager`  
@@ -654,7 +668,39 @@ via `setLandingPermitted(true)`; all others `false`.
 
 **Imports from project:** `ButterflyMovementController`  
 **Imports (packages):** `SIK`, `HandInputData`, `TrackedHand` (SpectaclesInteractionKit)  
-**Imported by:** `ButterflyIdentifier` (_Aggy) — calls `spawnButterfly()` after identification; `ButterflyCollectionDynamicTestManagerNew` (_Niko) — calls `spawnButterfly()` when a collection card is selected.
+**Imported by:** `ButterflyIdentifier` (_Aggy) — calls `spawnButterfly()` after identification; `ButterflyCollectionDynamicTestManagerNew` (_Niko) — calls `spawnButterfly()` when a collection card is selected; `ButterflyCollectionTool` (_Joe) — calls `spawnButterfly()` for each sighting in the collection.
+
+---
+
+### Instruction/Scripts/CustomHandHintAnimation.ts
+
+**Purpose:** Plays a sequenced 3D hand-hint animation using the `Spectacles3DHandHints.lspkg`
+package. Configured via a list of `HintAnimation` typedef items (each specifying hand type —
+left/right/both — and a gesture clip name). Handles outline fade-in/out, pinch glow detection,
+loop control, and multi-clip sequencing. Call `play()` to start the sequence.
+
+**Inspector inputs:** `autoPlay` (bool), `animationSpeed` (0.5–3), `numberOfLoops` (1–10),
+  `hintAnimations` (HintAnimation[])
+
+**Public API:** `play()` — starts the sequence from the beginning.
+
+**Exports:** `CustomHandHintAnimation`, `HintAnimation` (typedef), `HandAnimationClipInfo`, `HandMode` (enum)
+
+**Imports from project:** none  
+**Imported by:** `InstructionManager`
+
+---
+
+### Instruction/Scripts/InstructionManager.ts
+
+**Purpose:** Onboarding instruction panel. Scale-tweens in on start, then after a short delay
+plays the `CustomHandHintAnimation` hand hint and shows a prompt text (`"Show me a map of all
+nearby sightings"`), which auto-clears after 3 seconds. Requires `global.timeManager`.
+
+**Inspector inputs:** `text` (Text), `handHint` (CustomHandHintAnimation)
+
+**Imports from project:** `CustomHandHintAnimation`  
+**Imported by:** none — attach to the onboarding SceneObject.
 
 <!-- END_SECTION: _Boon -->
 
@@ -1088,6 +1134,8 @@ image/3D model generation, and chat UI.
 | `WeatherTool.ts` | Gets weather conditions from Spectacles `UserContextSystem`. |
 | `ToolRouter.ts` | AI-powered tool selection. Indexes `spatial_tool`, `general_conversation`, `nearby_sightings` (when `dbManager` is available), and `butterfly_identification` (when `butterflyIdentifier` is available). |
 | `index.ts` | Tool exports and `createTools()` factory. Accepts optional `butterflyIdentifier` for `ButterflyIdentificationTool`. |
+| `ButterflyCollectionTool.ts` | Fetches the user's sightings from `SupabaseDBManager.getMySightings()`, spawns 3D butterflies via `FlyingButterflyManager`, and returns a natural-language summary. Trigger phrase: "show me my butterfly collection". |
+| `ButterflyDetectionTool.ts` | Runs a 10-second YOLO scan via `MLSpatializer` (_Aggy). Deduplicates frame-to-frame detections by IoU overlap, then auto-triggers `ButterflyIdentificationTool` if butterflies are found. Returns a `ButterflyDetectionResult` with detected species and an identification result. Trigger phrase: "help me scan for butterflies". |
 | `EnvironmentalToolsExample.ts` | Example / reference showing how to register environment-query tools. Not used in production. |
 
 ### Utils (Utils/)
@@ -1099,10 +1147,27 @@ image/3D model generation, and chat UI.
 | `ModelGenerationScheduler.ts` | Throttles and queues model generation requests to avoid hitting rate limits. |
 | `TextLimiter.ts` | Exports `CHARACTER_LIMITS` constants and `TextLimiter` utility for enforcing display character caps per message type. |
 
+### DetectionCameraSetup (DetectionCameraSetup.ts)
+
+**Purpose:** Drop on the same SceneObject as `MLSpatializer` (_Aggy). Requests the left
+RGB camera feed at runtime via `CameraModule.requestCamera(CameraId.Left_Color)` and
+auto-wires the resulting texture to `mlSpatializer.inputTexture`.
+
+**Inspector inputs:** `mlSpatializer` (MLSpatializer from _Aggy)
+
+**Key behaviours / gotchas:** Device-only — `CameraModule.requestCamera` returns null in
+Lens Studio Preview; the script logs a warning and continues safely.
+
+**Imports from project:** `MLSpatializer` (_Aggy)  
+**Imported by:** none — attach to the detection SceneObject.
+
 ### Cross-team imports
 
 `NearbySightingsTool` imports `SupabaseDBManager` from `_Boon/SupabaseInfoStoring&Retrieving/Scripts/`.  
 `ButterflyIdentificationTool` imports `ButterflyIdentifier` from `_Aggy/Scripts/`.  
+`ButterflyCollectionTool` imports `SupabaseDBManager` (_Boon) and `FlyingButterflyManager` (_Boon).  
+`ButterflyDetectionTool` imports `MLSpatializer` and `DetectionHelpers` from `_Aggy/Scripts/`, and `ButterflyIdentificationTool`.  
+`DetectionCameraSetup` imports `MLSpatializer` from `_Aggy/Scripts/`.  
 `AgentRouter`, `NaturalistAgent`, `ArchivistAgent` accept optional `ButterflyIdentifier` from `_Aggy/Scripts/`.  
 `AgentLanguageInterface` uses `GeminiAssistant` and `OpenAIAssistant` from `Core/`.  
 `PalmPushToTalk` (_Aggy) imports `GeminiAssistant` from `Core/GeminiAssistant.ts`.
