@@ -1771,6 +1771,7 @@
   Enabled: true
   ScriptAsset: !<reference> b69e19ca-5a74-4540-884b-9b52addd4b50
   ScriptInputsDefault:
+    customLocationLoader: true
     translationYTime: true
     translationZTime: true
     rotationTime: true
@@ -1779,7 +1780,7 @@
   ScriptInputs:
     "":
       mapComponent: !<MappingBased.AssignableType> ed77c629-d5d8-406a-8e7e-f2fd31e5b354
-      customLocationLoader: !<MappingBased.AssignableType_1> 63db7d74-f6f0-4bc5-919d-4736a6ca964f
+      customLocationLoader: !<MappingBased.AssignableType_1> 00000000-0000-0000-0000-000000000000
       translationXTime: 0.350000
       translationYTime: 0.350000
       translationZTime: 0.350000
@@ -2872,7 +2873,7 @@
     "":
       openAIToken: token
       googleToken: token
-      snapToken: 1d732a34-565c-4b6c-b25c-3ea0e92f18c6
+      snapToken: token
       enableLogging: false
       enableLoggingLifecycle: false
   ScriptTypes:

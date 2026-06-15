@@ -126,6 +126,7 @@ export class NaturalistAgent extends OutdoorAgent {
    * Generate naturalist-specific system prompt
    */
   protected getSystemPrompt(): string {
+    const caps = this.buildCapabilitiesSummary()
     return `You are a Naturalist guide helping someone discover butterflies and nature in their outdoor environment.
 
 CRITICAL RULE — SPECIES IDENTIFICATION:
@@ -134,6 +135,9 @@ capabilities. When the user asks "what is this butterfly" or similar, a speciali
 runs and its result appears as [BUTTERFLY IDENTIFIED: ...] in the message. ONLY use that
 tool result for the species name. If no [BUTTERFLY IDENTIFIED: ...] block is present,
 NEVER guess or make up a species — instead guide the user with observation questions.
+
+YOUR CAPABILITIES — When users ask "what can you do?" or similar, summarize from this list:
+${caps}
 
 YOUR PERSONALITY:
 - Gentle, patient, and encouraging
@@ -162,15 +166,22 @@ LANGUAGE PATTERNS:
 - "How might that be related to..."
 - "Tell me more about what you see..."
 
+RESPONSE STYLE — TWO MODES:
+- FUNCTIONAL queries (e.g. "what can you do?", "close the map", "show my collection",
+  "identify this", "scan for butterflies"): answer DIRECTLY. No questions, no follow-ups.
+  Just give the information or confirm the action concisely.
+- EXPLORATION queries (e.g. "what should I look for?", "I see something orange",
+  "tell me about Monarchs", "where do butterflies live?"): use your full Socratic
+  discovery style with observation questions and gentle guidance.
+
 RESPONSE GUIDELINES:
 - Keep responses under 300 characters for AR display
-- Ask questions that encourage closer observation
+- For exploration: ask questions that encourage closer observation
 - Celebrate user discoveries and insights
 - Be patient and supportive
 - Help users make connections between their observations
-- When you notice something exciting about their observations, gently point it out
 
-IMPORTANT: You are a guide, not a lecturer. Help the user discover for themselves through thoughtful questions and gentle direction.`
+IMPORTANT: You are a guide, not a lecturer. Help the user discover for themselves through thoughtful questions and gentle direction — but only when they're actually exploring.`
   }
 
   /**
@@ -254,9 +265,14 @@ IMPORTANT: You are a guide, not a lecturer. Help the user discover for themselve
         if (idResult.success && idResult.result) {
           const result = idResult.result as ButterflyIdentificationResult
           const tool = this.butterflyIdentificationTool
+          const idCapabilities = []
+          if (this.tools.has("nearby_sightings")) idCapabilities.push("offer to check if others have been spotted nearby")
+          const idHelp = idCapabilities.length > 0
+            ? " After sharing the species, " + idCapabilities.join(" or ") + "."
+            : ""
           toolContext = tool
-            ? "\n\n[BUTTERFLY IDENTIFIED: " + tool.formatIdentificationSummary(result) + ". FIRST tell the user what species this is and one fascinating fact about it, THEN ask a Socratic question to deepen their observation.]"
-            : "\n\n[BUTTERFLY IDENTIFIED: " + (result.commonName ?? result.scientificName ?? "Unknown") + ". FIRST tell the user what species this is, THEN ask a question.]"
+            ? "\n\n[BUTTERFLY IDENTIFIED: " + tool.formatIdentificationSummary(result) + ". FIRST tell the user what species this is and one fascinating fact about it." + idHelp + " THEN if the user seems engaged in exploration, ask a Socratic question to deepen their observation.]"
+            : "\n\n[BUTTERFLY IDENTIFIED: " + (result.commonName ?? result.scientificName ?? "Unknown") + ". FIRST tell the user what species this is." + idHelp + " THEN if appropriate, ask a question.]"
           print("NaturalistAgent: Butterfly identification result integrated into response")
         }
       }
@@ -273,9 +289,14 @@ IMPORTANT: You are a guide, not a lecturer. Help the user discover for themselve
         if (toolResult.success && toolResult.result) {
           const result = toolResult.result as import("../Tools/NearbySightingsTool").NearbySightingsResult
           const tool = this.nearbySightingsTool
+          const nearbyCapabilities = []
+          if (this.tools.has("butterfly_identification")) nearbyCapabilities.push("offer to identify a butterfly they spot")
+          const nearbyHelp = nearbyCapabilities.length > 0
+            ? " After stating the results, " + nearbyCapabilities.join(" or ") + "."
+            : ""
           toolContext = tool
-            ? "\n\n[NEARBY SIGHTINGS: " + tool.formatSightingsSummary(result) + "]"
-            : "\n\n[NEARBY SIGHTINGS: " + result.count + " sightings found within " + result.radius + " " + result.unit + "]"
+            ? "\n\n[NEARBY SIGHTINGS: " + tool.formatSightingsSummary(result) + "." + nearbyHelp + "]"
+            : "\n\n[NEARBY SIGHTINGS: " + result.count + " sightings found within " + result.radius + " " + result.unit + "." + nearbyHelp + "]"
           print("NaturalistAgent: Nearby sightings tool result integrated into response")
         }
       }
@@ -502,5 +523,25 @@ IMPORTANT: You are a guide, not a lecturer. Help the user discover for themselve
     }
 
     return topics.length > 0 ? topics : ["outdoor discovery", "observation techniques"]
+  }
+
+  /**
+   * Build a summary of currently registered tools for the system prompt.
+   * Lets the LLM accurately describe its capabilities when users ask.
+   */
+  private buildCapabilitiesSummary(): string {
+    const tools: string[] = []
+    if (this.tools.has("butterfly_identification")) {
+      tools.push("- Identify butterflies: point your camera at a butterfly and ask 'what is this?' — I'll help identify the species.")
+    }
+    if (this.tools.has("nearby_sightings")) {
+      tools.push("- Nearby sightings: ask 'what butterflies have been spotted near me?' — I'll show what others have found on an AR map.")
+    }
+    tools.push("- Discovery guidance: ask 'what should I look for?' or 'where should I look?' — I'll guide your observations with thoughtful questions.")
+    tools.push("- Nature knowledge: ask me about plants, habitats, butterfly behavior, or anything nature-related.")
+    if (tools.length === 2) {
+      return "(No specialist tools available — discovery guidance and general nature knowledge only.)\n" + tools.join("\n")
+    }
+    return tools.join("\n")
   }
 }

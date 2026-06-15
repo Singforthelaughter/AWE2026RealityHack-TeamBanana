@@ -160,6 +160,7 @@ export class ArchivistAgent extends OutdoorAgent {
    * Generate archivist-specific system prompt
    */
   protected getSystemPrompt(): string {
+    const caps = this.buildCapabilitiesSummary()
     return `You are an Archivist - a passionate storyteller and expert on butterflies and their fascinating world.
 
 CRITICAL RULE — SPECIES IDENTIFICATION:
@@ -169,6 +170,9 @@ runs and its result appears as [BUTTERFLY IDENTIFIED: ...] in the message. ONLY 
 tool result for the species name. If no [BUTTERFLY IDENTIFIED: ...] block is present,
 NEVER guess or make up a species — instead say "Let me take a closer look..." and encourage
 the user's observation.
+
+YOUR CAPABILITIES — When users ask "what can you do?" or similar, summarize from this list:
+${caps}
 
 YOUR PERSONALITY:
 - Enthusiastic and passionate about butterfly knowledge
@@ -198,9 +202,17 @@ LANGUAGE PATTERNS:
 - "Story goes that..."
 - "What's really interesting is..."
 
+RESPONSE STYLE — TWO MODES:
+- FUNCTIONAL queries (e.g. "what can you do?", "close the map", "show my collection",
+  "identify this", "scan for butterflies"): answer DIRECTLY. No stories, no follow-up
+  questions. Just give the information or confirm the action concisely.
+- EXPLORATION queries (e.g. "tell me about Monarchs", "why are wings colorful?",
+  "I spotted a butterfly", "how do they migrate?"): use your full enthusiastic
+  storyteller style with fascinating facts and engaging narratives.
+
 RESPONSE GUIDELINES:
 - Keep responses under 300 characters for AR display
-- Share at least one fascinating fact or story in each response
+- For exploration: share at least one fascinating fact or story
 - Connect user observations to broader scientific context
 - Use enthusiastic but genuine tone
 - When users make great observations, celebrate them enthusiastically
@@ -348,7 +360,14 @@ IMPORTANT: You're a storyteller who brings observations to life. Every butterfly
           const summary = tool
             ? tool.formatDetectionSummary(result)
             : result.message
-          toolContext = "\n\n[BUTTERFLY DETECTION: " + summary + "]"
+          const detCapabilities = []
+          if (result.identification?.scientificName && this.tools.has("butterfly_collection")) detCapabilities.push("mention they can view their collection")
+          if (!result.identification?.scientificName && this.tools.has("butterfly_identification")) detCapabilities.push("offer to identify one up close")
+          if (this.tools.has("nearby_sightings")) detCapabilities.push("offer to check nearby sightings")
+          const detHelp = detCapabilities.length > 0
+            ? " After stating the result, " + detCapabilities.slice(0, 2).join(" or ") + "."
+            : ""
+          toolContext = "\n\n[BUTTERFLY DETECTION: " + summary + detHelp + "]"
           print("ArchivistAgent: Butterfly detection result integrated into response" +
             (result.identification?.scientificName ? " (with ID: " + (result.identification.commonName ?? result.identification.scientificName) + ")" : ""))
         }
@@ -359,7 +378,13 @@ IMPORTANT: You're a storyteller who brings observations to life. Every butterfly
         print("ArchivistAgent: Activating butterfly_collection...")
         const colResult = await this.executeTool("butterfly_collection", { maxButterflies: 10 })
         if (colResult.success && colResult.result) {
-          toolContext = "\n\n[BUTTERFLY COLLECTION: " + colResult.result.message + "]"
+          const colCapabilities = []
+          if (this.tools.has("nearby_sightings")) colCapabilities.push("offer to find more nearby")
+          if (this.tools.has("butterfly_identification")) colCapabilities.push("offer to identify a new one")
+          const colHelp = colCapabilities.length > 0
+            ? " After stating the collection, " + colCapabilities.join(" or ") + "."
+            : ""
+          toolContext = "\n\n[BUTTERFLY COLLECTION: " + colResult.result.message + colHelp + "]"
           print("ArchivistAgent: Butterfly collection result integrated into response")
         }
       }
@@ -376,9 +401,15 @@ IMPORTANT: You're a storyteller who brings observations to life. Every butterfly
         if (toolResult.success && toolResult.result) {
           const result = toolResult.result as import("../Tools/NearbySightingsTool").NearbySightingsResult
           const tool = this.nearbySightingsTool
+          const nearbyCapabilities = []
+          if (this.tools.has("butterfly_identification")) nearbyCapabilities.push("offer to identify one")
+          if (this.tools.has("butterfly_detection")) nearbyCapabilities.push("offer to scan for butterflies")
+          const nearbyHelp = nearbyCapabilities.length > 0
+            ? " After stating the results, " + nearbyCapabilities.join(" or ") + "."
+            : ""
           toolContext = tool
-            ? "\n\n[NEARBY SIGHTINGS: " + tool.formatSightingsSummary(result) + "]"
-            : "\n\n[NEARBY SIGHTINGS: " + result.count + " sightings found within " + result.radius + " " + result.unit + "]"
+            ? "\n\n[NEARBY SIGHTINGS: " + tool.formatSightingsSummary(result) + "." + nearbyHelp + "]"
+            : "\n\n[NEARBY SIGHTINGS: " + result.count + " sightings found within " + result.radius + " " + result.unit + "." + nearbyHelp + "]"
           print("ArchivistAgent: Nearby sightings tool result integrated into response")
         }
       }
@@ -716,5 +747,30 @@ IMPORTANT: You're a storyteller who brings observations to life. Every butterfly
     }
 
     return topics.length > 0 ? topics : ["butterfly knowledge", "species information"]
+  }
+
+  /**
+   * Build a summary of currently registered tools for the system prompt.
+   * Lets the LLM accurately describe its capabilities when users ask.
+   */
+  private buildCapabilitiesSummary(): string {
+    const tools: string[] = []
+    if (this.tools.has("butterfly_identification")) {
+      tools.push("- Identify butterflies: point your camera at a butterfly and ask 'what is this?' — I'll identify the species, show an info card, and spawn a 3D butterfly.")
+    }
+    if (this.tools.has("butterfly_detection")) {
+      tools.push("- Scan for butterflies: say 'help me scan for butterflies' — I'll look through the camera for 10 seconds and automatically identify any I find.")
+    }
+    if (this.tools.has("nearby_sightings")) {
+      tools.push("- Nearby sightings: ask 'what butterflies have been spotted near me?' — I'll show you on an AR map what others have found in your area.")
+    }
+    if (this.tools.has("butterfly_collection")) {
+      tools.push("- Your collection: say 'show me my collection' — I'll bring your collected butterflies to life as 3D models around you.")
+    }
+    tools.push("- Butterfly knowledge: ask me anything about butterflies — life cycles, migration, conservation, fascinating facts. I love sharing stories!")
+    if (tools.length === 1) {
+      return "(No specialist tools available — general conversation and butterfly knowledge only.)\n" + tools.join("\n")
+    }
+    return tools.join("\n")
   }
 }
