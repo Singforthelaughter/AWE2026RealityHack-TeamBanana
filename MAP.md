@@ -12,16 +12,14 @@ This file uses **section ownership** to prevent merge conflicts.
 Each team member owns one clearly-delimited section of this file.
 
 Rules:
-1. **Only edit your own section** (the one matching your team folder, e.g. `_Boon`, `_Niko`).  
-   Never rewrite another person's section, even to fix a typo.
-2. **Do a `git pull` before editing** this file. Always work from the latest version.
-3. **Update your section immediately** after adding, removing, or significantly changing a script.  
+1. **Do a `git pull` before editing** this file. Always work from the latest version.
+2. **Update your section immediately** after adding, removing, or significantly changing a script.  
    An outdated map is worse than no map.
-4. When a **new script file is created**, add it to your section AND update the  
+3. When a **new script file is created**, add it to your section AND update the  
    [Dependency Graph](#dependency-graph) if it introduces cross-file links.
-5. When a **script is deleted or renamed**, remove or update its entry and any  
+4. When a **script is deleted or renamed**, remove or update its entry and any  
    arrows pointing to it in the dependency graph.
-6. **Do not restructure the file** (reorder sections, rename headers, change delimiter  
+5. **Do not restructure the file** (reorder sections, rename headers, change delimiter  
    comments). Structure changes must be agreed on by the whole team.
 
 Section delimiters look like this — they are the anchors for safe editing:
