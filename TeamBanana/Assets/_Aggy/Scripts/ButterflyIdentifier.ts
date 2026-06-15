@@ -131,7 +131,7 @@ export class ButterflyIdentifier extends BaseScriptComponent {
     }
   }
 
-  /** Pull the top suggestion from the IDResponse, show its name, then generate wing textures and store the sighting. */
+  /** Pull the top suggestion from the IDResponse, then run the shared presentation pipeline. */
   private async showResult(data: IDResponse | null): Promise<void> {
     const suggestions = data && data.result && data.result.classification ? data.result.classification.suggestions : null
     if (!suggestions || suggestions.length === 0) {
@@ -139,6 +139,23 @@ export class ButterflyIdentifier extends BaseScriptComponent {
       return
     }
     const top = suggestions[0] as Suggestion
+    await this.presentIdentification(top, this.lastCapturedTexture)
+  }
+
+  /**
+   * Shared post-identification pipeline: show the result text, populate the info card,
+   * generate wing textures + store the sighting, then spawn the 3D flying butterfly.
+   *
+   * Public so other identification entry points can reuse the exact same pipeline instead
+   * of duplicating it — e.g. the agent's ButterflyIdentificationTool, which runs its own
+   * camera capture + Kindwise call and then hands the top suggestion here.
+   *
+   * @param top          The top Kindwise suggestion (with full details).
+   * @param photoTexture The user's captured photo for the info card + stored sighting. May be null.
+   */
+  public async presentIdentification(top: Suggestion, photoTexture: Texture | null = null): Promise<void> {
+    // Keep the captured photo in sync so generateWingTexturesAndStoreSighting() stores the right image.
+    this.lastCapturedTexture = photoTexture
     const commonNames = top.details ? top.details.common_names : null
     const common = commonNames && commonNames.length > 0 ? commonNames[0] : null
     const display = common ? common + " (" + top.name + ")" : top.name
@@ -148,7 +165,7 @@ export class ButterflyIdentifier extends BaseScriptComponent {
       print("[ButterflyId] " + display + " " + percent + "%")
     }
 
-    this.infoDisplay?.displayResult(top, this.lastCapturedTexture)
+    this.infoDisplay?.displayResult(top, photoTexture)
 
     //added by boon
     const { wingTexture, wingOpacityMap } = await this.generateWingTexturesAndStoreSighting(top)

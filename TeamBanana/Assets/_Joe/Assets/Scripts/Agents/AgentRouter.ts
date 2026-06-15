@@ -52,7 +52,7 @@ export class AgentRouter {
   public onRoutingDecision: Event<RoutingDecision> = new Event()
   public onCoordinationRequested: Event<{fromAgent: string; toAgent: string; context: string; priority: number}> = new Event()
 
-  constructor(languageInterface: AgentLanguageInterface, config?: Partial<RoutingConfig>, dbManager?: SupabaseDBManager, mapManager?: NearbySightingManager, butterflyIdentifier?: ButterflyIdentifier, mlSpatializer?: MLSpatializer, flyingButterflyManager?: FlyingButterflyManager) {
+  constructor(languageInterface: AgentLanguageInterface, config?: Partial<RoutingConfig>, dbManager?: SupabaseDBManager, mapManager?: NearbySightingManager, butterflyIdentifier?: ButterflyIdentifier, mlSpatializer?: MLSpatializer, flyingButterflyManager?: FlyingButterflyManager, collectionPanel?: SceneObject) {
     this.languageInterface = languageInterface
     this.config = {
       confidenceThreshold: 0.4,
@@ -62,20 +62,20 @@ export class AgentRouter {
       ...config
     }
 
-    this.initializeAgents(dbManager, mapManager, butterflyIdentifier, mlSpatializer, flyingButterflyManager)
+    this.initializeAgents(dbManager, mapManager, butterflyIdentifier, mlSpatializer, flyingButterflyManager, collectionPanel)
     print(`AgentRouter: 🧠 Intelligent router initialized with ${this.agents.size} agents`)
   }
 
   /**
    * Initialize outdoor education agents
    */
-  private initializeAgents(dbManager?: SupabaseDBManager, mapManager?: NearbySightingManager, butterflyIdentifier?: ButterflyIdentifier, mlSpatializer?: MLSpatializer, flyingButterflyManager?: FlyingButterflyManager): void {
+  private initializeAgents(dbManager?: SupabaseDBManager, mapManager?: NearbySightingManager, butterflyIdentifier?: ButterflyIdentifier, mlSpatializer?: MLSpatializer, flyingButterflyManager?: FlyingButterflyManager, collectionPanel?: SceneObject): void {
     // Create Naturalist agent
     const naturalist = new NaturalistAgent(this.languageInterface, dbManager, mapManager, butterflyIdentifier)
     this.registerAgent(naturalist)
 
     // Create Archivist agent
-    const archivist = new ArchivistAgent(this.languageInterface, dbManager, mapManager, butterflyIdentifier, mlSpatializer, flyingButterflyManager)
+    const archivist = new ArchivistAgent(this.languageInterface, dbManager, mapManager, butterflyIdentifier, mlSpatializer, flyingButterflyManager, collectionPanel)
     this.registerAgent(archivist)
   }
 

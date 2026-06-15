@@ -29,6 +29,7 @@
     agentDisplayText: false
     butterflyIdentifier: false
     chatComponent: false
+    collectionPanel: false
     conversationContextMessages: false
     coordinationDepthLimit: false
     dbManager: false
@@ -66,6 +67,7 @@
       butterflyIdentifier: !<MappingBased.AssignableType_6> 00000000-0000-0000-0000-000000000000
       mlSpatializer: !<MappingBased.AssignableType_7> 00000000-0000-0000-0000-000000000000
       flyingButterflyManager: !<MappingBased.AssignableType_8> 00000000-0000-0000-0000-000000000000
+      collectionPanel: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
       enableSystem: true
       enableAgentSystem: true
       enableDebugLogging: true
@@ -90,6 +92,7 @@
     - '// @input AssignableType_6 butterflyIdentifier {"hint":"ButterflyIdentifier — enables butterfly species identification tool for agents"}'
     - '// @input AssignableType_7 mlSpatializer {"hint":"MLSpatializer — enables on-device YOLO butterfly detection tool for agents"}'
     - '// @input AssignableType_8 flyingButterflyManager {"hint":"FlyingButterflyManager — spawns 3D animated butterflies for the collection"}'
+    - "// @input SceneObject collectionPanel {\"hint\":\"Collection Panel — the 'My Archive' UI object. Starts disabled; the agent's collection tool enables it when the user asks to see their collection.\"}"
     - '// @ui {"widget":"group_start", "label":"System Configuration"}'
     - // @input bool enableSystem = true
     - '// @input bool enableAgentSystem = true {"hint":"Enable butterfly agent system vs. legacy tool router"}'

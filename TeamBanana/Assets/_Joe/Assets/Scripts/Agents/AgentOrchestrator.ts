@@ -82,6 +82,11 @@ export class AgentOrchestrator extends BaseScriptComponent {
   @hint("FlyingButterflyManager — spawns 3D animated butterflies for the collection")
   flyingButterflyManager: FlyingButterflyManager | null = null
 
+  @input
+  @allowUndefined
+  @hint("Collection Panel — the 'My Archive' UI object. Starts disabled; the agent's collection tool enables it when the user asks to see their collection.")
+  collectionPanel: SceneObject | null = null
+
   // ================================
   // Configuration
   // ================================
@@ -279,7 +284,7 @@ export class AgentOrchestrator extends BaseScriptComponent {
         fallbackAgent: this.defaultAgent,
         enableCoordination: this.enableCoordination,
         debugRouting: this.enableDebugLogging
-      }, this.dbManager ?? undefined, this.nearbySightingManager ?? undefined, this.butterflyIdentifier ?? undefined, this.mlSpatializer ?? undefined, this.flyingButterflyManager ?? undefined)
+      }, this.dbManager ?? undefined, this.nearbySightingManager ?? undefined, this.butterflyIdentifier ?? undefined, this.mlSpatializer ?? undefined, this.flyingButterflyManager ?? undefined, this.collectionPanel ?? undefined)
 
       // Initialize agent coordinator
       this.agentCoordinator = new AgentCoordinator(this.agentRouter, {
