@@ -27,7 +27,6 @@
   PackagePolicy: CanBeUnpacked
   ScriptInputsHidden:
     handHint: false
-    onboardingVisual: false
     text: false
   ScriptTypesHidden:
     {}
@@ -40,11 +39,9 @@
   DefaultScriptInputs:
     - text: !<reference.Text> 00000000-0000-0000-0000-000000000000
       handHint: !<MappingBased.AssignableType> 00000000-0000-0000-0000-000000000000
-      onboardingVisual: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
   ScriptTypes:
     -
       {}
   InputLines:
     - // @input Component.Text text
     - // @input AssignableType handHint
-    - // @input SceneObject onboardingVisual
