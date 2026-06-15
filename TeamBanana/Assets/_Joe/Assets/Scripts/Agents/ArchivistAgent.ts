@@ -114,6 +114,11 @@ export class ArchivistAgent extends OutdoorAgent {
     // Register butterfly identification tool if ButterflyIdentifier is available
     if (butterflyIdentifier) {
       this.butterflyIdentificationTool = new ButterflyIdentificationTool(butterflyIdentifier)
+      // Prefer Gemini's cached video frame so we never fight for the camera.
+      this.butterflyIdentificationTool.getSharedFrame = () => this.languageInterface.getLatestFrame()
+      // Fallback: pause/resume Gemini's video if we need to capture directly.
+      this.butterflyIdentificationTool.onPauseVideo = () => this.languageInterface.pauseVideo()
+      this.butterflyIdentificationTool.onResumeVideo = () => this.languageInterface.resumeVideo()
       this.registerTool({
         name: "butterfly_identification",
         description: "Take a photo and identify a butterfly species using AI-powered recognition",
@@ -125,7 +130,6 @@ export class ArchivistAgent extends OutdoorAgent {
 
     // Register butterfly detection tool if MLSpatializer is available.
     // Pass the identification tool so detection can auto-trigger ID when butterflies are found.
-    print(`ArchivistAgent: 🔧 mlSpatializer param = ${mlSpatializer ? "TRUTHY (type: " + typeof mlSpatializer + ")" : "FALSY (value: " + mlSpatializer + ")"}`)
     if (mlSpatializer) {
       this.butterflyDetectionTool = new ButterflyDetectionTool(mlSpatializer, this.butterflyIdentificationTool)
       this.registerTool({
@@ -157,6 +161,14 @@ export class ArchivistAgent extends OutdoorAgent {
    */
   protected getSystemPrompt(): string {
     return `You are an Archivist - a passionate storyteller and expert on butterflies and their fascinating world.
+
+CRITICAL RULE — SPECIES IDENTIFICATION:
+You CANNOT identify butterfly species from sight. You do not have visual recognition
+capabilities. When the user asks "what is this butterfly" or similar, a specialist tool
+runs and its result appears as [BUTTERFLY IDENTIFIED: ...] in the message. ONLY use that
+tool result for the species name. If no [BUTTERFLY IDENTIFIED: ...] block is present,
+NEVER guess or make up a species — instead say "Let me take a closer look..." and encourage
+the user's observation.
 
 YOUR PERSONALITY:
 - Enthusiastic and passionate about butterfly knowledge
@@ -314,6 +326,10 @@ IMPORTANT: You're a storyteller who brings observations to life. Every butterfly
             ? "\n\n[BUTTERFLY IDENTIFIED: " + tool.formatIdentificationSummary(result) + ". Share this enthusiastically — tell the user what species it is and a fascinating fact or story about it.]"
             : "\n\n[BUTTERFLY IDENTIFIED: " + (result.commonName ?? result.scientificName ?? "Unknown") + ". Share what it is with enthusiasm.]"
           print("ArchivistAgent: Butterfly identification result integrated into response")
+        } else {
+          // Tool failed — explicitly tell the LLM NOT to guess.
+          print("ArchivistAgent: Butterfly identification FAILED — " + (idResult.error ?? "unknown error"))
+          toolContext = "\n\n[NO IDENTIFICATION AVAILABLE — the camera could not capture a frame. DO NOT guess or make up a species. Tell the user you couldn't get a clear look and ask them to try again or describe what they see.]"
         }
       }
 

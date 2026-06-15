@@ -48,6 +48,20 @@ export class ButterflyIdentificationTool {
   private supabase: SupabaseClient | null = null
 
   /**
+   * Optional callbacks to pause/resume an external video stream (e.g., Gemini Live)
+   * while this tool captures a camera frame. Only one VideoController can record at a time.
+   */
+  public onPauseVideo: (() => void) | null = null
+  public onResumeVideo: (() => void) | null = null
+
+  /**
+   * Optional frame provider. If set, the tool tries to grab a cached frame first
+   * (e.g. from Gemini Live's video stream) instead of starting its own VideoController.
+   * Falls back to direct camera capture if the provider returns null.
+   */
+  public getSharedFrame: (() => string | null) | null = null
+
+  /**
    * @param butterflyIdentifier — Agrika's ButterflyIdentifier component (read for config only, not modified).
    *        Reads `supabaseProject` (url + publicToken) and `functionName` from its public inputs.
    */
@@ -75,31 +89,40 @@ export class ButterflyIdentificationTool {
     try {
       print("ButterflyIdentificationTool: Executing — capturing camera frame")
 
-      // 1. Capture a camera frame via VideoController (works in Preview AND device).
-      //    Same mechanism used by GeminiAssistant and SpatialTool.
-      const { VideoController } = require("RemoteServiceGateway.lspkg/Helpers/VideoController")
-      const videoController = new VideoController(
-        1500,                           // frame interval ms
-        CompressionQuality.HighQuality, // JPEG quality
-        EncodingType.Jpg                // image format
-      )
+      // Use CameraModule.requestImage() for a high-res still photo.
+      // This uses a separate camera pipeline from VideoController — no conflict
+      // with Gemini Live's video stream. Works on real Spectacles (device only).
+      let base64Image: string | null = null
 
-      const base64Image = await new Promise<string>((resolve, reject) => {
-        const timeoutId = setTimeout(() => {
-          videoController.stopRecording()
-          reject(new Error("Camera frame capture timed out after 5 seconds"))
-        }, 5000)
+      try {
+        const cameraModule = require("LensStudio:CameraModule")
+        const imageRequest = CameraModule.createImageRequest()
+        const imageFrame = await cameraModule.requestImage(imageRequest)
 
-        videoController.onEncodedFrame.add((encodedFrame: string) => {
-          clearTimeout(timeoutId)
-          videoController.stopRecording()
-          resolve(encodedFrame)
+        base64Image = await new Promise<string>((resolve, reject) => {
+          Base64.encodeTextureAsync(
+            imageFrame.texture,
+            (encoded: string) => resolve(encoded),
+            () => reject(new Error("Failed to encode image")),
+            CompressionQuality.HighQuality,
+            EncodingType.Jpg,
+          )
         })
 
-        videoController.startRecording()
-      })
+        print(`ButterflyIdentificationTool: High-res still captured (${base64Image.length} chars)`)
+      } catch (stillError) {
+        print(`ButterflyIdentificationTool: Still capture failed: ${stillError} — trying shared frame fallback...`)
 
-      print("ButterflyIdentificationTool: Frame captured, sending to Kindwise...")
+        // Fallback: grab a cached frame from Gemini Live's video stream.
+        if (this.getSharedFrame) {
+          base64Image = this.getSharedFrame()
+          if (base64Image) {
+            print("ButterflyIdentificationTool: Using shared frame from Gemini Live")
+          }
+        }
+      }
+
+      print("ButterflyIdentificationTool: Frame ready, sending to Kindwise...")
 
       // 2. Lazy-init Supabase client and call the Edge Function
       if (!this.supabase) {

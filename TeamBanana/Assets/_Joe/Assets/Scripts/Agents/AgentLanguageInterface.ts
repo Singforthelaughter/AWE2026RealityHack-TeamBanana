@@ -41,6 +41,34 @@ export class AgentLanguageInterface {
     this.log("AgentLanguageInterface: Language interface initialized")
   }
 
+  /**
+   * Pause Gemini's video stream so another tool (e.g. ButterflyIdentificationTool)
+   * can capture a camera frame. Only one VideoController can record at a time.
+   */
+  public pauseVideo(): void {
+    if (this.geminiAssistant) {
+      this.geminiAssistant.pauseVideo()
+    }
+  }
+
+  /**
+   * Resume Gemini's video stream after a pause.
+   */
+  public resumeVideo(): void {
+    if (this.geminiAssistant) {
+      this.geminiAssistant.resumeVideo()
+    }
+  }
+
+  /**
+   * Get the latest cached video frame from Gemini's stream.
+   * Returns null if no frame has been captured yet or video is not enabled.
+   * Tools can use this instead of starting their own VideoController.
+   */
+  public getLatestFrame(): string | null {
+    return this.geminiAssistant?.getLatestFrame() ?? null
+  }
+
   // ================================
   // Initialization & Setup
   // ================================
@@ -441,18 +469,11 @@ export class AgentLanguageInterface {
       await this.geminiAssistant.waitForSetup()
       this.log("AgentLanguageInterface: ✅ Setup confirmed ready")
 
-      // FIX: Enable video streaming for spatial queries
-      if (this.geminiAssistant && !options?.textOnly) {
-        this.log("AgentLanguageInterface: 📹 Starting video streaming for spatial awareness")
-        this.geminiAssistant.streamData(true)
-      }
-
-      // FIX: Send full context to Gemini Live session for processing with audio/video enabled
+      // FIX: Send full context to Gemini Live session for processing with voice output.
+      // Do NOT call streamData(true) here — that restarts video/mic input, which makes
+      // Gemini see the butterfly and guess the species instead of using the tool result.
       const lastUserMessage = messages[messages.length - 1]
       if (lastUserMessage && lastUserMessage.role === "user") {
-        // Enable audio streaming to ensure voice output
-        this.geminiAssistant.streamData(true)
-
         // Build comprehensive message with full context for Live API
         const fullContextMessage = this.buildContextualMessage(messages)
 
