@@ -1924,7 +1924,7 @@
     "":
       prefab: !<reference.ObjectPrefab> e1f1956c-e70b-4799-9ba0-57fac1a9ec26
       spawnParent: !<reference.SceneObject> bc6577e9-cc34-4e32-9432-2aa0bf854bbc
-      debugLogging: false
+      debugLogging: true
   ScriptTypes:
     "":
       {}
@@ -2415,7 +2415,7 @@
   PrefabRemaps:
     []
   Name: CloseFrameParent
-  Enabled: true
+  Enabled: false
   ScriptAsset: !<reference> 925f2033-81fd-47a6-b36f-cbfb27dadc47
   ScriptInputsDefault:
     {}
@@ -3394,7 +3394,7 @@
   ScriptInputs:
     "":
       openAIToken: token
-      googleToken: token
+      googleToken: c85637df-9fe8-4376-9d53-121704944e12
       snapToken: token
       enableLogging: false
       enableLoggingLifecycle: false
@@ -6587,6 +6587,22 @@
     - !<own> 974e2072-cd2a-4664-8d91-d71bbcd60d54
   Components:
     []
+- !<ScriptComponent/51d51f6a-84c1-4299-be02-dd1717daa74e>
+  PrefabRemaps:
+    []
+  Name: CloseArchiveFrame
+  Enabled: true
+  ScriptAsset: !<reference> 3209aa84-f692-4902-9245-5b2226bed992
+  ScriptInputsDefault:
+    {}
+  ScriptTypesDefault:
+    {}
+  ScriptInputs:
+    "":
+      flyingButterflyManager: !<MappingBased.AssignableType> 2c5e847f-38df-4ee0-801f-040dfcaff33d
+  ScriptTypes:
+    "":
+      {}
 - !<ScriptComponent/51f7cb22-78e4-4a68-9b96-e1f9523425a9>
   PrefabRemaps:
     []
@@ -8233,6 +8249,7 @@
       butterflyIdentifier: !<MappingBased.AssignableType_6> d53ff48f-898b-4f6a-80f4-9834b2903674
       mlSpatializer: !<MappingBased.AssignableType_7> a63639b8-4db0-4a5f-90b4-59504b619f3b
       flyingButterflyManager: !<MappingBased.AssignableType_8> 2c5e847f-38df-4ee0-801f-040dfcaff33d
+      collectionPanel: !<reference.SceneObject> b0ed6c34-5e1d-4c36-835f-9434eeac818a
       enableSystem: true
       enableAgentSystem: true
       enableDebugLogging: true
@@ -12664,7 +12681,6 @@
     - 1360aa40-63d5-48f5-8af4-2213aa2967f0: f9995e9d-e727-4bf6-7c7f-fcdf8685765a
     - 13f36f28-6d6f-4dbb-8113-18609ca1b469: c587b4d4-a5d0-4875-7057-11611f968e97
     - 1a9bffb3-7997-4abd-86f0-4db89adc26ff: 778f7f68-3227-42c3-6993-a089a54a2bcd
-    - 1ac6b75b-d7d8-411c-85cf-f077174e30a7: ee0ab1c5-ac72-4aa4-b9f2-a3e9d7c88222
     - 26173357-74cb-40fa-b829-3c210dc86281: 8bdebe34-e3a4-4472-69ea-606c0f5dac8a
     - 2b50e118-9a31-4a3b-b6fe-4ac506a196f3: 5dd84d9d-8227-46e8-4ef6-d6bff0c6a3c7
     - 36b09cb9-c98a-42d9-a24a-dd7696881516: 1c7cc619-59f5-45ab-6137-7ed3cc417dcf
@@ -12713,6 +12729,7 @@
     - !<own> e83e4e64-edd1-4d1c-a7cf-a600d160090d
     - !<own> 07b1ddd9-d8fc-4033-b26e-5c800cf051d2
     - !<own> 1ac6b75b-d7d8-411c-85cf-f077174e30a7
+    - !<own> 51d51f6a-84c1-4299-be02-dd1717daa74e
 - !<ScriptComponent/b124bdbe-5683-4d36-a8e2-02e859380196>
   PrefabRemaps:
     []

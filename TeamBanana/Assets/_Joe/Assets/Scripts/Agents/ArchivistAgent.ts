@@ -72,7 +72,7 @@ export class ArchivistAgent extends OutdoorAgent {
   private butterflyDetectionTool: ButterflyDetectionTool | null = null
   private butterflyCollectionTool: ButterflyCollectionTool | null = null
 
-  constructor(languageInterface: AgentLanguageInterface, dbManager?: SupabaseDBManager, mapManager?: NearbySightingManager, butterflyIdentifier?: ButterflyIdentifier, mlSpatializer?: MLSpatializer, flyingButterflyManager?: FlyingButterflyManager) {
+  constructor(languageInterface: AgentLanguageInterface, dbManager?: SupabaseDBManager, mapManager?: NearbySightingManager, butterflyIdentifier?: ButterflyIdentifier, mlSpatializer?: MLSpatializer, flyingButterflyManager?: FlyingButterflyManager, collectionPanel?: SceneObject) {
     super(languageInterface)
 
     // Initialize knowledge base
@@ -143,7 +143,7 @@ export class ArchivistAgent extends OutdoorAgent {
 
     // Register butterfly collection tool if dbManager is available
     if (dbManager) {
-      this.butterflyCollectionTool = new ButterflyCollectionTool(dbManager, flyingButterflyManager)
+      this.butterflyCollectionTool = new ButterflyCollectionTool(dbManager, flyingButterflyManager, collectionPanel)
       this.registerTool({
         name: "butterfly_collection",
         description: "Show the user's personal butterfly collection — every butterfly they've identified and saved",

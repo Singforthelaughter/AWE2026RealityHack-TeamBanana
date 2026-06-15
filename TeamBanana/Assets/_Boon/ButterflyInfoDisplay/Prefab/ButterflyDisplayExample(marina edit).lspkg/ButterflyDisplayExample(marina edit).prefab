@@ -438,7 +438,9 @@
     useSnapping: true
     itemSnapping: true
     worldSnapping: true
-    _showCloseButton: true
+    _showFollowButton: true
+    useFollowBehavior: true
+    _following: true
     _enableInteractionPlane: true
     _interactionPlaneOffset: true
     _interactionPlanePadding: true
@@ -470,10 +472,10 @@
       useSnapping: false
       itemSnapping: false
       worldSnapping: false
-      _showFollowButton: true
-      useFollowBehavior: true
-      _following: true
-      _showCloseButton: false
+      _showFollowButton: false
+      useFollowBehavior: false
+      _following: false
+      _showCloseButton: true
       _enableInteractionPlane: true
       _interactionPlaneOffset: !<Vec3> {x: 0.000000, y: 0.000000, z: 0.000000}
       _interactionPlanePadding: !<Vec2> {x: 0.000000, y: 0.000000}

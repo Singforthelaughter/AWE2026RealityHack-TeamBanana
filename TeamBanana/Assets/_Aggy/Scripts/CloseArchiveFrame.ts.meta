@@ -1,20 +1,20 @@
-- !<AssetImportMetadata/10a473f6-cafa-483d-9a15-f284ae0f8e3f>
+- !<AssetImportMetadata/932a6125-2147-475b-9ad2-2af0bcfa6bed>
   ImportedAssetIds:
-    TypeScriptAsset: !<reference> 439a16a1-c0f0-4d94-8b20-77f5a2ccb08d
+    TypeScriptAsset: !<reference> 3209aa84-f692-4902-9245-5b2226bed992
   ImporterName: TypeScriptAssetImporter
-  PrimaryAsset: !<reference> 439a16a1-c0f0-4d94-8b20-77f5a2ccb08d
+  PrimaryAsset: !<reference> 3209aa84-f692-4902-9245-5b2226bed992
   PackageType: NotAPackage
   LegacyPackagePolicy: ~
   ExtraData:
     {}
   AssetDataMap:
-    TypeScriptAsset: !<own> ea466908-0b17-4fea-8c3f-c50a6662023b
+    TypeScriptAsset: !<own> 9255909a-a76d-46a7-8abe-79ee0fe71fbb
   DependentFiles:
     []
   ImporterSettings: !<AssetImporterSettings>
     {}
   CompressionSettings: !<own> 00000000-0000-0000-0000-000000000000
-- !<TypeScriptAssetData/ea466908-0b17-4fea-8c3f-c50a6662023b>
+- !<TypeScriptAssetData/9255909a-a76d-46a7-8abe-79ee0fe71fbb>
   SvgIcon: ""
   SetupScript:
     code: ""
@@ -22,12 +22,11 @@
   VersionMajor: 0
   VersionMinor: 0
   VersionPatch: 0
-  ComponentUid: 682a92ac-23bd-485f-ba9e-100ba4733112
+  ComponentUid: 22d53ca2-3216-4da1-9403-7eed7e95b4b3
   ExportUid: 00000000-0000-0000-0000-000000000000
   PackagePolicy: CanBeUnpacked
   ScriptInputsHidden:
-    handHint: false
-    text: false
+    flyingButterflyManager: false
   ScriptTypesHidden:
     {}
   ReadMe: !<reference> 00000000-0000-0000-0000-000000000000
@@ -37,11 +36,9 @@
   Attachments:
     []
   DefaultScriptInputs:
-    - text: !<reference.Text> 00000000-0000-0000-0000-000000000000
-      handHint: !<MappingBased.AssignableType> 00000000-0000-0000-0000-000000000000
+    - flyingButterflyManager: !<MappingBased.AssignableType> 00000000-0000-0000-0000-000000000000
   ScriptTypes:
     -
       {}
   InputLines:
-    - // @input Component.Text text
-    - // @input AssignableType handHint
+    - "// @input AssignableType flyingButterflyManager {\"hint\":\"FlyingButterflyManager — its spawned butterflies are cleared on close so reopening the archive doesn't double them.\"}"

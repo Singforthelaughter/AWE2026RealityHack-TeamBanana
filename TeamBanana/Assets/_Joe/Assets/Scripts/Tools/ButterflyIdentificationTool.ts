@@ -48,6 +48,14 @@ export class ButterflyIdentificationTool {
   private supabase: SupabaseClient | null = null
 
   /**
+   * Agrika's ButterflyIdentifier component. After this tool identifies a butterfly, it
+   * hands the result to `identifier.presentIdentification(...)` so the full pipeline runs
+   * (info card + collection logging + flying butterfly) — the same path the manual
+   * capture flow uses. Typed `any` to avoid a hard import cycle into _Aggy.
+   */
+  private identifier: any
+
+  /**
    * Optional callbacks to pause/resume an external video stream (e.g., Gemini Live)
    * while this tool captures a camera frame. Only one VideoController can record at a time.
    */
@@ -66,6 +74,7 @@ export class ButterflyIdentificationTool {
    *        Reads `supabaseProject` (url + publicToken) and `functionName` from its public inputs.
    */
   constructor(butterflyIdentifier: any) {
+    this.identifier = butterflyIdentifier
     // Read Supabase config from ButterflyIdentifier's public inspector inputs
     const project = butterflyIdentifier.supabaseProject
     this.supabaseUrl = project?.url ?? ""
@@ -93,11 +102,14 @@ export class ButterflyIdentificationTool {
       // This uses a separate camera pipeline from VideoController — no conflict
       // with Gemini Live's video stream. Works on real Spectacles (device only).
       let base64Image: string | null = null
+      // Kept so the identified photo can be shown on the info card + stored with the sighting.
+      let capturedTexture: Texture | null = null
 
       try {
         const cameraModule = require("LensStudio:CameraModule")
         const imageRequest = CameraModule.createImageRequest()
         const imageFrame = await cameraModule.requestImage(imageRequest)
+        capturedTexture = imageFrame.texture
 
         base64Image = await new Promise<string>((resolve, reject) => {
           Base64.encodeTextureAsync(
@@ -169,6 +181,18 @@ export class ButterflyIdentificationTool {
         `ButterflyIdentificationTool: Identified as "${common ?? top.name}" ` +
         `(${Math.round(top.probability * 100)}% confidence)`
       )
+
+      // Drive the shared post-ID pipeline on ButterflyIdentifier: info card + collection
+      // logging + flying butterfly. Fire-and-forget so the agent's spoken response isn't
+      // blocked by wing-texture generation and the Supabase upload (the card shows first).
+      if (this.identifier && typeof this.identifier.presentIdentification === "function") {
+        const pipeline = this.identifier.presentIdentification(top, capturedTexture)
+        if (pipeline && typeof pipeline.catch === "function") {
+          pipeline.catch((e: unknown) => print(`ButterflyIdentificationTool: presentIdentification failed — ${e}`))
+        }
+      } else {
+        print("ButterflyIdentificationTool: WARNING — no ButterflyIdentifier.presentIdentification; card/collection/spawn skipped.")
+      }
 
       return {
         success: true,

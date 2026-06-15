@@ -28,11 +28,22 @@ export class ButterflyCollectionTool {
 
   private dbManager: SupabaseDBManager
   private flyingButterflyManager: FlyingButterflyManager | null
+  // The "My Archive" UI panel. It starts disabled in the scene and is only shown
+  // when the agent surfaces the collection, then hidden again on clear/close.
+  private collectionPanel: SceneObject | null
 
-  constructor(dbManager: SupabaseDBManager, flyingButterflyManager?: FlyingButterflyManager) {
+  constructor(dbManager: SupabaseDBManager, flyingButterflyManager?: FlyingButterflyManager, collectionPanel?: SceneObject) {
     this.dbManager = dbManager
     this.flyingButterflyManager = flyingButterflyManager ?? null
+    this.collectionPanel = collectionPanel ?? null
     print("ButterflyCollectionTool: Initialized")
+  }
+
+  /** Show/hide the My Archive panel. Enabling it triggers the panel's own grid build. */
+  private setPanelVisible(visible: boolean): void {
+    if (this.collectionPanel && !isNull(this.collectionPanel)) {
+      this.collectionPanel.enabled = visible
+    }
   }
 
   public async execute(args: Record<string, unknown>): Promise<{
@@ -44,6 +55,9 @@ export class ButterflyCollectionTool {
     const startTime = Date.now()
     try {
       const maxButterflies = (args.maxButterflies as number) ?? 10
+
+      // Surface the My Archive panel — this is the only place it gets turned on.
+      this.setPanelVisible(true)
 
       print(`ButterflyCollectionTool: Fetching user's sightings...`)
 
@@ -66,6 +80,9 @@ export class ButterflyCollectionTool {
       const speciesList: string[] = []
 
       if (this.flyingButterflyManager) {
+        // Clear any previously spawned butterflies first so reopening the collection
+        // (or asking again) replaces them instead of stacking a doubled set.
+        this.flyingButterflyManager.clearAllButterflies()
         for (let i = 0; i < spawnCount; i++) {
           const s = sightings[i]
           const wingTexture = s.wing_texture ?? null
@@ -120,8 +137,9 @@ export class ButterflyCollectionTool {
     }
   }
 
-  /** Hide all spawned collection butterflies. */
+  /** Hide the My Archive panel and clear all spawned collection butterflies. */
   public clearButterflies(): boolean {
+    this.setPanelVisible(false)
     if (!this.flyingButterflyManager) return false
     this.flyingButterflyManager.clearAllButterflies()
     return true

@@ -52,6 +52,7 @@
     butterflyIdentifier: true
     mlSpatializer: true
     flyingButterflyManager: true
+    collectionPanel: true
     enableSystem: true
     enableAgentSystem: true
     enableDebugLogging: true
@@ -75,6 +76,7 @@
       butterflyIdentifier: !<MappingBased.AssignableType_6> 00000000-0000-0000-0000-000000000000
       mlSpatializer: !<MappingBased.AssignableType_7> 00000000-0000-0000-0000-000000000000
       flyingButterflyManager: !<MappingBased.AssignableType_8> 00000000-0000-0000-0000-000000000000
+      collectionPanel: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
       enableSystem: true
       enableAgentSystem: true
       enableDebugLogging: true
