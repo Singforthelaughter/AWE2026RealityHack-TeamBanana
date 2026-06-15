@@ -11,7 +11,7 @@
   <rect x="0" y="0" width="1920" height="1080" fill="#FBFBF9"/>
 
   <!-- ===== header ===== -->
-  <text x="70" y="74" font-size="44" font-weight="700" fill="#1C1C1E" letter-spacing="-0.6">Butterfly Spotting &amp; Social Sightings</text>
+  <text x="70" y="74" font-size="44" font-weight="700" fill="#1C1C1E" letter-spacing="-0.6">System Architecture</text>
   <text x="70" y="110" font-size="21" fill="#6E6E74">AR butterfly discovery &amp; a shared sighting world on Snap Spectacles</text>
 
   <!-- legend -->
