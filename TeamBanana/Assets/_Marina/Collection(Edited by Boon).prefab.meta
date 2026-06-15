@@ -63,7 +63,7 @@
   PrefabRemaps:
     []
   Name: Collection(Edited by Boon)
-  Enabled: false
+  Enabled: true
   Layers: 1
   LocalTransform: !<TransformEntity>
     Position: {x: 0.000000, y: 0.000000, z: -80.000000}
@@ -77,6 +77,7 @@
   Components:
     - !<own> 82091aad-282e-409f-4631-0bc9f2999e4a
     - !<own> d674250a-ac00-4c23-4ab1-58f90cd44a16
+    - !<own> ee0ab1c5-ac72-4aa4-b9f2-a3e9d7c88222
 - !<SceneObject/2a361f7e-0a0b-4dac-6181-ecd5cbf6b84c>
   PrefabRemaps:
     []
@@ -467,6 +468,7 @@
       suggestionOpacityTexture: !<reference.Texture> df75661b-fa05-4ef8-8902-6ea6e0df2c0d
       nearbyButterfliesWindow: !<reference.SceneObject> 8c04541a-098c-43d2-519a-f77f2c7f3fa5
       supabaseDBManager: !<MappingBased.AssignableType> ec3ec66a-669d-4f10-8729-2385b25c576d
+      flyingButterflyManager: !<MappingBased.AssignableType_1> 2c5e847f-38df-4ee0-801f-040dfcaff33d
   ScriptTypes:
     "":
       {}
@@ -1062,6 +1064,22 @@
         []
       onFinishedCallbacks:
         []
+  ScriptTypes:
+    "":
+      {}
+- !<ScriptComponent/ee0ab1c5-ac72-4aa4-b9f2-a3e9d7c88222>
+  PrefabRemaps:
+    []
+  Name: CloseFrameParent
+  Enabled: true
+  ScriptAsset: !<reference> 925f2033-81fd-47a6-b36f-cbfb27dadc47
+  ScriptInputsDefault:
+    {}
+  ScriptTypesDefault:
+    {}
+  ScriptInputs:
+    "":
+      {}
   ScriptTypes:
     "":
       {}

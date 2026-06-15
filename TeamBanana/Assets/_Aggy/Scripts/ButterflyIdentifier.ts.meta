@@ -28,6 +28,7 @@
   ScriptInputsHidden:
     dbManager: false
     debugLogging: false
+    flyingButterflyManager: false
     functionName: false
     infoDisplay: false
     resultText: false
@@ -49,6 +50,7 @@
       dbManager: !<MappingBased.AssignableType> 00000000-0000-0000-0000-000000000000
       wingGenerator: !<MappingBased.AssignableType_1> 00000000-0000-0000-0000-000000000000
       infoDisplay: !<MappingBased.AssignableType_2> 00000000-0000-0000-0000-000000000000
+      flyingButterflyManager: !<MappingBased.AssignableType_3> 00000000-0000-0000-0000-000000000000
   ScriptTypes:
     -
       {}
@@ -61,3 +63,4 @@
     - '// @input AssignableType dbManager {"hint":"SupabaseDBManager component for storing sightings to the database"}'
     - '// @input AssignableType_1 wingGenerator {"hint":"ButterflyWingGenerator component for generating procedural wing textures"}'
     - '// @input AssignableType_2 infoDisplay {"hint":"ButterflyInfoDisplayManager component for displaying identification results in a prefab"}'
+    - '// @input AssignableType_3 flyingButterflyManager {"hint":"FlyingButterflyManager component that spawns the 3D flying butterfly with the generated wing textures"}'

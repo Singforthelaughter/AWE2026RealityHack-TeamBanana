@@ -77,6 +77,8 @@ Only project scripts are listed; third-party package imports are noted inline.
 ── _Boon ──────────────────────────────────────────────────
 NearbyMapManager        (no project imports — standalone)
 NearbyPinManager        (no project imports — standalone)
+ButterflyMovementController  (no project imports — standalone)
+FlyingButterflyManager  ──► ButterflyMovementController
 
 ── _Aggy ──────────────────────────────────────────────────
 ButterflyIdentifier  ──► SupabaseDBManager (_Boon)
@@ -119,6 +121,8 @@ NearbySightingsTool     ──► SupabaseDBManager (_Boon)
 ButterflyIdentificationTool ──► ButterflyIdentifier (_Aggy)
 NaturalistAgent         ──► ButterflyIdentifier (_Aggy)
 ArchivistAgent          ──► ButterflyIdentifier (_Aggy)
+ButterflyIdentifier (_Aggy) ──► FlyingButterflyManager (_Boon)
+ButterflyCollectionDynamicTestManagerNew (_Niko) ──► FlyingButterflyManager (_Boon)
 ```
 
 ---
@@ -333,9 +337,47 @@ Attach this directly to the butterfly SceneObject (it moves the object it is on)
 - Optional `AnimationPlayer` on the same SceneObject: sets every clip's `playbackSpeed` to `flyingAnimationSpeed` while airborne and `landedAnimationSpeed` while perched (no-op if absent).
 - Landing requires a real device (hand tracking does not run in Preview).
 
+**Public API (for `FlyingButterflyManager`):**
+
+| Method | Description |
+|---|---|
+| `setLandingPermitted(permitted)` | Gate flying-to/landing-on the finger. `false` forces free flight / take-off. Default permitted. |
+| `getWorldPosition()` | Current world position of the butterfly. |
+| `isLanded()` | True once actually settled on the finger. |
+
 **Imports from project:** none  
 **Imports (packages):** `SIK`, `HandInputData`, `TrackedHand` (SpectaclesInteractionKit); `LSTween`, `Easing` (LSTween)  
-**Imported by:** none — attach directly in the Inspector.
+**Imported by:** `FlyingButterflyManager`.
+
+---
+
+### ButterflyMovement/Scripts/FlyingButterflyManager.ts
+
+**Purpose:** Spawns butterfly prefabs, skins their wings with supplied textures, and coordinates
+them so at most one flies to / lands on the user's finger at a time.
+
+**Inspector inputs:**
+
+| Input | Type | Required | Description |
+|---|---|---|---|
+| `butterflyPrefab` | ObjectPrefab | Yes | Prefab whose root has a `ButterflyMovementController`; 3rd child is the wing visual. |
+| `camera` | SceneObject | Yes | Main camera; passed to each spawned butterfly and used for the facing test. |
+| `fingerJointName` | string | — | SIK joint the butterflies land on; must match the prefab controller (default `indexTip`). |
+| `facingAngleLimit` | number | — | A butterfly is "faced" when within this angle (deg) of the camera view center (default 30). |
+
+**Public API:**
+
+| Method | Description |
+|---|---|
+| `spawnButterfly(wingTexture, opacityTexture)` | Instantiates the prefab, clones the wing material and assigns `baseTex`/`opacityTex` (3rd child's RenderMeshVisual), registers the controller, sets its `camera`, returns it. |
+
+**Coordination (per frame):** eligible = butterflies within `facingAngleLimit` of the view; among those,
+the one closest to the finger (when the hand is in view) else closest to the camera is permitted to land
+via `setLandingPermitted(true)`; all others `false`.
+
+**Imports from project:** `ButterflyMovementController`  
+**Imports (packages):** `SIK`, `HandInputData`, `TrackedHand` (SpectaclesInteractionKit)  
+**Imported by:** `ButterflyIdentifier` (_Aggy) — calls `spawnButterfly()` after identification; `ButterflyCollectionDynamicTestManagerNew` (_Niko) — calls `spawnButterfly()` when a collection card is selected.
 
 <!-- END_SECTION: _Boon -->
 

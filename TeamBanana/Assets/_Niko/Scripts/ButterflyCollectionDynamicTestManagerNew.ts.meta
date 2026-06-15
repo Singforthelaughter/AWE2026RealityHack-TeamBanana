@@ -28,6 +28,7 @@
   ScriptInputsHidden:
     buildOnStart: false
     butterflyPrefab: false
+    flyingButterflyManager: false
     nearbyButterfliesWindow: false
     newBadgeTemplate: false
     newBadgeTexture: false
@@ -49,6 +50,7 @@
       suggestionOpacityTexture: !<reference.Texture> 00000000-0000-0000-0000-000000000000
       nearbyButterfliesWindow: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
       supabaseDBManager: !<MappingBased.AssignableType> 00000000-0000-0000-0000-000000000000
+      flyingButterflyManager: !<MappingBased.AssignableType_1> 00000000-0000-0000-0000-000000000000
   ScriptTypes:
     -
       {}
@@ -60,3 +62,4 @@
     - "// @input Asset.Texture suggestionOpacityTexture {\"hint\":\"Optional opacity/cutout texture for the gray suggestion butterfly. If empty, the prefab material's original opacityTex is reused.\"}"
     - '// @input SceneObject nearbyButterfliesWindow {"hint":"Optional nearby butterflies / recommended local species window opened by the Find Next card."}'
     - '// @input AssignableType supabaseDBManager {"hint":"SupabaseDBManager component. When assigned, getMySightings() replaces the static TEST_ENTRIES."}'
+    - "// @input AssignableType_1 flyingButterflyManager {\"hint\":\"Optional FlyingButterflyManager. When assigned, selecting a discovered card spawns a 3D flying butterfly using that species' wing textures.\"}"

@@ -5,6 +5,7 @@ import { IMAGE_MATERIAL_ASSET, StateName } from "SpectaclesUIKit.lspkg/Scripts/C
 import { ScrollWindow } from "SpectaclesUIKit.lspkg/Scripts/Components/ScrollWindow/ScrollWindow"
 import { RectangleButton } from "SpectaclesUIKit.lspkg/Scripts/Components/Button/RectangleButton"
 import { SupabaseDBManager } from "../../_Boon/SupabaseInfoStoring&Retrieving/Scripts/SupabaseDBManager"
+import { FlyingButterflyManager } from "../../_Boon/ButterflyMovement/Scripts/FlyingButterflyManager"
 
 // This script is the experimental dynamic collection/archive manager.
 //
@@ -150,6 +151,11 @@ export class ButterflyCollectionDynamicTestManagerNew extends BaseScriptComponen
   @allowUndefined
   @hint("SupabaseDBManager component. When assigned, getMySightings() replaces the static TEST_ENTRIES.")
   supabaseDBManager!: SupabaseDBManager
+
+  @input
+  @allowUndefined
+  @hint("Optional FlyingButterflyManager. When assigned, selecting a discovered card spawns a 3D flying butterfly using that species' wing textures.")
+  flyingButterflyManager!: FlyingButterflyManager
 
   private gridObject: SceneObject | null = null
   private gridLayout: GridLayout | null = null
@@ -643,7 +649,18 @@ export class ButterflyCollectionDynamicTestManagerNew extends BaseScriptComponen
       }
 
       this.markNewBadgeSeen(cardState)
+      this.spawnFlyingButterfly(cardState.entry)
     })
+  }
+
+  private spawnFlyingButterfly(entry: DynamicTestEntry): void {
+    // Spawn a 3D flying butterfly skinned with the selected card's wing textures — the same
+    // textures used for the card preview, so the flying butterfly matches the species shown.
+    if (isNull(this.flyingButterflyManager)) {
+      this.warn("Card selected but flyingButterflyManager is not assigned; no 3D butterfly spawned.")
+      return
+    }
+    this.flyingButterflyManager.spawnButterfly(entry.wingTexture ?? null, entry.wingOpacityMap ?? null)
   }
 
   private openNearbyButterfliesWindow(): void {

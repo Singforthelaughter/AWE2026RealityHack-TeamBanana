@@ -155,6 +155,9 @@ export class ButterflyMovementController extends BaseScriptComponent {
   private timeSinceRetarget: number = 0
   private state: "flying" | "landing" | "landed" = "flying"
 
+  // Coordinator gate: when false, this butterfly will not fly to / land on the finger (stays in free flight).
+  private landingPermitted: boolean = true
+
   // Wing-wobble driven by an accumulated phase so the rate can wander (noise) without discontinuities.
   private flutterPhase: number = 0
   private flutterSeed: number = 0
@@ -167,6 +170,23 @@ export class ButterflyMovementController extends BaseScriptComponent {
     this.transform = this.getTransform()
     this.createEvent("OnStartEvent").bind(() => this.onStart())
     this.createEvent("UpdateEvent").bind(() => this.onUpdate())
+  }
+
+  // --- public API (used by FlyingButterflyManager) ---------------------------
+
+  /** Allow/forbid this butterfly from flying to and landing on the finger. Forbidding makes it take off. */
+  setLandingPermitted(permitted: boolean): void {
+    this.landingPermitted = permitted
+  }
+
+  /** Current world position of the butterfly. */
+  getWorldPosition(): vec3 {
+    return this.getTransform().getWorldPosition()
+  }
+
+  /** True once it has actually settled on the finger (not just approaching). */
+  isLanded(): boolean {
+    return this.state === "landed"
   }
 
   private onStart(): void {
@@ -215,8 +235,8 @@ export class ButterflyMovementController extends BaseScriptComponent {
 
     const hand = this.getTrackedHand()
     const joint = hand ? this.getJoint(hand) : null
-    // Only land when the finger is actually within the camera's view cone, not merely tracked.
-    const fingerInView = joint !== null && this.isWithinView(joint.position)
+    // Land only when the finger is within the camera's view cone AND a coordinator (if any) permits it.
+    const fingerInView = joint !== null && this.landingPermitted && this.isWithinView(joint.position)
 
     if (fingerInView) {
       this.flyToFinger(joint, dt)

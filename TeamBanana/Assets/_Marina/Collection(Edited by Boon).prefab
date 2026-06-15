@@ -61,6 +61,7 @@
     - 33bf9f5b-7f39-4f8e-82ed-e6a63c8d4e79: 33bf9f5b-7f39-4f8e-7d12-1959c372b186
     - 375e551e-3cff-429d-a71d-ec5cb2d82b77: 375e551e-3cff-429d-58e2-13a34d27d488
     - 4579a151-c20a-43bc-945e-457d195af58f: 4579a151-c20a-43bc-6ba1-ba82e6a50a70
+    - 4d2a7a1a-e38c-46a3-af01-27e4edc1927b: ee0ab1c5-ac72-4aa4-b9f2-a3e9d7c88222
     - 4f9d4c06-c15f-431c-8f76-fac46b13d863: 4f9d4c06-c15f-431c-7089-053b94ec279c
     - 5aac9451-2bc5-4900-a99c-458f386c1b76: 5aac9451-2bc5-4900-5663-ba70c793e489
     - 5dd84d9d-8227-46e8-b109-29400f395c38: 5dd84d9d-8227-46e8-4ef6-d6bff0c6a3c7
@@ -90,7 +91,7 @@
     - f1bfdcb6-f50f-4c7b-b871-1225bff1dbac: f1bfdcb6-f50f-4c7b-478e-edda400e2453
     - f9995e9d-e727-4bf6-8380-0320797a89a5: f9995e9d-e727-4bf6-7c7f-fcdf8685765a
   Name: Collection(Edited by Boon)
-  Enabled: false
+  Enabled: true
   Layers: 1
   LocalTransform: !<TransformEntity>
     Position: {x: 0.000000, y: 0.000000, z: -80.000000}
@@ -104,6 +105,7 @@
   Components:
     - !<own> 82091aad-282e-409f-b9ce-f4360d6661b5
     - !<own> d674250a-ac00-4c23-b54e-a706f32bb5e9
+    - !<own> 4d2a7a1a-e38c-46a3-af01-27e4edc1927b
 - !<SceneObject/2a361f7e-0a0b-4dac-9e7e-132a340947b3>
   PrefabRemaps:
     []
@@ -224,6 +226,22 @@
     []
   Components:
     - !<own> 91fe8ecd-32a2-48c5-9d16-b52676a51170
+- !<ScriptComponent/4d2a7a1a-e38c-46a3-af01-27e4edc1927b>
+  PrefabRemaps:
+    []
+  Name: CloseFrameParent
+  Enabled: true
+  ScriptAsset: !<reference> 925f2033-81fd-47a6-b36f-cbfb27dadc47
+  ScriptInputsDefault:
+    {}
+  ScriptTypesDefault:
+    {}
+  ScriptInputs:
+    "":
+      {}
+  ScriptTypes:
+    "":
+      {}
 - !<ScriptComponent/4f9d4c06-c15f-431c-8f76-fac46b13d863>
   PrefabRemaps:
     []
@@ -494,6 +512,7 @@
       suggestionOpacityTexture: !<reference.Texture> df75661b-fa05-4ef8-8902-6ea6e0df2c0d
       nearbyButterfliesWindow: !<reference.SceneObject> 8c04541a-098c-43d2-ae65-0880d380c05a
       supabaseDBManager: !<MappingBased.AssignableType> ec3ec66a-669d-4f10-8729-2385b25c576d
+      flyingButterflyManager: !<MappingBased.AssignableType_1> 2c5e847f-38df-4ee0-801f-040dfcaff33d
   ScriptTypes:
     "":
       {}

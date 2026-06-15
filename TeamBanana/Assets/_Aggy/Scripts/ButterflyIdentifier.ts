@@ -3,6 +3,7 @@ import { IDResponse, Suggestion } from "./KindwiseTypes"
 import { SupabaseDBManager } from "../../_Boon/SupabaseInfoStoring&Retrieving/Scripts/SupabaseDBManager"
 import { ButterflyWingGenerator } from "../../_Boon/GenerateButterflyWingTexture/Scripts/ButterflyWingTextureGenerator"
 import { ButterflyInfoDisplayManager } from "../../_Boon/ButterflyInfoDisplay/Scripts/ButterflyInfoDisplayManager"
+import { FlyingButterflyManager } from "../../_Boon/ButterflyMovement/Scripts/FlyingButterflyManager"
 
 /**
  * ButterflyIdentifier — the identification half of the pipeline.
@@ -51,6 +52,10 @@ export class ButterflyIdentifier extends BaseScriptComponent {
   @input
   @hint("ButterflyInfoDisplayManager component for displaying identification results in a prefab")
   infoDisplay!: ButterflyInfoDisplayManager
+
+  @input
+  @hint("FlyingButterflyManager component that spawns the 3D flying butterfly with the generated wing textures")
+  flyingButterflyManager!: FlyingButterflyManager
 
   // Built-in Spectacles modules (resolved at construction).
   private cameraModule = require("LensStudio:CameraModule") // high-res still capture
@@ -147,8 +152,8 @@ export class ButterflyIdentifier extends BaseScriptComponent {
 
     //added by boon
     const { wingTexture, wingOpacityMap } = await this.generateWingTexturesAndStoreSighting(top)
-    //instantiate 3d butterfly here with generated texture
-    /**Code to instantiate 3d butterfly*/
+    // Spawn the 3D flying butterfly skinned with the generated wing textures.
+    this.flyingButterflyManager?.spawnButterfly(wingTexture, wingOpacityMap)
   }
 
   /**
