@@ -1,3 +1,4 @@
+import {setTimeout, clearTimeout} from "SpectaclesInteractionKit.lspkg/Utils/FunctionTimingUtils"
 import {Detection} from "./DetectionHelpers"
 import {YOLODetectionProcessor} from "./YOLODetectionProcessor"
 import {EventWrapper} from "./EventModule"
@@ -45,7 +46,7 @@ export class MLSpatializer extends BaseScriptComponent {
 
   @input
   @hint("Log detection results to the Logger panel")
-  debugLogging: boolean = true
+  debugLogging: boolean = false
 
   // ML runtime objects (set once the model finishes loading).
   private mlComponent!: MLComponent
@@ -58,6 +59,7 @@ export class MLSpatializer extends BaseScriptComponent {
 
   private isInitialized: boolean = false
   private isRunning: boolean = false // guard so we don't re-enter onUpdate while still processing
+  private scheduled: boolean = false // starts paused; runOnce() enables on-demand
 
   /** Wait for scene start, then initialize (the camera/model aren't ready in onAwake). */
   onAwake(): void {
@@ -102,19 +104,18 @@ export class MLSpatializer extends BaseScriptComponent {
     this.yoloProcessor.initialize(this.outputs, this.inputs)
     this.inputs[0].texture = this.inputTexture // feed the camera into the model
 
-    // Run the model on every Update frame, and process its output on the same frame.
-    this.mlComponent.runScheduled(true, MachineLearning.FrameTiming.Update, MachineLearning.FrameTiming.Update)
+    // Bind UpdateEvent for on-demand processing via runOnce()
     this.createEvent("UpdateEvent").bind(() => this.onUpdate())
 
     this.isInitialized = true
     if (this.debugLogging) {
-      print("[MLSpatializer] Model ready, running per frame.")
+      print("[MLSpatializer] Model ready, waiting for runOnce().")
     }
   }
 
   /** Each frame: decode the latest model output, filter, and broadcast the detections. */
   private onUpdate(): void {
-    if (this.isRunning || !this.isInitialized) {
+    if (this.isRunning || !this.isInitialized || !this.scheduled) {
       return
     }
     this.isRunning = true
@@ -142,6 +143,51 @@ export class MLSpatializer extends BaseScriptComponent {
       const distanceX = Math.abs(detection.bbox[0] - 0.5) * 2
       const distanceY = Math.abs(detection.bbox[1] - 0.5) * 2
       return Math.max(distanceX, distanceY) < this.centerThreshold
+    })
+  }
+
+  /**
+   * Pause or resume per-frame GPU inference. Call setScheduled(false) to stop the
+   * expensive YOLO loop when nobody needs detections.
+   */
+  public setScheduled(active: boolean): void {
+    if (!this.isInitialized || this.scheduled === active) return
+    this.scheduled = active
+    this.mlComponent.runScheduled(
+      active,
+      MachineLearning.FrameTiming.Update,
+      MachineLearning.FrameTiming.Update
+    )
+  }
+
+  /** Is per-frame inference currently scheduled? */
+  public isScheduled(): boolean {
+    return this.scheduled
+  }
+
+  /**
+   * Run one detection pass and return the results. Enables GPU inference, waits for
+   * the next frame's detections, then pauses again. Always stops after one pass.
+   */
+  public async runOnce(timeoutMs: number = 3000): Promise<Detection[]> {
+    if (!this.isInitialized) return []
+
+    this.setScheduled(true)
+
+    return new Promise<Detection[]>((resolve) => {
+      const handler = (detections: Detection[]) => {
+        clearTimeout(timer)
+        this.onDetectionsUpdated.remove(handler)
+        this.setScheduled(false)
+        resolve(detections)
+      }
+      const timer = setTimeout(() => {
+        this.onDetectionsUpdated.remove(handler)
+        this.setScheduled(false)
+        resolve(this.getLatestDetections())
+      }, timeoutMs)
+
+      this.onDetectionsUpdated.add(handler)
     })
   }
 

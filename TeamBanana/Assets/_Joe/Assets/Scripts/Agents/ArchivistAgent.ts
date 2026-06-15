@@ -4,10 +4,14 @@ import {Tool} from "./AgentTypes"
 import {GeneralConversationTool} from "../Tools/GeneralConversationTool"
 import {NearbySightingsTool} from "../Tools/NearbySightingsTool"
 import {ButterflyIdentificationTool, ButterflyIdentificationResult} from "../Tools/ButterflyIdentificationTool"
+import {ButterflyDetectionTool, ButterflyDetectionResult} from "../Tools/ButterflyDetectionTool"
 import {ButterflyIdentifier} from "_Aggy/Scripts/ButterflyIdentifier"
 import {MockButterflyKnowledge} from "../Knowledge/MockButterflyKnowledge"
 import {SupabaseDBManager} from "_Boon/SupabaseInfoStoring&Retrieving/Scripts/SupabaseDBManager"
 import {NearbySightingManager} from "_Boon/NearbySighting/Scripts/NearbySightingManager"
+import {MLSpatializer} from "_Aggy/Scripts/MLSpatializer"
+import {FlyingButterflyManager} from "_Boon/ButterflyMovement/Scripts/FlyingButterflyManager"
+import {ButterflyCollectionTool} from "../Tools/ButterflyCollectionTool"
 
 /**
  * Archivist Agent - Enthusiastic storyteller and butterfly knowledge curator
@@ -65,8 +69,10 @@ export class ArchivistAgent extends OutdoorAgent {
   private generalConversationTool: GeneralConversationTool
   private nearbySightingsTool: NearbySightingsTool | null = null
   private butterflyIdentificationTool: ButterflyIdentificationTool | null = null
+  private butterflyDetectionTool: ButterflyDetectionTool | null = null
+  private butterflyCollectionTool: ButterflyCollectionTool | null = null
 
-  constructor(languageInterface: AgentLanguageInterface, dbManager?: SupabaseDBManager, mapManager?: NearbySightingManager, butterflyIdentifier?: ButterflyIdentifier) {
+  constructor(languageInterface: AgentLanguageInterface, dbManager?: SupabaseDBManager, mapManager?: NearbySightingManager, butterflyIdentifier?: ButterflyIdentifier, mlSpatializer?: MLSpatializer, flyingButterflyManager?: FlyingButterflyManager) {
     super(languageInterface)
 
     // Initialize knowledge base
@@ -74,7 +80,6 @@ export class ArchivistAgent extends OutdoorAgent {
 
     // Initialize general conversation tool as fallback
     this.generalConversationTool = new GeneralConversationTool(languageInterface)
-    const startTime = Date.now()
     this.registerTool({
       name: "general_conversation",
       description: "Handle general educational questions",
@@ -87,8 +92,7 @@ export class ArchivistAgent extends OutdoorAgent {
         required: ["query"]
       },
       execute: async (args: Record<string, unknown>) => {
-        const result = await this.generalConversationTool.execute(args)
-        return {...result, executionTime: Date.now() - startTime}
+        return await this.generalConversationTool.execute(args)
       }
     })
 
@@ -117,6 +121,30 @@ export class ArchivistAgent extends OutdoorAgent {
         execute: (args: Record<string, unknown>) => this.butterflyIdentificationTool!.execute(args)
       })
       print("ArchivistAgent: 📸 Butterfly identification tool registered")
+    }
+
+    // Register butterfly detection tool if MLSpatializer is available
+    if (mlSpatializer) {
+      this.butterflyDetectionTool = new ButterflyDetectionTool(mlSpatializer)
+      this.registerTool({
+        name: "butterfly_detection",
+        description: "Use the camera to look for butterflies right now and report what's visible",
+        parameters: this.butterflyDetectionTool.parameters,
+        execute: (args: Record<string, unknown>) => this.butterflyDetectionTool!.execute(args)
+      })
+      print("ArchivistAgent: 🔍 Butterfly detection tool registered")
+    }
+
+    // Register butterfly collection tool if dbManager is available
+    if (dbManager) {
+      this.butterflyCollectionTool = new ButterflyCollectionTool(dbManager, flyingButterflyManager)
+      this.registerTool({
+        name: "butterfly_collection",
+        description: "Show the user's personal butterfly collection — every butterfly they've identified and saved",
+        parameters: this.butterflyCollectionTool.parameters,
+        execute: (args: Record<string, unknown>) => this.butterflyCollectionTool!.execute(args)
+      })
+      print("ArchivistAgent: 🦋 Butterfly collection tool registered")
     }
 
     print("ArchivistAgent: 📚 Enthusiastic storyteller initialized")
@@ -228,6 +256,12 @@ IMPORTANT: You're a storyteller who brings observations to life. Every butterfly
       confidence += 0.2
     }
 
+    // Map / collection UI control — high confidence so routing doesn't
+    // fall back to naturalist (which lacks close-map handling).
+    if (this.shouldCloseMap(query) || this.shouldCloseCollection(query)) {
+      confidence += 0.5
+    }
+
     return Math.min(confidence, 1.0)
   }
 
@@ -252,6 +286,20 @@ IMPORTANT: You're a storyteller who brings observations to life. Every butterfly
         this.storyState.lastSpeciesMentioned = speciesInfo
       }
 
+      // Check if user wants to close the map
+      if (this.shouldCloseMap(queryStr)) {
+        this.nearbySightingsTool?.closeMap()
+        return this.createSuccessResponse("Map closed! What would you like to discover next?")
+      }
+
+      // Check if user wants to hide the butterfly collection
+      if (this.shouldCloseCollection(queryStr)) {
+        if (this.butterflyCollectionTool?.clearButterflies()) {
+          return this.createSuccessResponse("Butterflies cleared! Ready for new discoveries.")
+        }
+        return this.createSuccessResponse("No collection butterflies to hide.")
+      }
+
       // Check if butterfly identification tool should be activated
       let toolContext = ""
       if (this.shouldUseButterflyIdentification(queryStr)) {
@@ -264,6 +312,33 @@ IMPORTANT: You're a storyteller who brings observations to life. Every butterfly
             ? "\n\n[BUTTERFLY IDENTIFIED: " + tool.formatIdentificationSummary(result) + ". Share this enthusiastically — tell the user what species it is and a fascinating fact or story about it.]"
             : "\n\n[BUTTERFLY IDENTIFIED: " + (result.commonName ?? result.scientificName ?? "Unknown") + ". Share what it is with enthusiasm.]"
           print("ArchivistAgent: Butterfly identification result integrated into response")
+        }
+      }
+
+      // Check if butterfly detection tool should be activated
+      if (!toolContext && this.shouldUseButterflyDetection(queryStr)) {
+        print("ArchivistAgent: Activating butterfly_detection...")
+        const detResult = await this.executeTool("butterfly_detection", {
+          captureCrops: true,
+          maxDetections: 5
+        })
+        if (detResult.success && detResult.result) {
+          const result = detResult.result as ButterflyDetectionResult
+          const tool = this.butterflyDetectionTool
+          toolContext = tool
+            ? "\n\n[BUTTERFLY DETECTION: " + tool.formatDetectionSummary(result) + "]"
+            : "\n\n[BUTTERFLY DETECTION: " + result.message + "]"
+          print("ArchivistAgent: Butterfly detection result integrated into response")
+        }
+      }
+
+      // Check if butterfly collection should be shown
+      if (!toolContext && this.shouldUseButterflyCollection(queryStr)) {
+        print("ArchivistAgent: Activating butterfly_collection...")
+        const colResult = await this.executeTool("butterfly_collection", { maxButterflies: 10 })
+        if (colResult.success && colResult.result) {
+          toolContext = "\n\n[BUTTERFLY COLLECTION: " + colResult.result.message + "]"
+          print("ArchivistAgent: Butterfly collection result integrated into response")
         }
       }
 
@@ -382,6 +457,29 @@ IMPORTANT: You're a storyteller who brings observations to life. Every butterfly
    * Determine if the butterfly identification tool should be activated for this query.
    * Triggers when user asks to identify a specific butterfly they are looking at.
    */
+  private shouldCloseMap(query: string): boolean {
+    const q = query.toLowerCase()
+    // Exact phrase match (most reliable)
+    const exactPhrases = ["close the map", "hide the map", "dismiss the map", "close map", "hide map", "remove the map", "clear the map", "shut the map"]
+    if (exactPhrases.some((w) => q.includes(w))) return true
+    // Word-level AND match — handles ASR variations like "can you close that map please"
+    const closeWords = ["close", "hide", "dismiss", "remove", "clear", "shut"]
+    const mapWords = ["map", "minimap", "mini map"]
+    const hasClose = closeWords.some((w) => q.includes(w))
+    const hasMap = mapWords.some((w) => q.includes(w))
+    return hasClose && hasMap
+  }
+
+  private shouldCloseCollection(query: string): boolean {
+    const q = query.toLowerCase()
+    return [
+      "hide my collection", "hide the butterflies", "hide butterflies",
+      "clear my collection", "clear butterflies", "clear the butterflies",
+      "remove butterflies", "remove the butterflies", "dismiss collection",
+      "hide collection", "close collection"
+    ].some((w) => q.includes(w))
+  }
+
   private shouldUseButterflyIdentification(query: string): boolean {
     if (!this.butterflyIdentificationTool) return false
     const q = query.toLowerCase()
@@ -409,6 +507,45 @@ IMPORTANT: You're a storyteller who brings observations to life. Every butterfly
     const matches = idContext && presentContext
     if (matches) {
       print(`ArchivistAgent: 📸 butterfly_identification match on: "${q.substring(0, 60)}"`)
+    }
+    return matches
+  }
+
+  /**
+   * Determine if the butterfly detection tool should be activated for this query.
+   * Triggers when user asks to spot, find, or look for butterflies through the camera.
+   */
+  private shouldUseButterflyDetection(query: string): boolean {
+    print(`ArchivistAgent: 🔍 butterfly_detection check — tool registered: ${!!this.butterflyDetectionTool}, query: "${query.substring(0, 60)}"`)
+    if (!this.butterflyDetectionTool) return false
+    const q = query.toLowerCase()
+
+    // Action words that indicate the user wants us to LOOK through the camera
+    const detectionActions = [
+      "spot", "find", "see", "look", "detect", "search",
+      "show me", "point out", "help", "locate", "scan"
+    ]
+    const hasDetectionAction = detectionActions.some((w) => q.includes(w))
+
+    // Must mention butterflies (explicitly — "see" alone isn't enough)
+    const mentionsButterfly =
+      q.includes("butterfly") || q.includes("butterflies") || q.includes("butterfl")
+
+    // Explicit phrases that are strong signals (camera-based detection only — NO location words)
+    const detectionPhrases = [
+      "do you see", "can you see", "can you spot", "do you spot",
+      "help me find", "help me spot", "help find", "help spot",
+      "spot any", "see any", "find any", "look for",
+      "any butterflies", "any butterfly", "what do you see",
+      "what's visible", "what is visible",
+      "looking for", "scan for",
+      "in my view", "in view"
+    ]
+    const hasDetectionPhrase = detectionPhrases.some((w) => q.includes(w))
+
+    const matches = mentionsButterfly && (hasDetectionAction || hasDetectionPhrase)
+    if (matches) {
+      print(`ArchivistAgent: 🔍 butterfly_detection match on: "${q.substring(0, 60)}"`)
     }
     return matches
   }
@@ -455,6 +592,25 @@ IMPORTANT: You're a storyteller who brings observations to life. Every butterfly
     const matches = butterflyContext && locationContext
     if (matches) {
       print(`ArchivistAgent: ✅ nearby_sightings keyword match on: "${q.substring(0, 60)}"`)
+    }
+    return matches
+  }
+
+  /**
+   * Determine if the butterfly collection tool should be activated.
+   */
+  private shouldUseButterflyCollection(query: string): boolean {
+    if (!this.butterflyCollectionTool) return false
+    const q = query.toLowerCase()
+
+    const collectionWords = [
+      "my collection", "my butterflies", "butterfly collection",
+      "show me my", "what have i collected", "collected so far",
+      "butterflies i've seen", "butterflies i have", "my sightings"
+    ]
+    const matches = collectionWords.some((w) => q.includes(w))
+    if (matches) {
+      print(`ArchivistAgent: 🦋 butterfly_collection match on: "${q.substring(0, 60)}"`)
     }
     return matches
   }

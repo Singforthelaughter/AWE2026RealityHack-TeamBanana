@@ -106,6 +106,17 @@ export class FlyingButterflyManager extends BaseScriptComponent {
     }
   }
 
+  /** Destroy all spawned butterflies. */
+  clearAllButterflies(): void {
+    for (const b of this.butterflies) {
+      if (b && b.getSceneObject()) {
+        b.getSceneObject().destroy()
+      }
+    }
+    this.butterflies = []
+    print(`[FlyingButterflyManager] All butterflies cleared`)
+  }
+
   /** Finger joint world position when a tracked hand's joint is inside the camera view cone, else null. */
   private getFingerInView(camPos: vec3, camForward: vec3, cosLimit: number): vec3 | null {
     const hand = this.rightHand.isTracked()

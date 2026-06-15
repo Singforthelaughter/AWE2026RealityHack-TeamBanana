@@ -115,6 +115,46 @@ export class NearbySightingsTool {
     print("NearbySightingsTool: Map manager wired — showOnMap enabled")
   }
 
+  /** Close the AR map if it's open. */
+  public closeMap(): void {
+    if (!this.mapManager) {
+      print("NearbySightingsTool: ⚠️ closeMap failed — mapManager is NULL")
+      return
+    }
+    print("NearbySightingsTool: Closing map...")
+
+    // 1. Clear custom pins through the location loader
+    if (this.customLocationsLoader) {
+      this.customLocationsLoader.clearLocations()
+      print("NearbySightingsTool: Custom location pins cleared")
+    }
+
+    // 2. Also clear ALL map pins directly via MapComponent (belt-and-suspenders)
+    try {
+      const loader = this.customLocationsLoader ?? (this.mapManager as any).customLocationLoader
+      if (loader && (loader as any).mapComponent) {
+        (loader as any).mapComponent.removeMapPins()
+        print("NearbySightingsTool: All MapComponent pins removed")
+      }
+    } catch (e) {
+      print(`NearbySightingsTool: removeMapPins fallback failed (non-critical): ${e}`)
+    }
+
+    // 3. Animate map out and disable (tween-based close)
+    this.mapManager.closeNearbySighting()
+
+    // 4. Force-disable and zero-scale the map object immediately
+    //    (belt-and-suspenders — the tween will also do this, but we ensure
+    //     the map is invisible right now regardless of tween state)
+    if (this.mapManager.map) {
+      this.mapManager.map.getTransform().setLocalScale(vec3.zero())
+      this.mapManager.map.enabled = false
+      print("NearbySightingsTool: Map force-disabled")
+    }
+
+    print("NearbySightingsTool: Map closed")
+  }
+
   public async execute(args: Record<string, unknown>): Promise<{
     success: boolean
     result?: NearbySightingsResult

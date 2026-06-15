@@ -1,0 +1,44 @@
+- !<AssetImportMetadata/2bc67095-6e03-4e9a-bc7f-8a3cc6a6e4cb>
+  ImportedAssetIds:
+    TypeScriptAsset: !<reference> dbcb64d5-e9b1-4128-a002-47a1c35afff6
+  ImporterName: TypeScriptAssetImporter
+  PrimaryAsset: !<reference> dbcb64d5-e9b1-4128-a002-47a1c35afff6
+  PackageType: NotAPackage
+  LegacyPackagePolicy: ~
+  ExtraData:
+    {}
+  AssetDataMap:
+    TypeScriptAsset: !<own> 895b3862-57d4-406f-8620-053e0fa24fa1
+  DependentFiles:
+    []
+  ImporterSettings: !<AssetImporterSettings>
+    {}
+  CompressionSettings: !<own> 00000000-0000-0000-0000-000000000000
+- !<TypeScriptAssetData/895b3862-57d4-406f-8620-053e0fa24fa1>
+  SvgIcon: ""
+  SetupScript:
+    code: ""
+  Description: ""
+  VersionMajor: 0
+  VersionMinor: 0
+  VersionPatch: 0
+  ComponentUid: a137d2fb-4c7f-4a3e-bd11-1c7a40b73aef
+  ExportUid: 00000000-0000-0000-0000-000000000000
+  PackagePolicy: CanBeUnpacked
+  ScriptInputsHidden:
+    mlSpatializer: false
+  ScriptTypesHidden:
+    {}
+  ReadMe: !<reference> 00000000-0000-0000-0000-000000000000
+  DeclarationFile: !<reference> 00000000-0000-0000-0000-000000000000
+  Tags:
+    []
+  Attachments:
+    []
+  DefaultScriptInputs:
+    - mlSpatializer: !<MappingBased.AssignableType> 00000000-0000-0000-0000-000000000000
+  ScriptTypes:
+    -
+      {}
+  InputLines:
+    - '// @input AssignableType mlSpatializer {"hint":"MLSpatializer component on the same SceneObject"}'

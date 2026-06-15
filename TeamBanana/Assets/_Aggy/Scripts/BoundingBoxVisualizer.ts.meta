@@ -26,12 +26,15 @@
   ExportUid: 00000000-0000-0000-0000-000000000000
   PackagePolicy: CanBeUnpacked
   ScriptInputsHidden:
+    borderThickness: false
+    boxColor: false
+    boxMaterial: false
     debugLogging: false
     holdSeconds: false
+    maxBoxes: false
     minScore: false
     mlSpatializer: false
     startActive: false
-    statusObject: false
   ScriptTypesHidden:
     {}
   ReadMe: !<reference> 00000000-0000-0000-0000-000000000000
@@ -42,18 +45,24 @@
     []
   DefaultScriptInputs:
     - mlSpatializer: !<MappingBased.AssignableType> 00000000-0000-0000-0000-000000000000
-      statusObject: !<reference.SceneObject> 00000000-0000-0000-0000-000000000000
+      boxMaterial: !<reference.Material> 00000000-0000-0000-0000-000000000000
+      borderThickness: 0.005000
+      boxColor: !<Vec4> {x: 0.300000, y: 1.000000, z: 0.300000, w: 0.800000}
       minScore: !<float> 0.000000
       holdSeconds: 0.500000
       startActive: true
       debugLogging: true
+      maxBoxes: !<float> 5.000000
   ScriptTypes:
     -
       {}
   InputLines:
     - '// @input AssignableType mlSpatializer {"hint":"The MLSpatializer that emits detections"}'
-    - "// @input SceneObject statusObject {\"hint\":\"Object shown while a butterfly is detected (e.g. a centered 'Butterfly detected' Text parented to the main Camera). The script only toggles it — its PARENT must stay enabled.\"}"
-    - '// @input float minScore {"hint":"Only count detections at or above this confidence", "widget":"slider", "min":0, "max":1, "step":0.01}'
-    - '// @input float holdSeconds = 0.5 {"hint":"Seconds to keep the indicator visible after detection drops out, to stop flicker. Try 0.5.", "widget":"slider", "min":0, "max":2, "step":0.05}'
-    - "// @input bool startActive = true {\"hint\":\"Start with detection ON. Turn OFF if Joe's Gemini route should enable it via startDetection().\"}"
-    - '// @input bool debugLogging = true {"hint":"Log activity to the Logger panel"}'
+    - '// @input Asset.Material boxMaterial {"hint":"Material for bounding box rectangles (e.g. a green outline material)"}'
+    - '// @input float borderThickness = 0.005 {"hint":"How thick the box border should be as a fraction of box size (0.005 = thin)", "widget":"slider", "min":0.001, "max":0.05, "step":0.001}'
+    - '// @input vec4 boxColor = {0.3,1,0.3,0.8} {"hint":"Tint color for the box"}'
+    - '// @input float minScore = 0.3 {"hint":"Only draw boxes for detections at or above this confidence", "widget":"slider", "min":0, "max":1, "step":0.01}'
+    - '// @input float holdSeconds = 10 {"hint":"Seconds to keep boxes visible after the last detection drops out", "widget":"slider", "min":0, "max":5, "step":0.05}'
+    - '// @input bool startActive = true {"hint":"Start with detection ON"}'
+    - '// @input bool debugLogging {"hint":"Log activity to the Logger panel"}'
+    - '// @input float maxBoxes = 5 {"hint":"Maximum number of boxes to show at once", "widget":"slider", "min":1, "max":10, "step":1}'

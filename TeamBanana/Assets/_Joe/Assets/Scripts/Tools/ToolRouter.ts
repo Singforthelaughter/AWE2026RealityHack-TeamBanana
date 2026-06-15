@@ -4,8 +4,11 @@ import {GeneralConversationTool} from "./GeneralConversationTool"
 import {SpatialTool} from "./SpatialTool"
 import {NearbySightingsTool} from "./NearbySightingsTool"
 import {ButterflyIdentificationTool} from "./ButterflyIdentificationTool"
+import {ButterflyDetectionTool} from "./ButterflyDetectionTool"
 import {ButterflyIdentifier} from "_Aggy/Scripts/ButterflyIdentifier"
 import {SupabaseDBManager} from "_Boon/SupabaseInfoStoring&Retrieving/Scripts/SupabaseDBManager"
+import {MLSpatializer} from "_Aggy/Scripts/MLSpatializer"
+
 
 /**
  * Tool metadata for AI routing decisions
@@ -27,7 +30,7 @@ export class ToolRouter {
   private toolIndex: Map<string, ToolMetadata> = new Map()
   private enableDebugLogging: boolean = true
 
-  constructor(languageInterface: AgentLanguageInterface, _deprecatedStorage?: any, dbManager?: SupabaseDBManager, butterflyIdentifier?: ButterflyIdentifier) {
+  constructor(languageInterface: AgentLanguageInterface, _deprecatedStorage?: any, dbManager?: SupabaseDBManager, butterflyIdentifier?: ButterflyIdentifier, mlSpatializer?: MLSpatializer) {
     this.languageInterface = languageInterface
 
     // Initialize tools
@@ -118,6 +121,29 @@ export class ToolRouter {
       })
     }
 
+    // Butterfly detection tool (only if MLSpatializer is available)
+    if (mlSpatializer) {
+      const butterflyDetectionTool = new ButterflyDetectionTool(mlSpatializer)
+      this.indexTool("butterfly_detection", {
+        name: "butterfly_detection",
+        description: "Use the camera to look for butterflies right now and report what's visible",
+        capabilities: [
+          "Scan the camera feed for butterflies using on-device ML detection",
+          "Report what butterflies are visible, their positions, and confidence scores",
+          "Optionally capture close-up cropped photos for later identification",
+          "Help users spot and locate butterflies in their immediate surroundings"
+        ],
+        useWhen: [
+          "User asks to spot or find butterflies nearby",
+          "User asks 'do you see any butterflies' or 'can you help me find butterflies'",
+          "User asks 'what's around me right now' in the context of looking for butterflies",
+          "User wants help visually locating butterflies through the camera",
+          "User asks 'can you see any butterflies' or 'is there a butterfly here'"
+        ],
+        instance: butterflyDetectionTool
+      })
+    }
+
     if (this.enableDebugLogging) {
       print(`ToolRouter: 🧠 AI-powered intelligent tool router initialized with ${this.toolIndex.size} indexed tools`)
       print("ToolRouter: 📚 Tools indexed: " + Array.from(this.toolIndex.keys()).join(", "))
@@ -202,11 +228,12 @@ ${toolDescriptions}
 USER QUERY: "${query}"
 
 ROUTING RULES:
-1. If user asks to identify a butterfly or "what is this" / "what species", use "butterfly_identification"
-2. If user asks about current/live environment or "what do you see", use "spatial_tool"
-3. For general questions without specific tool needs, use "general_conversation"
+1. If user asks to spot, find, or look for butterflies through the camera, use "butterfly_detection"
+2. If user asks to identify a butterfly or "what is this" / "what species", use "butterfly_identification"
+3. If user asks about current/live environment or "what do you see", use "spatial_tool"
+4. For general questions without specific tool needs, use "general_conversation"
 
-Respond with ONLY the tool name (e.g., "butterfly_identification", "spatial_tool", "general_conversation").`
+Respond with ONLY the tool name (e.g., "butterfly_identification", "butterfly_detection", "spatial_tool", "general_conversation").`
 
     try {
       // Get routing decision from current language interface

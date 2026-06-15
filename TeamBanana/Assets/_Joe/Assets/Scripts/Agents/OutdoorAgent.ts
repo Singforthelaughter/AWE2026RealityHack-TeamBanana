@@ -91,7 +91,7 @@ export abstract class OutdoorAgent implements IOutdoorAgent {
 
   constructor(languageInterface: AgentLanguageInterface) {
     this.languageInterface = languageInterface
-    print(`OutdoorAgent: ${this.name} initialized`)
+    // name is set by child class constructors after super(), so don't log here
   }
 
   /**

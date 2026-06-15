@@ -225,6 +225,12 @@ IMPORTANT: You are a guide, not a lecturer. Help the user discover for themselve
       print(`NaturalistAgent: Processing query: "${queryStr.substring(0, 80)}"`)
       print(`NaturalistAgent: nearby_sightings registered: ${this.nearbySightingsTool ? "YES" : "NO — dbManager not wired?"}`)
 
+      // Handle map-close command — same as archivist, in case routing sends it here
+      if (this.shouldCloseMap(queryStr)) {
+        this.nearbySightingsTool?.closeMap()
+        return this.createSuccessResponse("Map closed! What would you like to discover next?")
+      }
+
       // Update discovery state based on query
       this.updateDiscoveryState(queryStr)
 
@@ -313,6 +319,21 @@ IMPORTANT: You are a guide, not a lecturer. Help the user discover for themselve
       this.discoveryState.behaviorObservations.push(query)
       this.discoveryState.currentFocus = "discovery"
     }
+  }
+
+  /**
+   * Check if user wants to close the AR map.
+   * Same robust word-level matching as ArchivistAgent.
+   */
+  private shouldCloseMap(query: string): boolean {
+    const q = query.toLowerCase()
+    const exactPhrases = ["close the map", "hide the map", "dismiss the map", "close map", "hide map", "remove the map", "clear the map", "shut the map"]
+    if (exactPhrases.some((w) => q.includes(w))) return true
+    const closeWords = ["close", "hide", "dismiss", "remove", "clear", "shut"]
+    const mapWords = ["map", "minimap", "mini map"]
+    const hasClose = closeWords.some((w) => q.includes(w))
+    const hasMap = mapWords.some((w) => q.includes(w))
+    return hasClose && hasMap
   }
 
   /**

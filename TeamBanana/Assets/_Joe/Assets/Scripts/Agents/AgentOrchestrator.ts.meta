@@ -39,7 +39,9 @@
     enableDebugLogging: false
     enableSystem: false
     enableVoiceOutput: false
+    flyingButterflyManager: false
     geminiAssistant: false
+    mlSpatializer: false
     nearbySightingManager: false
     openAIAssistant: false
     storageManager: false
@@ -62,6 +64,8 @@
       dbManager: !<MappingBased.AssignableType_4> 00000000-0000-0000-0000-000000000000
       nearbySightingManager: !<MappingBased.AssignableType_5> 00000000-0000-0000-0000-000000000000
       butterflyIdentifier: !<MappingBased.AssignableType_6> 00000000-0000-0000-0000-000000000000
+      mlSpatializer: !<MappingBased.AssignableType_7> 00000000-0000-0000-0000-000000000000
+      flyingButterflyManager: !<MappingBased.AssignableType_8> 00000000-0000-0000-0000-000000000000
       enableSystem: true
       enableAgentSystem: true
       enableDebugLogging: true
@@ -84,6 +88,8 @@
     - '// @input AssignableType_4 dbManager {"hint":"SupabaseDBManager — enables nearby sightings tool for agents"}'
     - '// @input AssignableType_5 nearbySightingManager {"hint":"NearbySightingManager — triggers AR map display when nearby sightings are queried"}'
     - '// @input AssignableType_6 butterflyIdentifier {"hint":"ButterflyIdentifier — enables butterfly species identification tool for agents"}'
+    - '// @input AssignableType_7 mlSpatializer {"hint":"MLSpatializer — enables on-device YOLO butterfly detection tool for agents"}'
+    - '// @input AssignableType_8 flyingButterflyManager {"hint":"FlyingButterflyManager — spawns 3D animated butterflies for the collection"}'
     - '// @ui {"widget":"group_start", "label":"System Configuration"}'
     - // @input bool enableSystem = true
     - '// @input bool enableAgentSystem = true {"hint":"Enable butterfly agent system vs. legacy tool router"}'

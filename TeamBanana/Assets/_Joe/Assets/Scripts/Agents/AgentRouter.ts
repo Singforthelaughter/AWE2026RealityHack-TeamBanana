@@ -7,6 +7,8 @@ import Event from "SpectaclesInteractionKit.lspkg/Utils/Event"
 import {ButterflyIdentifier} from "_Aggy/Scripts/ButterflyIdentifier"
 import {SupabaseDBManager} from "_Boon/SupabaseInfoStoring&Retrieving/Scripts/SupabaseDBManager"
 import {NearbySightingManager} from "_Boon/NearbySighting/Scripts/NearbySightingManager"
+import {MLSpatializer} from "_Aggy/Scripts/MLSpatializer"
+import {FlyingButterflyManager} from "_Boon/ButterflyMovement/Scripts/FlyingButterflyManager"
 
 /**
  * Agent routing configuration
@@ -50,7 +52,7 @@ export class AgentRouter {
   public onRoutingDecision: Event<RoutingDecision> = new Event()
   public onCoordinationRequested: Event<{fromAgent: string; toAgent: string; context: string; priority: number}> = new Event()
 
-  constructor(languageInterface: AgentLanguageInterface, config?: Partial<RoutingConfig>, dbManager?: SupabaseDBManager, mapManager?: NearbySightingManager, butterflyIdentifier?: ButterflyIdentifier) {
+  constructor(languageInterface: AgentLanguageInterface, config?: Partial<RoutingConfig>, dbManager?: SupabaseDBManager, mapManager?: NearbySightingManager, butterflyIdentifier?: ButterflyIdentifier, mlSpatializer?: MLSpatializer, flyingButterflyManager?: FlyingButterflyManager) {
     this.languageInterface = languageInterface
     this.config = {
       confidenceThreshold: 0.4,
@@ -60,14 +62,14 @@ export class AgentRouter {
       ...config
     }
 
-    this.initializeAgents(dbManager, mapManager, butterflyIdentifier)
+    this.initializeAgents(dbManager, mapManager, butterflyIdentifier, mlSpatializer, flyingButterflyManager)
     print(`AgentRouter: 🧠 Intelligent router initialized with ${this.agents.size} agents`)
   }
 
   /**
    * Initialize outdoor education agents
    */
-  private initializeAgents(dbManager?: SupabaseDBManager, mapManager?: NearbySightingManager, butterflyIdentifier?: ButterflyIdentifier): void {
+  private initializeAgents(dbManager?: SupabaseDBManager, mapManager?: NearbySightingManager, butterflyIdentifier?: ButterflyIdentifier, mlSpatializer?: MLSpatializer, flyingButterflyManager?: FlyingButterflyManager): void {
     // Create Naturalist agent
     const naturalist = new NaturalistAgent(this.languageInterface, dbManager, mapManager, butterflyIdentifier)
     this.registerAgent(naturalist)

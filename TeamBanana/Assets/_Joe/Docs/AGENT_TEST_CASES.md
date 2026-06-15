@@ -31,6 +31,7 @@ This document contains comprehensive test cases for testing the new agent system
 7. [Knowledge Source Tests](#knowledge-source-tests)
 8. [Tool Use Tests](#tool-use-tests)
 9. [Nearby Sightings Tool Tests](#nearby-sightings-tool-tests)
+10. [Butterfly Detection Tool Tests](#butterfly-detection-tool-tests)
 
 ---
 
@@ -1596,7 +1597,350 @@ NearbySightingsTool: Returning cached sightings
 
 ---
 
-## Testing Instructions
+## Butterfly Detection Tool Tests
+
+### Test 51: Basic Butterfly Detection Query
+
+**Scenario**: User arrives at a promising location and asks to spot butterflies through the camera
+
+**Voice Command**: "Do you see any butterflies?"
+
+**Expected Tool Call**:
+```typescript
+{
+  tool: "butterfly_detection",
+  parameters: {
+    captureCrops: false,
+    maxDetections: 5
+  }
+}
+```
+
+**Expected Debug Logs**:
+```
+AgentOrchestrator: Processing voice input: "Do you see any butterflies?"
+AgentRouter: 'naturalist' confidence: 0.75
+AgentOrchestrator: Routed to naturalist
+NaturalistAgent: Processing query: "Do you see any butterflies?"
+NaturalistAgent: Detected visual detection request — activating butterfly_detection
+ButterflyDetectionTool: Executing — maxDetections: 5, captureCrops: false
+ButterflyDetectionTool: Found 2 detection(s)
+NaturalistAgent: Butterfly detection tool result integrated into response
+```
+
+**Expected Tool Response**:
+```typescript
+{
+  success: true,
+  result: {
+    detected: true,
+    detections: [
+      {
+        label: "Monarch",
+        confidence: 0.87,
+        bbox: [0.45, 0.52, 0.15, 0.22]
+      },
+      {
+        label: "Painted Lady",
+        confidence: 0.72,
+        bbox: [0.62, 0.38, 0.12, 0.18]
+      }
+    ],
+    message: "I can see 2 butterflies: Monarch (87%), Painted Lady (72%)."
+  },
+  executionTime: 45
+}
+```
+
+**Expected Agent Response Elements**:
+- Naturalist: Gentle, encouraging tone — "I can spot a couple of butterflies! One looks like a Monarch near the center of your view. What do you notice about its wing pattern?"
+- Archivist: Enthusiastic, informative — "I can see two butterflies! There's a Monarch at 87% confidence and a Painted Lady at 72%. Would you like me to identify either one more closely?"
+
+---
+
+### Test 52: Detection with Crop Capture
+
+**Scenario**: User wants to capture close-up photos of detected butterflies for later identification
+
+**Voice Command**: "Can you spot butterflies and take a photo of them?"
+
+**Expected Tool Call**:
+```typescript
+{
+  tool: "butterfly_detection",
+  parameters: {
+    captureCrops: true,
+    maxDetections: 5
+  }
+}
+```
+
+**Expected Debug Logs**:
+```
+AgentOrchestrator: Processing voice input: "Can you spot butterflies and take a photo of them?"
+AgentRouter: 'archivist' confidence: 0.70
+AgentOrchestrator: Routed to archivist
+ArchivistAgent: Processing query: "Can you spot butterflies and take a photo of them?"
+ArchivistAgent: Activating butterfly_detection with crop capture...
+ButterflyDetectionTool: Executing — maxDetections: 5, captureCrops: true
+ButterflyDetectionTool: Found 1 detection(s)
+ButterflyDetectionTool: Crop capture completed — 1 crop(s)
+ArchivistAgent: Butterfly detection with crops ready for identification
+```
+
+**Expected Tool Response**:
+```typescript
+{
+  success: true,
+  result: {
+    detected: true,
+    detections: [
+      {
+        label: "Swallowtail",
+        confidence: 0.91,
+        bbox: [0.48, 0.55, 0.18, 0.25]
+      }
+    ],
+    message: "I can see 1 butterfly: a Swallowtail (91% confidence).",
+    crops: [
+      {
+        detectionIndex: 0,
+        imageBase64: "/9j/4AAQSkZJRg...",
+        mimeType: "image/jpeg"
+      }
+    ]
+  },
+  executionTime: 2340
+}
+```
+
+**Expected Agent Response Elements**:
+- Mentions the photo was captured
+- Offers to identify the butterfly from the crop
+- "I spotted a Swallowtail and captured a close-up. Would you like me to identify what species of Swallowtail this is?"
+
+---
+
+### Test 53: No Butterflies Detected
+
+**Scenario**: User asks if any butterflies are visible but the camera sees none
+
+**Voice Command**: "Is there a butterfly here?"
+
+**Expected Tool Call**:
+```typescript
+{
+  tool: "butterfly_detection",
+  parameters: {
+    captureCrops: false,
+    maxDetections: 5
+  }
+}
+```
+
+**Expected Debug Logs**:
+```
+AgentOrchestrator: Processing voice input: "Is there a butterfly here?"
+AgentRouter: 'naturalist' confidence: 0.80
+NaturalistAgent: Activating butterfly_detection...
+ButterflyDetectionTool: Executing — maxDetections: 5, captureCrops: false
+ButterflyDetectionTool: Found 0 detection(s)
+NaturalistAgent: No butterflies detected — guiding user observation
+```
+
+**Expected Tool Response**:
+```typescript
+{
+  success: true,
+  result: {
+    detected: false,
+    detections: [],
+    message: "I don't see any butterflies right now. Try looking around slowly — they might be resting on nearby flowers or leaves."
+  },
+  executionTime: 38
+}
+```
+
+**Expected Agent Response**:
+- Naturalist: "I don't see any butterflies in the camera right now. But don't worry — they're often camouflaged! Try looking near those purple flowers. Do you see any movement there?"
+- Archivist: "No butterflies in frame at the moment. This is a great time to look for host plants! Did you know butterflies are often found near specific plants their caterpillars feed on?"
+
+---
+
+### Test 54: User Journey — Detection → Identification Handoff
+
+**Scenario**: User spots butterflies, then asks to identify the most confident one
+
+**Step 1 — Voice Command**: "Help me find butterflies"
+
+**Expected Detection Tool Call**:
+```typescript
+{
+  tool: "butterfly_detection",
+  parameters: {
+    captureCrops: false,
+    maxDetections: 5
+  }
+}
+```
+
+**Expected Debug Logs (Step 1)**:
+```
+NaturalistAgent: Activating butterfly_detection...
+ButterflyDetectionTool: Found 3 detection(s)
+NaturalistAgent: Generated discovery response with detection results
+```
+
+**Step 2 — Voice Command**: "What is the most confident one?"
+
+**Expected Identification Tool Call**:
+```typescript
+{
+  tool: "butterfly_identification",
+  parameters: {
+    timeout: 15
+  }
+}
+```
+
+**Expected Debug Logs (Step 2)**:
+```
+AgentOrchestrator: Processing voice input: "What is the most confident one?"
+AgentRouter: 'archivist' confidence: 0.80
+ArchivistAgent: Processing identification query — referencing previous detection as context
+ArchivistAgent: Activating butterfly_identification...
+ButterflyIdentificationTool: Executing — capturing camera frame
+ButterflyIdentificationTool: Identified as "Monarch (Danaus plexippus)" (95% confidence)
+ArchivistAgent: Generated identification response
+```
+
+**Expected Response Characteristics**:
+- Step 1: Detection results presented as discovery ("I can see 3 butterflies...")
+- Step 2: Identification handoff seamless — agent knows context from detection step
+- Response: "That one is a Monarch butterfly (Danaus plexippus) with 95% confidence! These are the iconic orange-and-black butterflies famous for their migration..."
+
+---
+
+### Test 55: Detection Tool — Filtered by maxDetections
+
+**Scenario**: User asks for only the top detection
+
+**Voice Command**: "What's the most likely butterfly you can see?"
+
+**Expected Tool Call**:
+```typescript
+{
+  tool: "butterfly_detection",
+  parameters: {
+    captureCrops: false,
+    maxDetections: 1
+  }
+}
+```
+
+**Expected Debug Logs**:
+```
+ButterflyDetectionTool: Executing — maxDetections: 1, captureCrops: false
+ButterflyDetectionTool: Found 1 detection(s)
+```
+
+**Expected Tool Response**:
+```typescript
+{
+  success: true,
+  result: {
+    detected: true,
+    detections: [
+      { label: "Red Admiral", confidence: 0.88, bbox: [0.55, 0.42, 0.14, 0.20] }
+    ],
+    message: "I can see 1 butterfly: a Red Admiral (88% confidence)."
+  },
+  executionTime: 40
+}
+```
+
+---
+
+### Test 56: Detection Tool — Crop Bridge Not Wired
+
+**Scenario**: User requests crop capture but the crop bridge isn't connected in the scene
+
+**Voice Command**: "Take a photo of that butterfly"
+
+**Expected Debug Logs**:
+```
+ButterflyDetectionTool: Executing — maxDetections: 5, captureCrops: true
+ButterflyDetectionTool: captureCrops=true but no cropBridge wired — skipping crops
+ButterflyDetectionTool: Found 2 detection(s)
+```
+
+**Expected Tool Response**:
+```typescript
+{
+  success: true,
+  result: {
+    detected: true,
+    detections: [
+      { label: "Monarch", confidence: 0.85, bbox: [0.50, 0.48, 0.16, 0.24] },
+      { label: "Cloudless Sulphur", confidence: 0.68, bbox: [0.35, 0.60, 0.10, 0.15] }
+    ],
+    message: "I can see 2 butterflies: Monarch (85%), Cloudless Sulphur (68%)."
+    // crops field absent — crop bridge not wired
+  },
+  executionTime: 42
+}
+```
+
+**Expected Agent Response**:
+- Returns detection results normally (crop failure is non-fatal)
+- "I can see a Monarch and a Cloudless Sulphur, but I wasn't able to capture photos — the camera crop feature isn't set up yet. Would you like me to identify one using the main camera instead?"
+
+---
+
+### Test 57: Tool Router — Detection vs Identification Disambiguation
+
+**Scenario**: Testing that the LLM router correctly distinguishes between "spotting" and "identifying"
+
+**Queries and Expected Routing**:
+
+| Voice Command | Expected Tool | Reasoning |
+|---|---|---|
+| "Do you see any butterflies?" | `butterfly_detection` | Asking to spot/find, not identify |
+| "What butterfly is that?" | `butterfly_identification` | Asking to identify a specific butterfly |
+| "Help me find butterflies" | `butterfly_detection` | Help with spotting/locating |
+| "Can you look for butterflies and tell me what they are?" | `butterfly_detection` then `butterfly_identification` | Two-step: spot first, then identify |
+| "Is there anything in the camera?" | `spatial_tool` | General environment query, not butterfly-specific |
+
+**Expected Debug Logs for "Help me find butterflies"**:
+```
+ToolRouter: 🧠 AI routing decision: "butterfly_detection" for query: "Help me find butterflies"
+ToolRouter: 💡 Reasoning: Use the camera to look for butterflies right now and report what's visible
+```
+
+**Expected Debug Logs for "What butterfly is that?"**:
+```
+ToolRouter: 🧠 AI routing decision: "butterfly_identification" for query: "What butterfly is that?"
+ToolRouter: 💡 Reasoning: Take a photo and identify a butterfly species using AI-powered insect recognition
+```
+
+---
+
+### Butterfly Detection Tool Testing Checklist
+
+- [ ] Detection activation: Does tool fire for "spot," "find," "see any" queries?
+- [ ] Detection results: Are detections returned with label, confidence, and bbox?
+- [ ] Empty result: Does tool return graceful "none detected" message?
+- [ ] Crop capture: Are crops returned when captureCrops=true and bridge is wired?
+- [ ] Crop failure: Does tool degrade gracefully when bridge is missing or times out?
+- [ ] maxDetections: Does the tool respect the maxDetections parameter?
+- [ ] Routing: Does ToolRouter correctly route detection vs identification vs spatial queries?
+- [ ] Agent integration: Does Naturalist use detection for discovery guidance?
+- [ ] Agent integration: Does Archivist use detection as precursor to identification?
+- [ ] Handoff: Does detection → identification flow naturally in conversation?
+- [ ] Performance: Is detection query fast (< 100ms since it snapshots running inference)?
+- [ ] Error handling: Does tool handle MLSpatializer being uninitialized?
+
+---
 
 ### How to Run These Tests with Microphone
 
@@ -1669,7 +2013,7 @@ NearbySightingsTool: Returning cached sightings
 ## Summary
 
 This test suite covers:
-- **50 test cases** across all agent components
+- **57 test cases** across all agent components
 - **Voice input testing** with natural language commands
 - **Tool call verification** with expected parameters
 - **Debug log validation** for transparency
@@ -1679,7 +2023,7 @@ This test suite covers:
 - **Performance testing** for response times
 - **Integration scenarios** for complete user journeys
 - **Knowledge source testing** with cache, fallback, and multi-source scenarios
-- **Tool use testing** with weather, location, spatial, and nearby_sightings tools and tool integration
+- **Tool use testing** with weather, location, spatial, nearby_sightings, and butterfly_detection tools and tool integration
 
 ### Critical Architecture Distinctions
 
@@ -1715,9 +2059,10 @@ Each test case provides clear expectations for voice commands, tool calls, logs,
 2. Location Tool: Ask local species questions ("What butterflies are here?")
 3. Spatial Tool: Ask habitat analysis ("Is this a good spot?")
 4. Nearby Sightings Tool: Ask about local sightings ("What butterflies have been spotted near me?")
-5. Watch for tool activation logs and parameter validation
-6. Verify tool responses enhance agent responses
-7. Test error handling when tools are unavailable
+5. Butterfly Detection Tool: Ask to spot butterflies ("Do you see any butterflies?", "Help me find butterflies")
+6. Watch for tool activation logs and parameter validation
+7. Verify tool responses enhance agent responses
+8. Test error handling when tools are unavailable
 
 #### Testing Tool Integration
 1. Ask questions requiring multiple contexts ("What should I expect here now?")

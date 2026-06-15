@@ -2869,8 +2869,8 @@
     {}
   ScriptInputs:
     "":
-      openAIToken: 99b93549-7910-445b-93a2-3dd6e9d00288
-      googleToken: c85637df-9fe8-4376-9d53-121704944e12
+      openAIToken: token
+      googleToken: token
       snapToken: token
       enableLogging: false
       enableLoggingLifecycle: false
@@ -7440,6 +7440,8 @@
       dbManager: !<MappingBased.AssignableType_4> ec3ec66a-669d-4f10-8729-2385b25c576d
       nearbySightingManager: !<MappingBased.AssignableType_5> 27b7c243-0743-4e0f-b1a6-89533a5ae96b
       butterflyIdentifier: !<MappingBased.AssignableType_6> d53ff48f-898b-4f6a-80f4-9834b2903674
+      mlSpatializer: !<MappingBased.AssignableType_7> a63639b8-4db0-4a5f-90b4-59504b619f3b
+      flyingButterflyManager: !<MappingBased.AssignableType_8> 2c5e847f-38df-4ee0-801f-040dfcaff33d
       enableSystem: true
       enableAgentSystem: true
       enableDebugLogging: true
@@ -10850,7 +10852,7 @@
   PrefabRemaps:
     []
   Name: Agrika
-  Enabled: false
+  Enabled: true
   Layers: 1
   LocalTransform: !<TransformEntity>
     Position: {x: 0.000000, y: 0.000000, z: 0.000000}
@@ -10863,6 +10865,7 @@
     - !<own> a63639b8-4db0-4a5f-90b4-59504b619f3b
     - !<own> d53ff48f-898b-4f6a-80f4-9834b2903674
     - !<own> f0f17350-bdb9-480d-a7ff-ac0f12d5c388
+    - !<own> ca30170e-5c5c-4f6b-96bf-dd8ec2550749
 - !<ScriptComponent/a63639b8-4db0-4a5f-90b4-59504b619f3b>
   PrefabRemaps:
     []
@@ -13201,6 +13204,22 @@
     - !<own> 504f5b1e-f040-449d-a724-c62235c466e9
   Components:
     []
+- !<ScriptComponent/ca30170e-5c5c-4f6b-96bf-dd8ec2550749>
+  PrefabRemaps:
+    []
+  Name: DetectionCameraSetup
+  Enabled: true
+  ScriptAsset: !<reference> dbcb64d5-e9b1-4128-a002-47a1c35afff6
+  ScriptInputsDefault:
+    {}
+  ScriptTypesDefault:
+    {}
+  ScriptInputs:
+    "":
+      mlSpatializer: !<MappingBased.AssignableType> a63639b8-4db0-4a5f-90b4-59504b619f3b
+  ScriptTypes:
+    "":
+      {}
 - !<SceneObject/cb2f9998-5246-4918-898c-a9cd66269431>
   PrefabRemaps:
     []
@@ -14980,6 +14999,7 @@
   ScriptInputsDefault:
     haveVideoInput: true
     haveAudioOutput: true
+    enableDebugLogging: true
   ScriptTypesDefault:
     {}
   ScriptInputs:
@@ -14990,7 +15010,7 @@
       haveVideoInput: true
       haveAudioOutput: true
       voice: Kore
-      enableDebugLogging: true
+      enableDebugLogging: false
   ScriptTypes:
     "":
       {}
@@ -15745,18 +15765,23 @@
   Enabled: true
   ScriptAsset: !<reference> 88f521c8-549a-46a4-8567-dc7f0bff3664
   ScriptInputsDefault:
+    borderThickness: true
+    boxColor: true
     startActive: true
-    debugLogging: true
+    maxBoxes: true
   ScriptTypesDefault:
     {}
   ScriptInputs:
     "":
       mlSpatializer: !<MappingBased.AssignableType> a63639b8-4db0-4a5f-90b4-59504b619f3b
-      statusObject: !<reference.SceneObject> da71f75e-2a66-43fd-8abb-24b7c6f034a0
-      minScore: 0.590000
-      holdSeconds: !<float> 1.000000
+      boxMaterial: !<reference.Material> 656f281a-f4a3-4955-8150-4af5e90e9d27
+      borderThickness: 0.005000
+      boxColor: !<Vec4> {x: 0.300000, y: 1.000000, z: 0.300000, w: 0.800000}
+      minScore: 0.300000
+      holdSeconds: !<float> 10.000000
       startActive: true
-      debugLogging: true
+      debugLogging: false
+      maxBoxes: !<float> 5.000000
   ScriptTypes:
     "":
       {}

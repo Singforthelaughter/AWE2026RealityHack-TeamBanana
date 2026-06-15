@@ -57,6 +57,17 @@ export class NearbySightingManager extends BaseScriptComponent {
     this.getNearbySighting()
   }
 
+  // Animates the map out and disables it.
+  closeNearbySighting() {
+    print(`[NearbySightingManager] closeNearbySighting — clearing ${this.customLocationLoader ? "loader" : "NULL loader"} locations`)
+    this.customLocationLoader.clearLocations()
+    const tween = LSTween.scaleToLocal(this.mapTransform, vec3.zero(), 500).easing(Easing.Sinusoidal.In)
+    tween.onComplete(() => {
+      this.map.enabled = false
+    })
+    tween.start()
+  }
+
   // Gets the user's current GPS position once, then fetches nearby butterfly sightings
   // from Supabase and pins them on the map. Clears previous pins first.
   // Pin label: common name if available, otherwise scientific name.

@@ -12,6 +12,9 @@ import {AgentCoordinator} from "./AgentCoordinator"
 import {ButterflyIdentifier} from "_Aggy/Scripts/ButterflyIdentifier"
 import {SupabaseDBManager} from "_Boon/SupabaseInfoStoring&Retrieving/Scripts/SupabaseDBManager"
 import {NearbySightingManager} from "_Boon/NearbySighting/Scripts/NearbySightingManager"
+import {FlyingButterflyManager} from "_Boon/ButterflyMovement/Scripts/FlyingButterflyManager"
+import {MLSpatializer} from "_Aggy/Scripts/MLSpatializer"
+
 
 /**
  * AgentOrchestrator - Central coordinator for butterfly outdoor education system
@@ -70,6 +73,14 @@ export class AgentOrchestrator extends BaseScriptComponent {
   @input
   @hint("ButterflyIdentifier — enables butterfly species identification tool for agents")
   butterflyIdentifier: ButterflyIdentifier | null = null
+
+  @input
+  @hint("MLSpatializer — enables on-device YOLO butterfly detection tool for agents")
+  mlSpatializer: MLSpatializer | null = null
+
+  @input
+  @hint("FlyingButterflyManager — spawns 3D animated butterflies for the collection")
+  flyingButterflyManager: FlyingButterflyManager | null = null
 
   // ================================
   // Configuration
@@ -222,14 +233,14 @@ export class AgentOrchestrator extends BaseScriptComponent {
 
     if (this.enableDebugLogging) {
       print(
-        `AgentOrchestrator: 🔍 Available assistants - OpenAI: ${this.openAIAssistant ? "" : ""}, Gemini: ${this.geminiAssistant ? "" : ""}`
+        `AgentOrchestrator: 🔍 Available assistants - OpenAI: ${this.openAIAssistant ? "available" : "not assigned"}, Gemini: ${this.geminiAssistant ? "available" : "not assigned"}`
       )
     }
 
     // Initialize language interface
     if (!this.languageInterface) {
       try {
-        this.languageInterface = new AgentLanguageInterface(this.openAIAssistant, this.geminiAssistant)
+        this.languageInterface = new AgentLanguageInterface(this.openAIAssistant ?? undefined, this.geminiAssistant ?? undefined)
         this.languageInterface.setDefaultProvider(this.defaultProvider as "openai" | "gemini")
         this.languageInterface.enableDebugLogging = this.enableDebugLogging
         if (this.enableDebugLogging) print("AgentOrchestrator: Language interface created successfully")
@@ -260,12 +271,15 @@ export class AgentOrchestrator extends BaseScriptComponent {
     }
 
     try {
+      // DEBUG: Log which dependencies are wired for agent tool registration
+      print(`AgentOrchestrator: 🔧 Agent dependencies — dbManager: ${this.dbManager ? "YES" : "MISSING"}, mlSpatializer: ${this.mlSpatializer ? "YES" : "MISSING"}, butterflyIdentifier: ${this.butterflyIdentifier ? "YES" : "MISSING"}, flyingButterflyManager: ${this.flyingButterflyManager ? "YES" : "MISSING"}`)
+
       // Initialize agent router
       this.agentRouter = new AgentRouter(this.languageInterface, {
         fallbackAgent: this.defaultAgent,
         enableCoordination: this.enableCoordination,
         debugRouting: this.enableDebugLogging
-      }, this.dbManager ?? undefined, this.nearbySightingManager ?? undefined, this.butterflyIdentifier ?? undefined)
+      }, this.dbManager ?? undefined, this.nearbySightingManager ?? undefined, this.butterflyIdentifier ?? undefined, this.mlSpatializer ?? undefined, this.flyingButterflyManager ?? undefined)
 
       // Initialize agent coordinator
       this.agentCoordinator = new AgentCoordinator(this.agentRouter, {
@@ -406,9 +420,11 @@ export class AgentOrchestrator extends BaseScriptComponent {
 
       // Route to agent system if enabled
       if (this.enableAgentSystem && this.agentRouter) {
+        print(`AgentOrchestrator: 🤖 Routing to agent system — agentRouter present, enableAgentSystem=${this.enableAgentSystem}`)
         response = await this.processWithAgentSystem(query, context)
       } else {
         // Fallback to legacy processing if agent system disabled
+        print(`AgentOrchestrator: ⚠️ Agent system DISABLED — enableAgentSystem=${this.enableAgentSystem}, agentRouter=${this.agentRouter ? "present" : "NULL"}`)
         response = await this.processLegacy(query, context)
       }
 
@@ -434,11 +450,15 @@ export class AgentOrchestrator extends BaseScriptComponent {
         agent: this.currentAgentTone
       })
 
-      // Agent has finished — safe to release Gemini suppression now
-      this.suppressNextAutoResponse = false
-      if (this.geminiAssistant) {
-        this.geminiAssistant.setMuteAudio(false)
-      }
+      // Agent has finished — but keep suppression alive briefly so the agent's
+      // Gemini response can start streaming before auto-VAD gets a chance to fire.
+      // Without this delay, Gemini's auto-VAD races ahead and overrides the agent.
+      setTimeout(() => {
+        this.suppressNextAutoResponse = false
+        if (this.geminiAssistant) {
+          this.geminiAssistant.setMuteAudio(false)
+        }
+      }, 500)
 
       if (this.enableDebugLogging) {
         print(`AgentOrchestrator: Query processed successfully`)
@@ -446,10 +466,13 @@ export class AgentOrchestrator extends BaseScriptComponent {
 
       return response
     } catch (error) {
-      this.suppressNextAutoResponse = false
-      if (this.geminiAssistant) {
-        this.geminiAssistant.setMuteAudio(false)
-      }
+      setTimeout(() => {
+        this.suppressNextAutoResponse = false
+        if (this.geminiAssistant) {
+          this.geminiAssistant.setMuteAudio(false)
+        }
+      }, 500)
+      print(`AgentOrchestrator: ERROR — ${error}`)
       const errorMessage = `Query processing failed: ${error}`
       this.handleError(errorMessage)
       return errorMessage
@@ -674,11 +697,12 @@ export class AgentOrchestrator extends BaseScriptComponent {
     const query = data.text.trim()
     print(`AgentOrchestrator: 🎤 User speech FINAL: "${query}" — routing to agent system`)
 
-    // Suppress Gemini's VAD auto-response. The agent system will generate a richer
-    // response (potentially with tool context) instead.
+    // Interrupt Gemini's VAD auto-response immediately. The agent system will
+    // generate a richer response (potentially with tool context) instead.
     this.suppressNextAutoResponse = true
     if (this.geminiAssistant) {
       this.geminiAssistant.setMuteAudio(true)
+      this.geminiAssistant.interruptAudioOutput()
     }
     if (this.openAIAssistant) {
       this.openAIAssistant.interruptAudioOutput()
