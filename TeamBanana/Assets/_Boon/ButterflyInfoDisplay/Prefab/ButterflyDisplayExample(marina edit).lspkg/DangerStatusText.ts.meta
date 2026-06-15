@@ -1,0 +1,44 @@
+- !<AssetImportMetadata/a7f5e70d-29de-c488-a0ea-b970d970e65c>
+  ImportedAssetIds:
+    TypeScriptAsset: !<reference> 2b15f5f4-e4c2-42be-807f-8c687c7d013c
+  ImporterName: TypeScriptAssetImporter
+  PrimaryAsset: !<reference> 2b15f5f4-e4c2-42be-807f-8c687c7d013c
+  PackageType: NotAPackage
+  LegacyPackagePolicy: ~
+  ExtraData:
+    {}
+  AssetDataMap:
+    TypeScriptAsset: !<own> 3d51ed6b-ce44-4966-a4d0-3152e817db42
+  DependentFiles:
+    []
+  ImporterSettings: !<AssetImporterSettings>
+    {}
+  CompressionSettings: !<own> 00000000-0000-0000-0000-000000000000
+- !<TypeScriptAssetData/3d51ed6b-ce44-4966-a4d0-3152e817db42>
+  SvgIcon: ""
+  SetupScript:
+    code: ""
+  Description: ""
+  VersionMajor: 0
+  VersionMinor: 0
+  VersionPatch: 0
+  ComponentUid: e84d0e87-f4b8-4690-8d71-ff6f6f3935d2
+  ExportUid: 00000000-0000-0000-0000-000000000000
+  PackagePolicy: CanBeUnpacked
+  ScriptInputsHidden:
+    status: false
+  ScriptTypesHidden:
+    {}
+  ReadMe: !<reference> 00000000-0000-0000-0000-000000000000
+  DeclarationFile: !<reference> 00000000-0000-0000-0000-000000000000
+  Tags:
+    []
+  Attachments:
+    []
+  DefaultScriptInputs:
+    - status: No Info
+  ScriptTypes:
+    -
+      {}
+  InputLines:
+    - '// @input string status = "No Info" {"widget":"combobox", "values":[{"label":"No Info", "value":"No Info"}, {"label":"Not Evaluated", "value":"Not Evaluated"}, {"label":"Data Deficient", "value":"Data Deficient"}, {"label":"Least Concern", "value":"Least Concern"}, {"label":"Near Threatened", "value":"Near Threatened"}, {"label":"Vulnerable", "value":"Vulnerable"}, {"label":"Endangered", "value":"Endangered"}, {"label":"Critically Endangered", "value":"Critically Endangered"}, {"label":"Extinct in the Wild", "value":"Extinct in the Wild"}, {"label":"Extinct", "value":"Extinct"}]}'

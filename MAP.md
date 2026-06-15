@@ -51,10 +51,10 @@ Each team member works in their own `Assets/_Name/` folder to minimise conflicts
 
 | Folder | Owner | Status |
 |---|---|---|
-| `Assets/_Boon/` | Boon | Active — GPS / nearby sighting feature |
-| `Assets/_Niko/` | Niko | Active — ML object detection pipeline |
+| `Assets/_Boon/` | Boon | Active — Supabase DB, butterfly info display, wing generator, AR map |
+| `Assets/_Niko/` | Niko | Active — ML object detection, butterfly collection UI |
 | `Assets/_Aggy/` | Agrika | Active — butterfly detection + Kindwise identification |
-| `Assets/_Joe/` | Joe | Reserved (no scripts yet) |
+| `Assets/_Joe/` | Joe | Active — Gemini Live, agent system, image/model gen |
 | `Assets/_Marina/` | Marina | Reserved (no scripts yet) |
 | `Assets/_UtilityScripts/` | Shared | Utility components usable by all |
 
@@ -65,6 +65,9 @@ Each team member works in their own `Assets/_Name/` folder to minimise conflicts
 | SpectaclesInteractionKit | `Assets/SpectaclesInteractionKit.lspkg/` | Hand/gesture interaction, events, utilities |
 | SpectaclesUIKit | `Assets/SpectaclesUIKit.lspkg/` | UI components (buttons, sliders, frames) |
 | SpectaclesInteractionKitExamples | `Assets/SpectaclesInteractionKitExamples.lspkg/` | Reference examples (not used in production) |
+| RemoteServiceGateway | `RemoteServiceGateway.lspkg/` | Gemini Live, audio/video helpers |
+| SupabaseClient | `SupabaseClient.lspkg/` | Supabase JS client for Snap Cloud |
+| LSTween | `LSTween.lspkg/` | Tween animation library |
 
 ---
 
@@ -75,42 +78,109 @@ Only project scripts are listed; third-party package imports are noted inline.
 
 ```
 ── _Boon ──────────────────────────────────────────────────
-NearbyMapManager        (no project imports — standalone)
-NearbyPinManager        (no project imports — standalone)
-ButterflyMovementController  (no project imports — standalone)
-FlyingButterflyManager  ──► ButterflyMovementController
+SupabaseDBManager       ──► KindwiseTypes (_Aggy)
+                        ──► SimulatedData (_Boon)
+SimulatedData           (no project imports — standalone data file)
+ButterflyWingTextureGenerator (no project imports — standalone)
+ButterflyInfoDisplayManager ──► KindwiseTypes (_Aggy)
+                            ──► CustomLocationsLoader (_Boon)
+                            ──► ButterflyInfoPrefabComponentsManager (_Boon)
+ButterflyInfoPrefabComponentsManager (no project imports — standalone)
+CloseFrameParent        (no project imports — standalone)
+InsectIDAPITestScript   ──► KindwiseTypes (_Aggy)
+                        ──► SupabaseDBManager (_Boon)
+                        ──► ButterflyWingTextureGenerator (_Boon)
+                        ──► ButterflyInfoDisplayManager (_Boon)
+NearbySightingManager   ──► CustomLocationsLoader (_Boon)
+                        ──► SupabaseDBManager (_Boon)
+CustomLocationsLoader   (no project imports — standalone)
+MapUIController         ──► MapComponent (lspkg)
+MapContainerController  ──► MapComponent (lspkg), MapUIController (_Boon)
+InteractableManipulation ──► MapComponent (lspkg)
+MapMessageController    ──► MapComponent (lspkg)
+QuestMarkController     ──► MapComponent (lspkg)
+                        ──► CustomLocationsLoader (_Boon)
+                        ──► UICollisionSolver (_Boon)
+                        ──► MarkerInteractableTrigger (_Boon)
+UICollisionSolver       (no project imports — standalone)
+MarkerInteractableTrigger (no project imports — standalone)
+ButterflyMovementController (no project imports — standalone)
+FlyingButterflyManager  ──► ButterflyMovementController (_Boon)
 
 ── _Aggy ──────────────────────────────────────────────────
-ButterflyIdentifier  ──► SupabaseDBManager (_Boon)
-                     ──► ButterflyWingGenerator (_Boon)
-MLSpatializer           (no project imports — standalone)
-YOLODetectionProcessor ──► DetectionHelpers
-BoundingBoxVisualizer  ──► MLSpatializer
-DetectionHelpers        (no project imports — standalone)
+ButterflyIdentifier     ──► KindwiseTypes (_Aggy)
+                        ──► SupabaseDBManager (_Boon)
+                        ──► ButterflyWingTextureGenerator (_Boon)
+                        ──► ButterflyInfoDisplayManager (_Boon)
+                        ──► FlyingButterflyManager (_Boon)
+BoundingBoxVisualizer   ──► MLSpatializer (_Aggy)
+MLSpatializer (_Aggy)   ──► DetectionHelpers (_Aggy)
+                        ──► YOLODetectionProcessor (_Aggy)
+YOLODetectionProcessor (_Aggy) ──► DetectionHelpers (_Aggy)
+DetectionHelpers (_Aggy) (no project imports — standalone)
 EventModule             (no project imports — standalone)
 KindwiseTypes           (no project imports — standalone)
+ActivityIndicatorController (no project imports — standalone)
+PalmPushToTalk          ──► GeminiAssistant (_Joe)
+                        ──► ActivityIndicatorController (_Aggy)
 
 ── _Niko ──────────────────────────────────────────────────
-DepthCacheSpatializer ──► MLSpatializer
+DepthCacheSpatializer ──► MLSpatializer (_Niko)
                       ──► DepthCache
                       ──► DebugVisualizer
                       ──► DetectionContainer ──► ClosedPolyline
-                      ──► DetectionHelpers
+                      ──► DetectionHelpers (_Niko)
                       ──► SpatializerUtils
 
-MLSpatializer         ──► YOLODetectionProcessor
-                      ──► DetectionHelpers
+MLSpatializer (_Niko) ──► YOLODetectionProcessor (_Niko)
+                      ──► DetectionHelpers (_Niko)
 
-ButterflyCropApiBridge ──► MLSpatializer
-                       ──► DetectionHelpers
+ButterflyCropApiBridge ──► MLSpatializer (_Niko)
+                       ──► DetectionHelpers (_Niko)
 
-YOLODetectionProcessor ──► DetectionHelpers
+YOLODetectionProcessor (_Niko) ──► DetectionHelpers (_Niko)
 
-DetectionHelpers        (no project imports — standalone)
-SpatializerUtils        (no project imports — standalone)
-DebugVisualizer         (no project imports — standalone)
-DepthCache              (no project imports — standalone)
-ClosedPolyline          (no project imports — standalone)
+ButterflyCollectionDynamicTestManagerNew ──► SupabaseDBManager (_Boon)
+                                         ──► FlyingButterflyManager (_Boon)
+ButterflyCollectionLiteManager (no project imports — standalone)
+ButterflyHoverAnimationController (no project imports — standalone)
+ConservationStatusBar   (no project imports — standalone)
+SeasonCalendar          (no project imports — standalone)
+
+DetectionHelpers (_Niko) (no project imports — standalone)
+SpatializerUtils         (no project imports — standalone)
+DebugVisualizer          (no project imports — standalone)
+DepthCache               (no project imports — standalone)
+ClosedPolyline           (no project imports — standalone)
+
+── _Joe ──────────────────────────────────────────────────
+AgentOrchestrator   ──► AgentRouter, AgentTypes, AgentLanguageInterface
+                    ──► AgentMemorySystem, AgentToolExecutor
+AgentRouter         ──► NaturalistAgent, ArchivistAgent
+                    ──► ButterflyIdentifier (_Aggy, optional)
+NaturalistAgent     ──► OutdoorAgent, AgentTypes
+                    ──► NearbySightingsTool, GeneralConversationTool
+                    ──► ButterflyIdentificationTool (optional)
+ArchivistAgent      ──► OutdoorAgent, AgentTypes
+                    ──► NearbySightingsTool, GeneralConversationTool
+                    ──► ButterflyIdentificationTool (optional)
+AgentLanguageInterface ──► AgentTypes, GeminiAssistant (_Joe), OpenAIAssistant (_Joe)
+ChatBridge          ──► AgentOrchestrator, ChatStorage, ChatComponent
+                    ──► AgentTypes, ChatExtensions, TextLimiter
+ChatComponent       (no project imports — standalone UI component)
+GeminiAssistant     (no project imports — wraps RemoteServiceGateway.lspkg)
+OpenAIAssistant     (no project imports — wraps RemoteServiceGateway.lspkg)
+ImageGen            ──► GeminiAssistant (or similar provider)
+ImageGenBridge      ──► ImageGen
+ModelGen            (standalone — 3D model generation)
+ModelGenBridge      ──► ModelGen
+ChatStorage         ──► AgentTypes
+StorageManager      (no project imports — standalone)
+NearbySightingsTool ──► SupabaseDBManager (_Boon)
+ButterflyIdentificationTool ──► ButterflyIdentifier (_Aggy)
+ToolRouter          ──► all registered tools
+MockButterflyKnowledge (no project imports — standalone data)
+ModelGenerationScheduler (no project imports — standalone)
 
 ── _UtilityScripts ────────────────────────────────────────
 TimeManager             (no project imports — singleton, global.timeManager)
@@ -121,179 +191,352 @@ NearbySightingsTool     ──► SupabaseDBManager (_Boon)
 ButterflyIdentificationTool ──► ButterflyIdentifier (_Aggy)
 NaturalistAgent         ──► ButterflyIdentifier (_Aggy)
 ArchivistAgent          ──► ButterflyIdentifier (_Aggy)
+ButterflyIdentifier (_Aggy) ──► SupabaseDBManager (_Boon)
+ButterflyIdentifier (_Aggy) ──► ButterflyWingTextureGenerator (_Boon)
+ButterflyIdentifier (_Aggy) ──► ButterflyInfoDisplayManager (_Boon)
 ButterflyIdentifier (_Aggy) ──► FlyingButterflyManager (_Boon)
+ButterflyCollectionDynamicTestManagerNew (_Niko) ──► SupabaseDBManager (_Boon)
 ButterflyCollectionDynamicTestManagerNew (_Niko) ──► FlyingButterflyManager (_Boon)
+PalmPushToTalk (_Aggy)  ──► GeminiAssistant (_Joe)
 ```
 
 ---
 
 <!-- BEGIN_SECTION: _Boon -->
-## _Boon — GPS / Nearby Sighting
+## _Boon — Supabase, Butterfly Info, Wing Generator, AR Map
 
 Owner: **Boon**  
-Folder: `Assets/_Boon/NearbySighting/Scripts/`  
-Feature: Shows nearby GPS locations on a 2D minimap and as 3D AR world pins.
+Folders:
+- `Assets/_Boon/SupabaseInfoStoring&Retrieving/Scripts/` — Supabase DB
+- `Assets/_Boon/GenerateButterflyWingTexture/Scripts/` — Wing texture generation
+- `Assets/_Boon/ButterflyInfoDisplay/Scripts/` — Info card UI
+- `Assets/_Boon/ButterflyMovement/Scripts/` — Butterfly flight & spawn
+- `Assets/_Boon/NearbySighting/Scripts/` — AR map, sighting pins, map controllers
 
 ---
 
-### NearbyMapManager.ts
+### SupabaseInfoStoring&Retrieving/Scripts/SupabaseDBManager.ts
 
-**Purpose:** 2D minimap panel. Places flat pin prefabs on a `ScreenTransform` panel,  
-north-up, with the user at the centre. An optional heading indicator rotates to show  
-which direction the user is facing.
+**Purpose:** All Supabase reads and writes for butterfly sightings. Handles authentication
+(Snap OIDC), GPS capture, photo/wing-texture upload to Supabase Storage, and DB CRUD
+on the `butterfly_sightings` table.
 
 **Inspector inputs:**
 
 | Input | Type | Required | Description |
 |---|---|---|---|
-| `pinPrefab` | ObjectPrefab | Yes | Prefab whose root has a ScreenTransform |
-| `pinsContainer` | SceneObject | Yes | The map panel — pins are parented here |
-| `userHeadingIndicator` | SceneObject | No | Arrow that rotates to show user heading |
-| `mapRadiusMeters` | number | — | Real-world radius the map edge represents (default 300 m) |
-| `mapModule` | MapModule | No | Optional Snap tile map background |
-| `mapAnchorLocation` | LocationAsset | No | Anchor for the tile grid (required if mapModule is set) |
-| `gpsUpdateInterval` | number | — | Seconds between GPS polls (default 1.0) |
-| `updateEnabled` | boolean | — | Toggle to freeze all per-frame updates |
+| `supabaseProject` | SupabaseProject | Yes | Credentials asset (Window > Supabase > Import Credentials) |
+| `storageBucket` | string | — | Storage bucket name (default `"butterfly-photos"`) |
+| `addYourSimulatedData` | boolean | — | Insert simulated rows on start (idempotent per user) |
 
 **Public API:**
 
 | Method / Type | Description |
 |---|---|
-| `setLocations(locations: LocationInput[])` | Replaces all map pins with a new set. Clears previous set first. |
-| `clearLocations()` | Destroys all pins. |
-| `getDistanceToPin(index)` | Real GPS distance in metres to pin at index. Returns -1 if GPS unavailable. |
-| `getBearingToPin(index)` | Absolute compass bearing (radians, 0=north CW) to pin at index. |
-| `getAllPinInfo()` | Returns `PinInfo[]` — label, distance, and bearing for all active pins. |
-| `type LocationInput` | `{ latitude, longitude, label? }` — input format for setLocations. |
-| `type PinInfo` | `{ label, distanceMeters, bearingRadians }` — output snapshot per pin. |
+| `storeSighting(params)` | Upload photo + wing textures to Storage, then insert a `SightingRecord` row. Returns the inserted row or null. |
+| `getAllSightings()` | All users' sightings ordered newest-first (omits raw suggestion blob). For the map. |
+| `getMySightings()` | Current user's sightings with full data; clears `is_new` flag; loads wing textures in batches of 3. |
+| `getNearbySightings(params)` | Bounding-box DB query + Haversine filter. Returns sightings within `radius` km/miles, sorted nearest-first. |
+| `getUserId()` | Stable Supabase auth UUID (tied to Snap OIDC). Null before auth completes. |
+| `seedTestData()` | Dev-only: insert 5 rows from `SimulatedData.ts` (idempotent per user). |
+| `type SightingRecord` | Full DB row shape — see file header for all fields. |
 
 **Key behaviours / gotchas:**
-- Map coordinate convention: panel centre = user, +Y = north, +X = east.
-- Pins use `ScreenTransform.anchors.setCenter(vec2)` (normalised −1 to 1), not world position.
-- Two pin placement modes: bearing/distance (default) or MapModule tile-ratio (if wired).
-- GPS heading from `onNorthAlignedOrientationUpdate`; uses `extractYaw()` not `quat.toEulerAngles()`.
-- Editor heading sign is flipped vs. real device (handled internally).
+- Auth uses `signInWithIdToken({ provider: "snapchat" })`; retries up to 3× on network errors.
+- Textures are re-encoded as PNG regardless of input format (`.jpg` paths in callers are rewritten internally) — the extension and content-type must match the real bytes or the remote loader hangs.
+- `getMySightings()` loads wing textures in batches of 3 to avoid contention on `remote_assets_cache`.
+- `getNearbySightings` does a rough bounding-box server-side, then precise Haversine client-side.
 
-**Imports from project:** none  
-**Imported by:** none currently — call `setLocations()` from your own script.
+**Imports from project:** `KindwiseTypes` (_Aggy), `SimulatedData` (_Boon)  
+**Imported by:** `ButterflyIdentifier` (_Aggy), `NearbySightingsTool` (_Joe),
+  `NearbySightingManager` (_Boon), `ButterflyCollectionDynamicTestManagerNew` (_Niko),
+  `InsectIDAPITestScript` (_Boon)
 
 ---
 
-### NearbyPinManager.ts
+### SupabaseInfoStoring&Retrieving/Scripts/SimulatedData.ts
 
-**Purpose:** 3D AR world-space pins. Places pooled prefab instances in the scene at  
-compass-bearing directions from the user. All pins are at the same fixed distance  
-(`placementDistanceMeters`) — direction only, not actual GPS distance.
+**Purpose:** Static test-data export (`SIMULATED_SIGHTINGS`) — 5 pre-built `SightingRecord`-shaped
+rows covering London and Singapore clusters. Used only by `SupabaseDBManager.seedTestData()`.
+
+**Imports from project:** none  
+**Imported by:** `SupabaseDBManager`
+
+---
+
+### GenerateButterflyWingTexture/Scripts/ButterflyWingTextureGenerator.ts
+
+**Purpose:** Calls the `generate-wing-texture` Supabase Edge Function with an image URL and
+returns two decoded `Texture` objects (wing colour map + opacity map). Decodes both base64
+responses in parallel; `onComplete` fires only after both succeed. Includes an optional
+inspector test mode with live timing display.
 
 **Inspector inputs:**
 
 | Input | Type | Required | Description |
 |---|---|---|---|
-| `camera` | SceneObject | Yes | Main Spectacles camera SceneObject |
-| `pinPrefab` | ObjectPrefab | Yes | 3D prefab (must have Transform, not ScreenTransform) |
-| `pinsContainer` | SceneObject | No | Parent for pooled instances; defaults to this object |
-| `initialPoolSize` | number | — | Pins pre-created in pool on awake (default 10) |
-| `placementDistanceMeters` | number | — | Fixed visual distance from user (default 3 m) |
-| `gpsUpdateInterval` | number | — | Seconds between GPS polls (default 1.0) |
-| `updateEnabled` | boolean | — | Toggle to freeze all per-frame updates |
+| `supabaseProject` | SupabaseProject | Yes | Credentials asset |
+| `runTestModeAtStart` | boolean | — | Show test objects and run a test call on start |
+| `testImageUrl` | string | — | Source URL for test mode |
+| `testTextureImage` | Image | — | Preview target for wing colour map |
+| `testOpacityImage` | Image | — | Preview target for opacity map |
+| `testButterfly` | SceneObject | — | 3D preview butterfly (applies to child 2's RenderMeshVisual) |
+| `timerText` | Text | — | Shows edge-function + decode timing |
 
 **Public API:**
 
-| Method / Type | Description |
+| Method | Description |
 |---|---|
-| `setLocations(locations: LocationInput[])` | Returns all active pins to pool, then places a fresh set. |
-| `clearLocations()` | Returns all active pins to pool. |
-| `acquirePin()` | Gets an enabled SceneObject from the pool (or instantiates if empty). |
-| `releasePin(pin)` | Disables a SceneObject and returns it to the pool. |
-| `getDistanceToPin(index)` | Real GPS distance in metres to pin at index. |
-| `getBearingToPin(index)` | Absolute compass bearing (radians, 0=north CW) to pin at index. |
-| `type LocationInput` | `{ latitude, longitude, label? }` — same shape as NearbyMapManager. |
+| `generateWingTextures(imageUrl, onComplete, onError?)` | Posts to the edge function, decodes both textures, calls `onComplete(wingTex, opacityTex, wingB64, opacityB64)`. |
 
-**Object pool state machine:**
-```
-POOLED (enabled=false, in pinPool[])
-  → acquirePin() →
-ACTIVE (enabled=true, in activePins[])
-  → releasePin() →
-POOLED
-```
-**Never call `destroy()` on pool objects.**
+**Imports from project:** none  
+**Imported by:** `ButterflyIdentifier` (_Aggy), `InsectIDAPITestScript` (_Boon)
+
+---
+
+### ButterflyInfoDisplay/Scripts/ButterflyInfoDisplayManager.ts
+
+**Purpose:** Instantiates a prefab and populates its `Text` and `Image` children from either
+a live Kindwise identification (`displayResult`) or a stored sighting (`displaySighting`).
+Each call re-instantiates the prefab (replacing the previous card).
+
+**Inspector inputs:**
+
+| Input | Type | Required | Description |
+|---|---|---|---|
+| `prefab` | ObjectPrefab | Yes | The butterfly info card prefab |
+| `spawnParent` | SceneObject | No | Parent for the spawned prefab (defaults to this object) |
+| `debugLogging` | boolean | — | Log field assignments to Logger |
+
+**Public API:**
+
+| Method | Description |
+|---|---|
+| `displayResult(suggestion, userPhotoTexture?)` | Populate from a live Kindwise `Suggestion`. Loads reference photos from Kindwise URLs. |
+| `displaySighting(sighting)` | Populate from a stored `SightingInfo`. Loads spotter photo + species image from URLs. |
 
 **Key behaviours / gotchas:**
-- Camera looks along its −Z axis; code uses `transform.back` (not `.forward`) for view direction.
-- `projectOnPlane(vec3.up())` strips pitch so pins don't shift when user looks up/down.
-- World offset = `direction × placementDistanceMeters × 100` (metres → cm world units).
-- Same `extractYaw()` + editor sign-flip logic as NearbyMapManager.
+- Wikidata CDN images (`/knowledge_base/wikidata/`) are silently skipped — they return HTTP 200 but fail in `loadResourceAsImageTexture`.
+- Uses a static `ButterflyInfoPrefabComponentsManager._onReady` callback to capture the component reference synchronously during `prefab.instantiate()`.
 
-**Imports from project:** none  
-**Imported by:** none currently — call `setLocations()` from your own script.
+**Imports from project:** `KindwiseTypes` (_Aggy), `CustomLocationsLoader` (SightingInfo), `ButterflyInfoPrefabComponentsManager`  
+**Imported by:** `ButterflyIdentifier` (_Aggy), `InsectIDAPITestScript` (_Boon)
 
 ---
 
-### CustomLocationsLoader.ts
+### ButterflyInfoDisplay/Scripts/ButterflyInfoPrefabComponentsManager.ts
 
-**Purpose:** Manages runtime-added custom map pins on the MapComponent map.  
-Exposes a public API so any script (e.g. a Supabase fetcher) can push GPS locations  
-onto the map after fetching them. Pins queued before the map is ready are buffered  
-and placed automatically once `onInitialLocationSet` fires.
+**Purpose:** Lightweight component on the info card prefab root. Holds references to all
+`Text` and `Image` components so `ButterflyInfoDisplayManager` can find them without
+walking the hierarchy. Uses a static `_onReady` callback so the manager captures the
+reference synchronously during `instantiate()`.
+
+**Inspector inputs:** `textArray` (Text[]), `userPhotoImage` (Image), `dataPhotoImageArray` (Image[])
+
+**Imports from project:** none  
+**Imported by:** `ButterflyInfoDisplayManager`
+
+---
+
+### ButterflyInfoDisplay/Scripts/CloseFrameParent.ts
+
+**Purpose:** Attaches to the prefab root that carries a SpectaclesUIKit `Frame` component.
+On start, forces `frame.initialize()` (in case this card was instantiated at runtime after
+the scene's normal `OnStartEvent` ordering), then wires the close button to `destroy()` the
+parent SceneObject.
+
+**Imports from project:** none (uses `Frame` from SpectaclesUIKit)  
+**Imported by:** none — attach directly to the info card prefab root.
+
+---
+
+### ButterflyInfoDisplay/Scripts/InsectIDAPITestScript.ts
+
+**Purpose:** Dev/test script. On start, encodes `inputTexture` as base64 and calls the
+`identify-butterfly` Supabase Edge Function directly, then routes through
+`ButterflyWingTextureGenerator` → `ButterflyInfoDisplayManager` and stores the result
+via `SupabaseDBManager`. Use this to test the full identification pipeline without
+hand-tracking or the production camera flow.
+
+**Inspector inputs:** `supabaseProject`, `functionName`, `inputTexture`, `dbManager`,
+`wingGenerator`, `infoDisplay`, `debugLogging`
+
+**Imports from project:** `KindwiseTypes` (_Aggy), `SupabaseDBManager`, `ButterflyWingTextureGenerator`, `ButterflyInfoDisplayManager`  
+**Imported by:** none — attach to a SceneObject for testing only.
+
+---
+
+### NearbySighting/Scripts/NearbySightingManager.ts
+
+**Purpose:** Orchestrates the "nearby sightings on map" flow. Call `openNearbySighting()` to
+animate the map in and fetch nearby sightings from Supabase within `searchRadius` miles,
+then pin them via `CustomLocationsLoader`.
 
 **Inspector inputs:**
 
 | Input | Type | Required | Description |
 |---|---|---|---|
-| `mapComponent` | MapComponent | Yes | The MapComponent instance to add pins to |
+| `map` | SceneObject | Yes | The AR map SceneObject (hidden until opened) |
+| `customLocationLoader` | CustomLocationsLoader | Yes | Receives fetched sighting locations |
+| `dbManager` | SupabaseDBManager | Yes | Auth + query handled automatically |
+| `searchRadius` | number | — | Miles to search (default 5) |
+| `maxResults` | number | — | Max pins (0 = unlimited, default 50) |
+
+**Public API:**
+
+| Method | Description |
+|---|---|
+| `openNearbySighting()` | Enables + scale-tweens the map in, then fetches + pins nearby sightings. |
+| `getNearbySighting()` | Fetch-and-pin only (no animation). Called internally by `openNearbySighting()`. |
+
+**Imports from project:** `CustomLocationsLoader`, `SupabaseDBManager`  
+**Imported by:** call `openNearbySighting()` from any agent or UI trigger script.
+
+---
+
+### NearbySighting/Scripts/CustomLocationsLoader.ts
+
+**Purpose:** Manages runtime-added custom map pins on the `MapComponent` map. Pins queued
+before the map is ready are buffered and flushed on `onInitialLocationSet`. Now also stores
+a `SightingInfo` payload per pin so downstream scripts (e.g. `QuestMarkController`) can
+show sighting details on tap.
+
+**Inspector inputs:** `mapComponent` (MapComponent)
 
 **Public API:**
 
 | Method / Type | Description |
 |---|---|
-| `setLocations(locations: CustomLocation[])` | Clears all current custom pins and places a fresh set. |
-| `addLocation(location: CustomLocation)` | Adds a single pin. Safe to call before map is ready — queued automatically. Returns the `MapPin` or `null` if queued. |
+| `setLocations(locations)` | Clears all pins and places a fresh set. |
+| `addLocation(location)` | Adds one pin; safe to call before map ready. Returns `MapPin` or null if queued. |
 | `clearLocations()` | Removes all custom pins. |
-| `type CustomLocation` | `{ label: string, latitude: number, longitude: number }` |
+| `getLocationForPin(pin)` | Returns the `CustomLocation` (including `sighting`) for a given `MapPin`. |
+| `type CustomLocation` | `{ label, latitude, longitude, sighting? }` |
+| `type SightingInfo` | Snapshot of a `SightingRecord` for display (scientific name, common names, photo URL, etc.) |
 
-**Key behaviours / gotchas:**
-- Call `setLocations()` or `addLocation()` from whatever script fetches location data (e.g. Supabase).
-- Pins placed before `onInitialLocationSet` fires are buffered in `pendingLocations[]` and flushed on map ready.
-
-**Imports from project:** `MapComponent`, `MapPin`  
-**Imported by:** any script that provides GPS location data at runtime.
+**Imports from project:** none  
+**Imported by:** `NearbySightingManager`, `QuestMarkController`, `ButterflyInfoDisplayManager` (SightingInfo type)
 
 ---
 
-### MarkerInteractableTrigger.ts
+### NearbySighting/Scripts/MarkerInteractableTrigger.ts
 
-**Purpose:** Attached to a SceneObject that also carries an `Interactable` component.  
-Changes the colour of two sibling Text objects and one sibling Image object in response  
-to hover/trigger interaction events. On trigger start it also scales the common parent  
-up by a configurable multiplier; on trigger end it restores the original parent scale.
+**Purpose:** Attached to a SceneObject that carries an `Interactable` component. Reacts to
+hover/trigger events by changing the colour of two sibling `Text` objects and one sibling
+`Image`, and scaling the parent on trigger. Now also holds a `SightingInfo` reference set
+at runtime by `QuestMarkController` so tapping a map marker can show the sighting card.
 
 **Inspector inputs:**
 
 | Input | Type | Required | Description |
 |---|---|---|---|
-| `text1` | SceneObject | Yes | Sibling with a `Text` component |
-| `text2` | SceneObject | Yes | Sibling with a `Text` component |
+| `text1`, `text2` | SceneObject | Yes | Siblings with `Text` components |
 | `image1` | SceneObject | Yes | Sibling with an `Image` component |
-| `normalColor` | vec4 | — | Colour when nothing is hovering (default white) |
-| `hoverColor` | vec4 | — | Colour on hover enter |
-| `triggerColor` | vec4 | — | Colour while trigger is held |
-| `triggerEndColor` | vec4 | — | Colour immediately after trigger releases |
-| `triggerScaleMultiplier` | vec3 | — | Per-axis multiplier on the parent's local scale during trigger (default 1.1, 1.1, 1.1) |
+| `normalColor`, `hoverColor`, `triggerColor`, `triggerEndColor` | vec4 | — | State colours |
+| `triggerScaleMultiplier` | vec3 | — | Per-axis scale multiplier during trigger (default 1.1×) |
 
-**Events handled:** `onHoverEnter`, `onHoverExit`, `onTriggerStart`, `onTriggerEnd`  
-**Parent scale:** cached at `onAwake`; restored exactly on trigger end.
+**Key behaviours / gotchas:**
+- Parent scale is cached at `onAwake`; restored exactly on trigger end.
 
 **Imports from project:** `Interactable`, `InteractorEvent` (SpectaclesInteractionKit)  
-**Imported by:** none — attach directly in the Inspector.
+**Imported by:** `QuestMarkController` — calls `setSightingData(sighting)` after spawning.
+
+---
+
+### NearbySighting/Scripts/MapUIController.ts
+
+**Purpose:** Wires zoom-in, zoom-out, center-map, and mini/full-map toggle buttons to the
+`MapComponent`. Tweens button positions between mini and full map layouts using `makeTween`.
+
+**Inspector inputs:** `mapComponent`, `zoomInButton`, `zoomOutButton`, `centerMapButton`,
+`toggleMiniMapButton`, `logObject` (optional debug)
+
+**Imports from project:** `MapComponent` (lspkg), `MapUtils` (lspkg)  
+**Imported by:** `MapContainerController` (imports `TWEEN_DURATION` constant)
+
+---
+
+### NearbySighting/Scripts/MapContainerController.ts
+
+**Purpose:** Smooth-follows the AR map panel behind the camera using cylindrical coordinates
+and `smoothDamp`. Handles mini↔full map transitions (resizing and repositioning the
+`ContainerFrame`), drag start/end from the manipulation script, and a follow-button to
+re-clamp to the camera frustum.
+
+**Inspector inputs:** `mapComponent`, `translationXTime`, `translationYTime`, `translationZTime`,
+`rotationTime`, `minFollowDistance`, `maxFollowDistance`
+
+**Imports from project:** `MapComponent`, `MapUtils`, `MapUIController` (for `TWEEN_DURATION`)  
+**Imported by:** none — top-level map controller.
+
+---
+
+### NearbySighting/Scripts/MapManipulation.ts
+
+**Purpose:** Exports `InteractableManipulation` — enables pinch-drag repositioning of the AR
+map. Handles direct and indirect (ray-cast) targeting modes, optional One Euro filter smoothing,
+and Z-stretch for far manipulation. Switches colliders between mini and full map shapes when
+the map toggles.
+
+**Inspector inputs:** `mapSceneObject`, `mapComponent`, `fullMapCollider`, `miniMapCollider`,
+`enableStretchZ`, `zStretchFactorMin`, `zStretchFactorMax`, `useFilter`, `minCutoff`, `beta`, `dcutoff`
+
+**Imports from project:** `MapComponent` (lspkg), `MapUtils` (lspkg)  
+**Imported by:** none — attach to the map's draggable SceneObject.
+
+---
+
+### NearbySighting/Scripts/MapMessageController.ts
+
+**Purpose:** Shows/hides an error message panel (`ContainerFrame` + `Text`) in response to
+`MapComponent` events: no nearby places found, nearby places fetch failed, and search started
+(which closes any open message).
+
+**Inspector inputs:** `mapComponent`, `container`, `textComponent`, `renderOrder`
+
+**Public API:** `showMessage(message)`, `closePanel()`
+
+**Imports from project:** `MapComponent` (lspkg)  
+**Imported by:** none — attach to the error message SceneObject.
+
+---
+
+### NearbySighting/Scripts/QuestMarkController.ts
+
+**Purpose:** Manages floating AR quest markers for each map pin. On each late-update frame,
+projects the GPS bearing of every pin onto a screen-space boundary rectangle and positions
+the marker accordingly (in-view = actual screen position; out-of-view = clamped to edge).
+Uses `UICollisionSolver` to prevent overlapping labels.
+
+Wires each spawned marker to its `MarkerInteractableTrigger` and passes the `SightingInfo`
+from `CustomLocationsLoader` so tapping shows the sighting card.
+
+**Inspector inputs:** `mapComponent`, `questMarkerPrefab`, `inViewMaterial`, `outOfViewMaterial`,
+`customLocationsLoader`, `scale`, `markerImageOffsetInDegree`, `markerHalfWidth`,
+`markerHalfHeight`, `labelHalfHeight`
+
+**Imports from project:** `MapComponent`, `MapPin`, `MapUtils`, `QuestMarker` (lspkg);
+  `UICollisionSolver`, `CustomLocationsLoader`, `MarkerInteractableTrigger` (_Boon)  
+**Imported by:** none — top-level marker orchestrator.
+
+---
+
+### NearbySighting/Scripts/UICollisionDetector.ts
+
+**Purpose:** Exports `UICollisionSolver`. Pure-logic utility — no Lens Studio APIs.
+Resolves 1-D label collisions (edge markers on the map boundary) and 2-D label collisions
+(in-view markers) using a sweep-line algorithm. Used by `QuestMarkController`.
+
+**Imports from project:** none  
+**Imported by:** `QuestMarkController`
 
 ---
 
 ### ButterflyMovement/Scripts/ButterflyMovementController.ts
 
-**Purpose:** Drives a single butterfly's flight. Spawns it in front of the camera (with a  
-scale-in tween), wanders lifelike inside the user's field of view, and lands on a hand  
-finger joint when a hand is tracked — taking off again when tracking is lost.  
+**Purpose:** Drives a single butterfly's flight. Spawns it in front of the camera (with a
+scale-in tween), wanders lifelike inside the user's field of view, and lands on a hand
+finger joint when a hand is tracked — taking off again when tracking is lost.
 Attach this directly to the butterfly SceneObject (it moves the object it is on).
 
 **Inspector inputs:**
@@ -333,7 +576,7 @@ Attach this directly to the butterfly SceneObject (it moves the object it is on)
 - Landing approach is a frame-rate-independent exponential ease (`1 − e^(−landingSmoothing·dt)`) toward the joint — glides in and slows as it arrives. Once landed it tracks the joint exactly (no smoothing) plus a small idle bob. Free flight is still velocity-steered.
 - Joint resolved dynamically by name off `TrackedHand` (e.g. `indexTip`), reading `Keypoint.position`/`.forward`/`.up`.
 - Perched orientation (`facePerched`) slerps between facing the user and the finger's basis (mapped through model axes) by `fingerRotationFollow`.
-- Camera view direction uses `transform.back` (camera looks along −Z), same convention as the Nearby managers.
+- Camera view direction uses `transform.back` (camera looks along −Z), same convention as the map managers.
 - Optional `AnimationPlayer` on the same SceneObject: sets every clip's `playbackSpeed` to `flyingAnimationSpeed` while airborne and `landedAnimationSpeed` while perched (no-op if absent).
 - Landing requires a real device (hand tracking does not run in Preview).
 
@@ -384,12 +627,11 @@ via `setLandingPermitted(true)`; all others `false`.
 ---
 
 <!-- BEGIN_SECTION: _Niko -->
-## _Niko — ML Object Detection Pipeline
+## _Niko — ML Object Detection Pipeline & Butterfly Collection UI
 
 Owner: **Niko**  
 Folder: `Assets/_Niko/Scripts/`  
-Feature: Detects real-world objects using a YOLO model, spatialises them in 3D, and  
-optionally crops + base64-encodes frames for an external API.
+Feature: Detects real-world objects using a YOLO model, spatialises them in 3D, crops frames for the API, and provides the butterfly collection/archive UI.
 
 ---
 
@@ -522,29 +764,235 @@ and bounding box vertices overlaid on a camera frame plane.
 **Imports:** nothing (standalone)  
 **Imported by:** `DepthCacheSpatializer`
 
+---
+
+### ButterflyCollectionDynamicTestManagerNew.ts
+
+**Purpose:** Experimental dynamic collection/archive manager. Reads butterfly sightings
+from `SupabaseDBManager`, builds a scrollable `GridLayout` of species cards (3-column),
+and spawns the flying butterfly via `FlyingButterflyManager` when a card is selected.
+Injects lightweight preview and `Text` children into existing `Button` slots rather than
+instantiating a new prefab per slot.
+
+**Key safety notes:**
+- Do NOT run alongside `ButterflyCollectionLiteManager` — both populate the same `GridLayout`.
+- Uses `butterfly_low` preview prefab only; does NOT instantiate the old crashing collection slot prefab.
+
+**Key inputs:** `supabaseDBManager`, `flyingButterflyManager`, `gridLayout`, `scrollWindow`,
+`butterflyPreviewPrefab`, and various cell sizing parameters.
+
+**Imports:** `SupabaseDBManager` (_Boon), `FlyingButterflyManager` (_Boon);  
+  SIK: `Interactable`, `findAllComponentsInSelfOrChildren`;  
+  SpectaclesUIKit: `GridLayout`, `ScrollWindow`, `RectangleButton`  
+**Imported by:** nothing (top-level collection manager)
+
+---
+
+### ButterflyCollectionDynamicTestManager.ts
+
+**Purpose:** Earlier iteration of the dynamic collection manager. Kept as a reference /
+fallback. Do not activate alongside `ButterflyCollectionDynamicTestManagerNew`.
+
+**Imports:** `SupabaseDBManager` (_Boon), `FlyingButterflyManager` (_Boon)  
+**Imported by:** nothing
+
+---
+
+### ButterflyCollectionLiteManager.ts
+
+**Purpose:** Stable, lightweight alternative collection UI. Drives the same `GridLayout`
+from a JSON string (`collectionDataJson`) rather than live Supabase data. Supports hover
+label fade animations. Use this when the dynamic manager is unstable or not needed.
+
+**Inspector inputs:** `collectionDataJson` (JSON string of `LiteButterflyEntry[]`), `cellWidth`,
+`cellHeight`, `cellGap`
+
+**Public API:** `buildCollection()` — rebuilds the grid from the current JSON.
+
+**Imports:** SIK: `Interactable`; SpectaclesUIKit: `GridLayout`, `ScrollWindow`, `RoundedRectangle`  
+**Imported by:** nothing (top-level collection manager)
+
+---
+
+### ButterflyHoverAnimationController.ts
+
+**Purpose:** Attaches to a spawned butterfly SceneObject. Dynamically creates a `ColliderComponent`
+(box shape) and `Interactable`, then plays a wing-flap animation clip on hover-enter and resets
+it on hover-exit. The clip name is resolved by trying a list of known names (e.g. `"Armature_wingFlap"`)
+unless overridden in the inspector.
+
+**Inspector inputs:** `clipName` (override; blank = auto-resolve), `colliderSize` (vec3, default 6×4.5×4.5 cm)
+
+**Imports:** SIK: `Interactable`, `InteractorEvent`, `TargetingMode`, `NativeLogger`  
+**Imported by:** nothing — attach directly to butterfly SceneObjects.
+
+---
+
+### ConservationStatusBar.ts
+
+**Purpose:** Visual component that renders a colour-gradient status bar (Secure → Critical)
+for a butterfly's IUCN/red-list conservation status. Shows a tooltip with label and explanation
+on hover. Reads the `species_red_list` field from `SightingRecord` (or similar data) and maps
+it to a 0–1 position on the gradient.
+
+**Imports:** SpectaclesUIKit: `VisualElement`, `Tooltip`, `RoundedRectangleVisual`, `SnapOS2Styles`  
+**Imported by:** nothing — attach to the info card prefab's status bar object.
+
+---
+
+### SeasonCalendar.ts
+
+**Purpose:** Visual component that renders a 12-month calendar showing a butterfly's active
+flight season as an animated gradient "blob". Reads month data from a flexible field schema
+(e.g. `activeMonths`, `flightMonths`, `startMonth`/`endMonth`) and animates the blob position.
+Shows a tooltip on hover.
+
+**Imports:** SpectaclesUIKit: `VisualElement`, `Tooltip`, `RoundedRectangleVisual`, `RoundedRectangle`  
+**Imported by:** nothing — attach to the info card prefab's season calendar object.
+
 <!-- END_SECTION: _Niko -->
 
 ---
 
 <!-- BEGIN_SECTION: _Agrika -->
-## _Agrika
+## _Agrika — Butterfly Detection + Kindwise Identification
 
 Owner: **Agrika**  
 Folder: `Assets/_Aggy/` (note: folder is `_Aggy`, MAP.md section key is `_Agrika`)  
 Feature: Butterfly detection + Kindwise identification pipeline. Self-contained.
 
-**Imported by:** `ButterflyIdentificationTool` (_Joe) reads `KindwiseTypes` from this folder.
+---
+
+### Scripts/ButterflyIdentifier.ts
+
+**Purpose:** Main identification component. Captures a high-res photo via `CameraModule.requestImage`,
+encodes it as base64, and calls the `identify-butterfly` Supabase Edge Function. On success:
+shows the species in `resultText`, calls `SupabaseDBManager.storeSighting`, calls
+`ButterflyWingTextureGenerator.generateWingTextures`, calls `ButterflyInfoDisplayManager.displayResult`,
+and calls `FlyingButterflyManager.spawnButterfly`.
+
+**Inspector inputs:** `supabaseProject`, `functionName`, `resultText` (optional),
+  `dbManager` (SupabaseDBManager), `wingGenerator` (ButterflyWingTextureGenerator),
+  `infoDisplay` (ButterflyInfoDisplayManager), `flyingButterflyManager` (FlyingButterflyManager),
+  `debugLogging`
+
+**Public API:** `identify()` — trigger from a button, gesture, or agent tool.
+
+**Key behaviours / gotchas:**
+- `CameraModule.requestImage` does NOT work in Lens Studio Preview — must test on real Spectacles.
+- The Kindwise API key lives in Supabase secrets (server-side), never in this lens.
+
+**Imports:** `KindwiseTypes` (_Aggy), `SupabaseDBManager` (_Boon),
+  `ButterflyWingTextureGenerator` (_Boon), `ButterflyInfoDisplayManager` (_Boon),
+  `FlyingButterflyManager` (_Boon)  
+**Imported by:** `ButterflyIdentificationTool` (_Joe); `AgentRouter`, `NaturalistAgent`, `ArchivistAgent` (_Joe)
+
+---
+
+### Scripts/BoundingBoxVisualizer.ts
+
+**Purpose:** Draws bounding box overlays (via `MLSpatializer` detection events) as 2D screen-space
+rectangles on a canvas. Development/debug tool for verifying YOLO detection output.
+
+**Imports:** `MLSpatializer` (_Aggy)  
+**Imported by:** nothing — attach to a SceneObject for debug visualisation.
+
+---
+
+### Scripts/MLSpatializer.ts
+
+**Purpose:** _Aggy's local copy of the ML inference runner (same role as `_Niko/Scripts/MLSpatializer.ts`
+but kept separately). Runs YOLO inference and emits detection events.
+
+**Imports:** `DetectionHelpers` (_Aggy), `YOLODetectionProcessor` (_Aggy)  
+**Imported by:** `BoundingBoxVisualizer` (_Aggy)
+
+---
+
+### Scripts/YOLODetectionProcessor.ts
+
+**Purpose:** _Aggy's local copy. Pure logic — parses raw YOLO tensors into `Detection` objects with NMS.
+
+**Imports:** `DetectionHelpers` (_Aggy)  
+**Imported by:** `MLSpatializer` (_Aggy)
+
+---
+
+### Scripts/DetectionHelpers.ts
+
+**Purpose:** _Aggy's local copy of the `Detection` class and helper utilities (no Lens Studio APIs).
+
+**Imports:** nothing  
+**Imported by:** `MLSpatializer` (_Aggy), `YOLODetectionProcessor` (_Aggy)
+
+---
+
+### Scripts/EventModule.ts
+
+**Purpose:** Lightweight typed event bus used by the _Aggy ML pipeline.
+
+**Imports:** nothing  
+**Imported by:** `MLSpatializer` (_Aggy)
+
+---
+
+### Scripts/KindwiseTypes.ts
+
+**Purpose:** TypeScript type definitions for the Kindwise API response format:
+`IDResponse`, `Suggestion`, `SuggestionDetails`, taxonomy fields, etc. Shared across all
+scripts that call the `identify-butterfly` edge function.
+
+**Imports:** nothing  
+**Imported by:** `ButterflyIdentifier` (_Aggy), `SupabaseDBManager` (_Boon),
+  `ButterflyInfoDisplayManager` (_Boon), `InsectIDAPITestScript` (_Boon)
+
+---
+
+### Scripts/ActivityIndicatorController.ts
+
+**Purpose:** Drives a `RenderMeshVisual` material's `in_out` shader parameter with a smooth
+`animate()` tween. Call `show()` to fade the indicator in, `hide()` to fade it out.
+Used by `PalmPushToTalk` to light up the mic button while recording.
+
+**Inspector inputs:** `transitionDuration` (seconds, default 0.5)
+
+**Public API:** `show()`, `hide()`
+
+**Imports:** SIK: `animate`, `CancelSet`  
+**Imported by:** `PalmPushToTalk` (_Aggy)
+
+---
+
+### Scripts/PalmPushToTalk.ts
+
+**Purpose:** Palm-up gesture "push to talk" wired to Joe's `GeminiAssistant`. Detects when
+the user raises an open hand toward their face, shows a hand-anchored menu, and streams
+mic audio to Gemini while a pinch is held. Optional tooltip and live subtitle text.
+
+**Flow:** Raise hand → menu appears → approach pinch → tooltip shows → pinch + hold →
+`GeminiAssistant.streamData(true)` → speak → release → `streamData(false)` → Gemini replies.
+
+**Inspector inputs:** `geminiAssistant`, `handMenu`, `activityIndicator` (optional),
+  `tooltip` (optional), `subtitleText` (optional)
+
+**Key behaviours / gotchas:**
+- Device-only: hand tracking + Gemini streaming do not run in Preview.
+- Wires to `GeminiAssistant` only via `streamData(bool)` and `userSpeechEvent`.
+
+**Imports:** `GeminiAssistant` (_Joe), `ActivityIndicatorController` (_Aggy); SIK: `SIK`, `HandInputData`, `TrackedHand`, `WorldCameraFinderProvider`  
+**Imported by:** nothing — attach to a SceneObject alongside GeminiAssistant.
 
 <!-- END_SECTION: _Agrika -->
 
 ---
 
 <!-- BEGIN_SECTION: _Joe -->
-## _Joe — Agent System & Tools
+## _Joe — Gemini Live, Agent System, Image/Model Generation
 
 Owner: **Joe**  
 Folder: `Assets/_Joe/Assets/Scripts/`  
-Feature: AI agent system for butterfly outdoor education with tool-based architecture.
+Feature: AI agent system for butterfly outdoor education, Gemini Live voice assistant,
+image/3D model generation, and chat UI.
 
 ---
 
@@ -558,29 +1006,72 @@ Feature: AI agent system for butterfly outdoor education with tool-based archite
 | `AgentLanguageInterface.ts` | Abstraction over OpenAI/Gemini LLM providers. Interrupts in-progress auto-VAD responses before sending agent messages to prevent stale output during tool execution. |
 | `AgentMemorySystem.ts` | In-memory conversation history management. |
 | `AgentToolExecutor.ts` | Executes registered tools with parameter validation, timeout, and events. |
-| `AgentTypes.ts` | Shared TypeScript interfaces: `Tool`, `ToolResult`, `Message`, `LLMResponse`, etc. |
+| `AgentTypes.ts` | Shared TypeScript interfaces: `Tool`, `ToolResult`, `Message`, `LLMResponse`, `ChatMessage`, etc. |
 | `OutdoorAgent.ts` | Abstract base class for agents. Defines `registerTool()`, `execute()`, `canHandleQuery()`. |
-| `NaturalistAgent.ts` | Gentle Socratic discovery guide. Voice-only, no camera. Registers `general_conversation`, optionally `nearby_sightings` and `butterfly_identification` tools. Always uses voice/audio (no longer forces text-only when tool context is present). |
-| `ArchivistAgent.ts` | Enthusiastic storyteller and knowledge curator. Can use camera for identification. Registers `general_conversation`, optionally `nearby_sightings` and `butterfly_identification` tools. Always uses voice/audio (no longer forces text-only when tool context is present). |
+| `NaturalistAgent.ts` | Gentle Socratic discovery guide. Voice-only, no camera. Registers `general_conversation`, optionally `nearby_sightings` and `butterfly_identification` tools. Always uses voice/audio. |
+| `ArchivistAgent.ts` | Enthusiastic storyteller and knowledge curator. Can use camera for identification. Registers `general_conversation`, optionally `nearby_sightings` and `butterfly_identification` tools. Always uses voice/audio. |
+
+### Core (Core/)
+
+| Script | Purpose |
+|---|---|
+| `GeminiAssistant.ts` | Wraps `RemoteServiceGateway.lspkg` Gemini Live WebSocket. Streams mic audio to Gemini, plays back audio response, and optionally streams video frames. Exposes `streamData(bool)` and `userSpeechEvent` for PalmPushToTalk. Inspector: `websocketRequirementsObj`, `dynamicAudioOutput`, `microphoneRecorder`, `haveVideoInput`, `haveAudioOutput`, `voice`. |
+| `OpenAIAssistant.ts` | LLM wrapper for OpenAI API via RemoteServiceGateway. |
+| `ImageGen.ts` | Sends an image + prompt to a Gemini/image-gen endpoint. Returns a base64-encoded result image. |
+| `ImageGenBridge.ts` | Inspector-facing component that wires `ImageGen` to scene inputs (texture, prompt text) and outputs (Image component). |
+| `ModelGen.ts` | Requests 3D model generation from an external endpoint. |
+| `ModelGenBridge.ts` | Inspector-facing component that wires `ModelGen` to scene objects. |
+
+### Components (Components/)
+
+| Script | Purpose |
+|---|---|
+| `ChatBridge.ts` | Bridge between `AgentOrchestrator` and `ChatComponent`. Polls `ChatStorage` for new messages each frame, splits long bot responses into timed sequential cards, and pushes them to `ChatComponent` for display. |
+| `ChatComponent.ts` | Pure UI component. Renders chat messages as cards in a scrollable list. No agent logic — driven entirely by `ChatBridge`. |
+
+### Storage (Storage/)
+
+| Script | Purpose |
+|---|---|
+| `ChatStorage.ts` | In-memory log of `ChatMessage` objects (user + agent turns). Read by `ChatBridge`. |
+| `StorageManager.ts` | Thin wrapper around Lens Studio's `PersistentStorageSystem` for key-value persistence. |
+
+### Knowledge (Knowledge/)
+
+| Script | Purpose |
+|---|---|
+| `MockButterflyKnowledge.ts` | Static mock dataset of butterfly facts used during development when the live API / Supabase is not available. |
 
 ### Tools (Tools/)
 
 | Script | Purpose |
 |---|---|
 | `NearbySightingsTool.ts` | Queries Supabase (via `SupabaseDBManager`) for butterfly sightings near the user's GPS location. Returns species, distances, photos. Cached for 30s. |
-| `ButterflyIdentificationTool.ts` | **NEW** — Wraps Agrika's `ButterflyIdentifier` as an agent-callable tool. Triggers camera capture → Kindwise API identification. Returns species name, common name, probability. |
+| `ButterflyIdentificationTool.ts` | Wraps `ButterflyIdentifier` as an agent-callable tool. Triggers camera capture → Kindwise API identification. Returns species name, common name, probability. |
 | `GeneralConversationTool.ts` | LLM fallback for general conversation. |
 | `SpatialTool.ts` | Camera-based spatial analysis of the environment. |
 | `LocationTool.ts` | Gets current GPS coordinates from Spectacles `LocationService`. |
 | `WeatherTool.ts` | Gets weather conditions from Spectacles `UserContextSystem`. |
 | `ToolRouter.ts` | AI-powered tool selection. Indexes `spatial_tool`, `general_conversation`, `nearby_sightings` (when `dbManager` is available), and `butterfly_identification` (when `butterflyIdentifier` is available). |
 | `index.ts` | Tool exports and `createTools()` factory. Accepts optional `butterflyIdentifier` for `ButterflyIdentificationTool`. |
+| `EnvironmentalToolsExample.ts` | Example / reference showing how to register environment-query tools. Not used in production. |
+
+### Utils (Utils/)
+
+| Script | Purpose |
+|---|---|
+| `APIKeyHint.ts` | Inspector helper that displays a warning if required API keys are not configured. |
+| `ChatExtensions.ts` | Utility functions for formatting and processing `ChatMessage` objects (e.g. truncating, stripping markdown). |
+| `ModelGenerationScheduler.ts` | Throttles and queues model generation requests to avoid hitting rate limits. |
+| `TextLimiter.ts` | Exports `CHARACTER_LIMITS` constants and `TextLimiter` utility for enforcing display character caps per message type. |
 
 ### Cross-team imports
 
 `NearbySightingsTool` imports `SupabaseDBManager` from `_Boon/SupabaseInfoStoring&Retrieving/Scripts/`.  
 `ButterflyIdentificationTool` imports `ButterflyIdentifier` from `_Aggy/Scripts/`.  
-`AgentRouter`, `NaturalistAgent`, `ArchivistAgent` accept optional `ButterflyIdentifier` from `_Aggy/Scripts/`.
+`AgentRouter`, `NaturalistAgent`, `ArchivistAgent` accept optional `ButterflyIdentifier` from `_Aggy/Scripts/`.  
+`AgentLanguageInterface` uses `GeminiAssistant` and `OpenAIAssistant` from `Core/`.  
+`PalmPushToTalk` (_Aggy) imports `GeminiAssistant` from `Core/GeminiAssistant.ts`.
 
 <!-- END_SECTION: _Joe -->
 

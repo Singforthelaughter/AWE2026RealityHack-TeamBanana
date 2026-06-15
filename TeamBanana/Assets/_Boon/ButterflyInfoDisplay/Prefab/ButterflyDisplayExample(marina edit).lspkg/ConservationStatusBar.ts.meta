@@ -1,0 +1,62 @@
+- !<AssetImportMetadata/475d680d-297f-4405-aff3-1189169de805>
+  ImportedAssetIds:
+    TypeScriptAsset: !<reference> aed13ef5-d423-4a3c-984c-261ee979112b
+  ImporterName: TypeScriptAssetImporter
+  PrimaryAsset: !<reference> aed13ef5-d423-4a3c-984c-261ee979112b
+  PackageType: NotAPackage
+  LegacyPackagePolicy: ~
+  ExtraData:
+    {}
+  AssetDataMap:
+    TypeScriptAsset: !<own> adb1e7ff-b137-4911-82a0-18e3987b09a2
+  DependentFiles:
+    []
+  ImporterSettings: !<AssetImporterSettings>
+    {}
+  CompressionSettings: !<own> 00000000-0000-0000-0000-000000000000
+- !<TypeScriptAssetData/adb1e7ff-b137-4911-82a0-18e3987b09a2>
+  SvgIcon: ""
+  SetupScript:
+    code: ""
+  Description: ""
+  VersionMajor: 0
+  VersionMinor: 0
+  VersionPatch: 0
+  ComponentUid: d0d1abaf-5de7-43e4-8b3f-1560b8f6fef7
+  ExportUid: 00000000-0000-0000-0000-000000000000
+  PackagePolicy: CanBeUnpacked
+  ScriptInputsHidden:
+    _hasShadow: true
+    _inactive: false
+    _playAudio: false
+    _renderOrder: false
+    _shadowPositionOffset: true
+    _size: false
+    status: false
+  ScriptTypesHidden:
+    {}
+  ReadMe: !<reference> 00000000-0000-0000-0000-000000000000
+  DeclarationFile: !<reference> 00000000-0000-0000-0000-000000000000
+  Tags:
+    []
+  Attachments:
+    []
+  DefaultScriptInputs:
+    - _renderOrder: 0
+      _size: !<Vec3> {x: 12.000000, y: 1.600000, z: 1.000000}
+      _inactive: false
+      _playAudio: false
+      _hasShadow: false
+      _shadowPositionOffset: !<Vec3> {x: 0.000000, y: 0.000000, z: 0.000000}
+      status: Least Concern
+  ScriptTypes:
+    -
+      {}
+  InputLines:
+    - // @input int _renderOrder
+    - '// @input vec3 _size = {6,3,3} {"hint":"Size of the element in centimeters"}'
+    - '// @input bool _inactive {"hint":"Inactive Mode: set the element to ignore inputs"}'
+    - '// @input bool _playAudio {"label":"Play Audio", "hint":"Play audio on interaction"}'
+    - // @input bool _hasShadow
+    - '// @input vec3 _shadowPositionOffset = "{0.05,-0.05,-0.01}" {"showIf":"_hasShadow"}'
+    - '// @input string status = "Least Concern" {"widget":"combobox", "values":[{"label":"No Info", "value":"No Info"}, {"label":"Not Evaluated", "value":"Not Evaluated"}, {"label":"Data Deficient", "value":"Data Deficient"}, {"label":"Least Concern", "value":"Least Concern"}, {"label":"Near Threatened", "value":"Near Threatened"}, {"label":"Vulnerable", "value":"Vulnerable"}, {"label":"Endangered", "value":"Endangered"}, {"label":"Critically Endangered", "value":"Critically Endangered"}, {"label":"Extinct in the Wild", "value":"Extinct in the Wild"}, {"label":"Extinct", "value":"Extinct"}]}'
