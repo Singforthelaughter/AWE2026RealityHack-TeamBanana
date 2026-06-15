@@ -102,6 +102,11 @@ export class ToolRouter {
     let butterflyIdTool: ButterflyIdentificationTool | null = null
     if (butterflyIdentifier) {
       butterflyIdTool = new ButterflyIdentificationTool(butterflyIdentifier)
+      // Prefer Gemini's cached video frame so we never fight for the camera.
+      butterflyIdTool.getSharedFrame = () => this.languageInterface.getLatestFrame()
+      // Fallback: pause/resume Gemini's video if we need to capture directly.
+      butterflyIdTool.onPauseVideo = () => this.languageInterface.pauseVideo()
+      butterflyIdTool.onResumeVideo = () => this.languageInterface.resumeVideo()
       this.indexTool("butterfly_identification", {
         name: "butterfly_identification",
         description: "Take a photo and identify a butterfly species using AI-powered insect recognition",

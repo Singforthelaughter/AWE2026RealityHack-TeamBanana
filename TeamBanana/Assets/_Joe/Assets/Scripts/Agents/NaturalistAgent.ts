@@ -105,6 +105,11 @@ export class NaturalistAgent extends OutdoorAgent {
     // Register butterfly identification tool if ButterflyIdentifier is available
     if (butterflyIdentifier) {
       this.butterflyIdentificationTool = new ButterflyIdentificationTool(butterflyIdentifier)
+      // Prefer Gemini's cached video frame so we never fight for the camera.
+      this.butterflyIdentificationTool.getSharedFrame = () => this.languageInterface.getLatestFrame()
+      // Fallback: pause/resume Gemini's video if we need to capture directly.
+      this.butterflyIdentificationTool.onPauseVideo = () => this.languageInterface.pauseVideo()
+      this.butterflyIdentificationTool.onResumeVideo = () => this.languageInterface.resumeVideo()
       this.registerTool({
         name: "butterfly_identification",
         description: "Take a photo and identify a butterfly species using AI-powered recognition",
@@ -122,6 +127,13 @@ export class NaturalistAgent extends OutdoorAgent {
    */
   protected getSystemPrompt(): string {
     return `You are a Naturalist guide helping someone discover butterflies and nature in their outdoor environment.
+
+CRITICAL RULE — SPECIES IDENTIFICATION:
+You CANNOT identify butterfly species from sight. You do not have visual recognition
+capabilities. When the user asks "what is this butterfly" or similar, a specialist tool
+runs and its result appears as [BUTTERFLY IDENTIFIED: ...] in the message. ONLY use that
+tool result for the species name. If no [BUTTERFLY IDENTIFIED: ...] block is present,
+NEVER guess or make up a species — instead guide the user with observation questions.
 
 YOUR PERSONALITY:
 - Gentle, patient, and encouraging

@@ -63,6 +63,11 @@ export class GeminiAssistant extends BaseScriptComponent {
   // When true, incoming audio frames are discarded (agent system is speaking instead)
   private _muteAudio: boolean = false
 
+  // Cached latest video frame so tools (e.g. ButterflyIdentificationTool) can grab
+  // a frame without starting a second VideoController.
+  private _latestFrame: string | null = null
+  public getLatestFrame(): string | null { return this._latestFrame }
+
   public updateTextEvent: Event<{text: string; completed: boolean}> = new Event<{text: string; completed: boolean}>()
 
   public userSpeechEvent: Event<{text: string; isFinal: boolean}> = new Event<{text: string; isFinal: boolean}>()
@@ -228,6 +233,20 @@ export class GeminiAssistant extends BaseScriptComponent {
     }
   }
 
+  /** Temporarily stop video streaming (e.g. so another tool can capture a camera frame). */
+  public pauseVideo(): void {
+    if (!this.haveVideoInput) return
+    this.videoController.stopRecording()
+    if (this.enableDebugLogging) print("GeminiAssistant: 📹 Video paused")
+  }
+
+  /** Resume video streaming after a pause. */
+  public resumeVideo(): void {
+    if (!this.haveVideoInput) return
+    this.videoController.startRecording()
+    if (this.enableDebugLogging) print("GeminiAssistant: 📹 Video resumed")
+  }
+
   private setupInputs() {
     this.audioProcessor.onAudioChunkReady.add((encodedAudioChunk) => {
       const message = {
@@ -251,6 +270,7 @@ export class GeminiAssistant extends BaseScriptComponent {
     if (this.haveVideoInput) {
       // Configure the video controller
       this.videoController.onEncodedFrame.add((encodedFrame) => {
+        this._latestFrame = encodedFrame // cache so tools can reuse this frame
         const message = {
           realtime_input: {
             media_chunks: [

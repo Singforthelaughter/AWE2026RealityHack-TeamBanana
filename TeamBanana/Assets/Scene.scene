@@ -2872,7 +2872,7 @@
     "":
       openAIToken: token
       googleToken: token
-      snapToken: token
+      snapToken: 1d732a34-565c-4b6c-b25c-3ea0e92f18c6
       enableLogging: false
       enableLoggingLifecycle: false
   ScriptTypes:
