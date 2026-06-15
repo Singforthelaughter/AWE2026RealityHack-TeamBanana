@@ -18,6 +18,7 @@ export class MapMessageController extends BaseScriptComponent {
 
   onStart() {
     this.container.renderOrder = this.renderOrder
+    this.container.showCloseButton = true
     this.container.closeButton?.onTrigger.add(() => this.closePanel())
     this.mapComponent.subscribeOnNoNearbyPlacesFound(() => this.showMessage('No nearby places found. \nPlease test with "All".'))
 

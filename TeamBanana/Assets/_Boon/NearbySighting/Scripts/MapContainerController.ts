@@ -8,6 +8,7 @@ import { validate } from "SpectaclesInteractionKit.lspkg/Utils/validate"
 import { MapComponent } from "../MapComponent.lspkg/MapComponent/Scripts/MapComponent"
 import { makeTween } from "../MapComponent.lspkg/MapComponent/Scripts/MapUtils"
 import { TWEEN_DURATION } from "./MapUIController"
+import { CustomLocationsLoader } from "./CustomLocationsLoader"
 
 const CONTAINER_SIZE_MINI = new vec2(10, 10)
 const CONTAINER_SIZE_FULL = new vec2(54.0, 54.0)
@@ -18,6 +19,8 @@ const CONTAINER_DISTANCE_FULL = 160
 export class MapContainerController extends BaseScriptComponent {
   @input
   private mapComponent!: MapComponent
+
+  @input private customLocationLoader!: CustomLocationsLoader
 
   @input
   private translationXTime: number = 1
@@ -62,6 +65,22 @@ export class MapContainerController extends BaseScriptComponent {
     this.container = this.sceneObject.getComponent(ContainerFrame.getTypeName())!
 
     this.container.setIsFollowing(this.mapComponent.startedAsMiniMap)
+
+    this.container.showCloseButton = true
+
+    this.container.closeButton?.onTrigger.add(() => {
+      // Disable the parent (mapContainer) so NearbySightingManager.openNearbySighting()
+      // can re-enable it cleanly — disabling only this.sceneObject (Container) leaves
+      // the parent enabled but the child hidden, which openNearbySighting() cannot recover from.
+      const parent = this.sceneObject.getParent()
+      if (parent) {
+        parent.enabled = false
+      } else {
+        this.sceneObject.enabled = false
+      }
+
+      this.customLocationLoader.clearLocations()
+    })
 
     this.container.followButton?.onTrigger.add(this.handleFollowButtonTrigger.bind(this))
 

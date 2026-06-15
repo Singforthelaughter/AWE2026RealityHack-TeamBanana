@@ -36,22 +36,29 @@ export class NearbySightingManager extends BaseScriptComponent {
 
   private mapTransform!: Transform
   private locationService!: LocationService
+  private closeTween: ReturnType<typeof LSTween.scaleToLocal> | null = null
 
   onAwake() {
     this.mapTransform = this.map.getTransform()
     this.map.enabled = false
-    this.mapTransform.setLocalScale(vec3.zero())
+    // this.mapTransform.setLocalScale(vec3.zero())
 
     this.createEvent("OnStartEvent").bind(() => {
       this.locationService = GeoLocation.createLocationService()
       this.locationService.accuracy = GeoLocationAccuracy.Navigation
 
-      // this.openNearbySighting()
+      // timeManager.setTimeout(() => {
+      //   this.openNearbySighting()
+      // }, 2000)
     })
   }
 
   // Enables the map, animates it into view, then fetches and pins nearby sightings.
   openNearbySighting() {
+    if (this.closeTween) {
+      this.closeTween.stop()
+      this.closeTween = null
+    }
     this.map.enabled = true
     LSTween.scaleToLocal(this.mapTransform, vec3.one(), 1000).easing(Easing.Sinusoidal.Out).start()
     this.getNearbySighting()
@@ -61,11 +68,12 @@ export class NearbySightingManager extends BaseScriptComponent {
   closeNearbySighting() {
     print(`[NearbySightingManager] closeNearbySighting — clearing ${this.customLocationLoader ? "loader" : "NULL loader"} locations`)
     this.customLocationLoader.clearLocations()
-    const tween = LSTween.scaleToLocal(this.mapTransform, vec3.zero(), 500).easing(Easing.Sinusoidal.In)
-    tween.onComplete(() => {
+    this.closeTween = LSTween.scaleToLocal(this.mapTransform, vec3.zero(), 500).easing(Easing.Sinusoidal.In)
+    this.closeTween.onComplete(() => {
+      this.closeTween = null
       this.map.enabled = false
     })
-    tween.start()
+    this.closeTween.start()
   }
 
   // Gets the user's current GPS position once, then fetches nearby butterfly sightings

@@ -46,8 +46,8 @@ export class CustomLocationsLoader extends BaseScriptComponent {
   private mapReady: boolean = false
   private pendingLocations: CustomLocation[] = []
   private pinLocationMap: Map<string, CustomLocation> = new Map()
-  // holds the location being placed right now, for the synchronous onMapAddPin callback window
   private activePlacingLocation: CustomLocation | null = null
+  private onClearCallbacks: (() => void)[] = []
 
   onAwake() {
     this.createEvent("OnStartEvent").bind(this.onStart.bind(this))
@@ -80,6 +80,11 @@ export class CustomLocationsLoader extends BaseScriptComponent {
     return null
   }
 
+  /** Register a callback to be called whenever clearLocations() runs. */
+  onLocationsCleared(cb: () => void): void {
+    this.onClearCallbacks.push(cb)
+  }
+
   /** Remove all custom pins from the map. */
   clearLocations(): void {
     for (const pin of this.pins) {
@@ -87,6 +92,7 @@ export class CustomLocationsLoader extends BaseScriptComponent {
     }
     this.pins = []
     this.pinLocationMap.clear()
+    for (const cb of this.onClearCallbacks) cb()
   }
 
   getLocationForPin(pin: MapPin): CustomLocation | undefined {

@@ -85,6 +85,7 @@ export class QuestMarkController extends BaseScriptComponent {
   onStart() {
     this.mapComponent.subscribeOnMapAddPin(this.handleMapAddPin.bind(this))
     this.mapComponent.subscribeOnAllMapPinsRemoved(this.handleAllMapPinsRemoved.bind(this))
+    this.customLocationsLoader.onLocationsCleared(this.handleAllMapPinsRemoved.bind(this))
 
     this.camera = WorldCameraFinderProvider.getInstance().getComponent()
     this.cameraTransform = WorldCameraFinderProvider.getInstance().getTransform()

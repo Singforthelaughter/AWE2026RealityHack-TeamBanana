@@ -887,6 +887,7 @@
   Enabled: true
   ScriptAsset: !<reference> b69e19ca-5a74-4540-884b-9b52addd4b50
   ScriptInputsDefault:
+    customLocationLoader: true
     translationYTime: true
     translationZTime: true
     rotationTime: true
@@ -895,6 +896,7 @@
   ScriptInputs:
     "":
       mapComponent: !<MappingBased.AssignableType> 98d076d2-90d4-4334-87d6-54f096ffbb6e
+      customLocationLoader: !<MappingBased.AssignableType_1> 00000000-0000-0000-0000-000000000000
       translationXTime: 0.350000
       translationYTime: 0.350000
       translationZTime: 0.350000

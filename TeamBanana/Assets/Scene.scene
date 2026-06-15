@@ -1779,6 +1779,7 @@
   ScriptInputs:
     "":
       mapComponent: !<MappingBased.AssignableType> ed77c629-d5d8-406a-8e7e-f2fd31e5b354
+      customLocationLoader: !<MappingBased.AssignableType_1> 63db7d74-f6f0-4bc5-919d-4736a6ca964f
       translationXTime: 0.350000
       translationYTime: 0.350000
       translationZTime: 0.350000
@@ -2974,7 +2975,6 @@
   ScriptAsset: !<reference> 3f50c524-3213-429f-9b12-ab6d0fa89caa
   ScriptInputsDefault:
     searchRadius: true
-    maxResults: true
   ScriptTypesDefault:
     {}
   ScriptInputs:
@@ -2983,7 +2983,7 @@
       customLocationLoader: !<MappingBased.AssignableType> 63db7d74-f6f0-4bc5-919d-4736a6ca964f
       dbManager: !<MappingBased.AssignableType_1> ec3ec66a-669d-4f10-8729-2385b25c576d
       searchRadius: !<float> 5.000000
-      maxResults: !<float> 50.000000
+      maxResults: !<float> 10.000000
   ScriptTypes:
     "":
       {}
@@ -8591,9 +8591,12 @@
   ScriptAsset: !<reference> 2a92f85a-a814-4f5d-bd73-4a2710147d01
   ScriptInputsDefault:
     _xzEnabled: true
+    _xzEasing: true
     _yEnabled: true
+    _yEasing: true
     _translationBuffer: true
     _lockedPitch: true
+    _pitchEasing: true
     _pitchOffsetDegrees: true
     _pitchBufferDegrees: true
     _lockedYaw: true
@@ -8606,12 +8609,12 @@
     "":
       _distance: !<float> 70.000000
       _xzEnabled: true
-      _xzEasing: 0.500000
+      _xzEasing: !<float> 1.000000
       _yEnabled: true
-      _yEasing: !<float> 5.000000
+      _yEasing: !<float> 1.000000
       _translationBuffer: !<float> 0.000000
       _lockedPitch: true
-      _pitchEasing: 0.500000
+      _pitchEasing: !<float> 1.000000
       _pitchOffsetDegrees: !<float> 0.000000
       _pitchBufferDegrees: !<float> 0.000000
       _lockedYaw: true

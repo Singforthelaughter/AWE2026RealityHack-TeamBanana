@@ -13,8 +13,8 @@ const ZOOM_OUT_BUTTON_OFFSET_MINI = new vec3(-7, -9.5, 2)
 const ZOOM_OUT_BUTTON_OFFSET_FULL = new vec3(-7, -32, 2)
 const CENTER_MAP_BUTTON_OFFSET_MINI = new vec3(0, -10, 2)
 const CENTER_MAP_BUTTON_OFFSET_FULL = new vec3(0, -32, 2)
-const TOGGLE_BUTTON_OFFSET_MINI = new vec3(-10, 10.5, 2)
-const TOGGLE_BUTTON_OFFSET_FULL = new vec3(-31, 32, 2)
+const TOGGLE_BUTTON_OFFSET_MINI = new vec3(-7, 10.5, 2)
+const TOGGLE_BUTTON_OFFSET_FULL = new vec3(-29, 32, 2)
 
 enum ButtonType {
   ZOOM_IN,

@@ -26,6 +26,7 @@
   ExportUid: 00000000-0000-0000-0000-000000000000
   PackagePolicy: CanBeUnpacked
   ScriptInputsHidden:
+    customLocationLoader: false
     mapComponent: false
     maxFollowDistance: false
     minFollowDistance: false
@@ -43,6 +44,7 @@
     []
   DefaultScriptInputs:
     - mapComponent: !<MappingBased.AssignableType> 00000000-0000-0000-0000-000000000000
+      customLocationLoader: !<MappingBased.AssignableType_1> 00000000-0000-0000-0000-000000000000
       translationXTime: !<float> 1.000000
       translationYTime: 0.350000
       translationZTime: 0.350000
@@ -54,6 +56,7 @@
       {}
   InputLines:
     - // @input AssignableType mapComponent
+    - // @input AssignableType_1 customLocationLoader
     - // @input float translationXTime = 1
     - // @input float translationYTime = 0.35
     - // @input float translationZTime = 0.35
