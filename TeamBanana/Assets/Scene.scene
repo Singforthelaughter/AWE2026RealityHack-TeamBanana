@@ -12459,8 +12459,6 @@
   ScriptAsset: !<reference> 78d39e17-5828-4d70-bc9d-13331efc6f5d
   ScriptInputsDefault:
     functionName: true
-    useVoiceCommand: true
-    triggerWord: true
     debugLogging: true
   ScriptTypesDefault:
     {}
@@ -12469,8 +12467,6 @@
       supabaseProject: !<reference.SupabaseProject> 08bfc11e-6bac-4674-901f-ed63bcb39f2f
       functionName: identify-butterfly
       resultText: !<reference.Text> 2a58bb60-1cc7-46a8-b4e5-f209c9208878
-      useVoiceCommand: true
-      triggerWord: identify
       debugLogging: true
       dbManager: !<MappingBased.AssignableType> ec3ec66a-669d-4f10-8729-2385b25c576d
       wingGenerator: !<MappingBased.AssignableType_1> a6383912-b0e0-4431-bbec-39be9eb75dcb
